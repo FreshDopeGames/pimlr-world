@@ -950,10 +950,10 @@ namespace JUTPS
                 
                 // -1 = a physical object is moving into character direction
                 // 1 = a physical object is moving in character oposite direction
-                float CollisionPressure = Vector3.Dot(contactDirection, rbOtherPhysicObject.velocity.normalized);
+                float CollisionPressure = Vector3.Dot(contactDirection, rbOtherPhysicObject.linearVelocity.normalized);
                 //Debug.Log(gameObject.name + " ◄ " + rbOtherPhysicObject.name + " ] Collision Pressure = " + CollisionPressure.ToString());
                 if (CollisionPressure > -0.1) return;
-                float physicalDamage = PhysicalDamageMultiplier * (rbOtherPhysicObject.velocity.magnitude / 20 * rbOtherPhysicObject.mass);
+                float physicalDamage = PhysicalDamageMultiplier * (rbOtherPhysicObject.linearVelocity.magnitude / 20 * rbOtherPhysicObject.mass);
 
                 // Do physical damage
                 if (physicalDamage > PhysicalDamageStartAt)

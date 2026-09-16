@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Cinemachine;
+
 using UnityEngine.Networking;
 
 public class GameplayManager : Singleton<GameplayManager>
@@ -16,7 +16,7 @@ public class GameplayManager : Singleton<GameplayManager>
 
 
 
-    public CinemachineVirtualCamera virtualCamera;
+    public Unity.Cinemachine.CinemachineVirtualCamera virtualCamera;
 
     public PlayerID playerHammer, playerHero, playerHype;
     public PlayerID otherPlayerHammer, otherPlayerHero, otherPlayerHype;

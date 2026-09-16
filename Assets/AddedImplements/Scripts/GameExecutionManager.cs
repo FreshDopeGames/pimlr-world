@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using JUTPS;
 using JUTPS.AI;
 using JUTPS.CameraSystems;
@@ -14,9 +14,6 @@ using UnityEngine;
 
 public class GameExecutionManager : Singleton<GameExecutionManager>
 {
-
-     
-
 
     bool zone1Finish;
     [SerializeField]

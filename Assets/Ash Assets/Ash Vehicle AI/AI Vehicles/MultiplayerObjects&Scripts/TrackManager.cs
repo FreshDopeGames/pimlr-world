@@ -1,5 +1,5 @@
 using AshVP;
-using Cinemachine;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +8,7 @@ public class TrackManager : MonoBehaviour
 {
     public static TrackManager instance;
 
-    public CinemachineBrain mainCamBrain;
+    public Unity.Cinemachine.CinemachineBrain mainCamBrain;
 
     public WaypointCircuit circuit;
 

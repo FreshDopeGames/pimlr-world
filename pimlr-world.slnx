@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="BestHTTP.csproj" />
+  <Project Path="SpaceGraphicsToolkit.csproj" />
+  <Project Path="SpaceGraphicsToolkit.Terrain.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="CW.Common.csproj" />
+  <Project Path="ParrelSync.csproj" />
+</Solution>

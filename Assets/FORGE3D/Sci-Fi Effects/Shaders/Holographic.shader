@@ -230,7 +230,6 @@ Shader "FORGE3D/Holographic"
 			#endif
 			CBUFFER_END
 			sampler2D _MainTex;
-			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 						

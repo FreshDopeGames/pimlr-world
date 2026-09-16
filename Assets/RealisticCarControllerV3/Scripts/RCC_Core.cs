@@ -445,7 +445,7 @@ public class RCC_Core : MonoBehaviour {
         carController.antiRollRearHorizontal = Mathf.Clamp(carController.antiRollRearHorizontal, currentBehaviorType.antiRollRearHorizontalMinimum, Mathf.Infinity);
 
         carController.gearShiftingDelay = Mathf.Clamp(carController.gearShiftingDelay, 0f, currentBehaviorType.gearShiftingDelayMaximum);
-        carController.rigid.angularDrag = Mathf.Clamp(carController.rigid.angularDrag, currentBehaviorType.angularDrag, 1f);
+        carController.rigid.angularDamping = Mathf.Clamp(carController.rigid.angularDamping, currentBehaviorType.angularDrag, 1f);
 
         carController.angularDragHelperStrength = Mathf.Clamp(carController.angularDragHelperStrength, currentBehaviorType.angularDragHelperMinimum, currentBehaviorType.angularDragHelperMaximum);
 

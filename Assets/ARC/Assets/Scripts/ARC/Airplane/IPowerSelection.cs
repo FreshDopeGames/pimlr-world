@@ -22,7 +22,6 @@ namespace TS.Generics
     
     public interface IPowerSelection<T>
     {
-        [SerializeField]
         Transform PowerUpSelectionRules(T powerUpsList);
     }
 }

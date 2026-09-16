@@ -26,7 +26,7 @@ namespace AshVP
 
         void FixedUpdate()
         {
-            velocity = rb.velocity.magnitude;
+            velocity = rb.linearVelocity.magnitude;
 
 
             if (velocity < minVelocityToReverse)
@@ -52,7 +52,7 @@ namespace AshVP
 
         public void TakeReverse()
         {
-            AiCarContrtoller.carVelocity = transform.InverseTransformDirection(rb.velocity);
+            AiCarContrtoller.carVelocity = transform.InverseTransformDirection(rb.linearVelocity);
             AiCarContrtoller.tireVisuals();
             speedValue = AiCarContrtoller.accelerationForce * Time.fixedDeltaTime * 1000 
                 * AiCarContrtoller.ReverseCurve.Evaluate(Mathf.Abs(AiCarContrtoller.carVelocity.z) / 100);

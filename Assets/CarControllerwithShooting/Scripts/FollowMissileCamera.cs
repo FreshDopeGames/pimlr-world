@@ -1,7 +1,7 @@
 
 using System.Collections;
 using UnityEngine;
-using Cinemachine;
+
 using CarControllerwithShooting;
 
 
@@ -9,7 +9,7 @@ public class FollowMissileCamera : MonoBehaviour
 {
     public Transform Target;
 
-    public CinemachineVirtualCamera vc;
+    public Unity.Cinemachine.CinemachineVirtualCamera vc;
     //public Transform CarCameraTarget;
     public float PositionFolowForce = 5f;
     public float RotationFolowForce = 5f;

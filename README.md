@@ -1,7 +1,7 @@
 # PIMLR World
 
 Standalone **PIMLR** game, isolated from the original multi-game "YannickThurz" project.
-**Unity 2022.3.12f1**, URP, WebGL target.
+**Unity 6000.6.0f1 (Unity 6.6)**, URP, WebGL target.
 
 ## What this is
 PIMLR is a single-player third-person action/story game: a living-room hub that leads into
@@ -44,7 +44,7 @@ The production GUI-build pipeline renders correctly. To get a correct build:
    (variant stripping can drop shader variants the runtime needs), then rebuild.
 
 ## Build & run
-- Unity **2022.3.12f1** (URP) with the **WebGL Build Support** module.
+- Unity **6000.6.0f1 (Unity 6.6)** (URP) with the **WebGL Build Support** module.
 - Open the project; first import builds `Library/`.
 - Build: **File → Build Settings → WebGL → Build**.
   (A headless helper exists at `Assets/Editor/PimlrBuildScript.cs` — `PimlrBuildScript.BuildWebGL` — but for
@@ -54,7 +54,7 @@ The production GUI-build pipeline renders correctly. To get a correct build:
 ## External dependencies (verify before shipping)
 - **Ending video** streams from `idea-nfts.com` — consider bundling locally for reliability.
 - **Login API**: `idea-labs.xyz`.
-- **Ready Player Me**: avatar loading over the network (CORS/connectivity sensitive).
+- **Local avatars**: GLB avatar files are stored under `Assets/Avatars` and loaded without an online avatar service.
 - Legacy Sirihanna chat used Flowise / ngrok endpoints — **now bypassed** by the baked dialogue; the API
   tokens have been redacted from `FlowiseAPI.cs`. Rotate them if they were ever live.
 
@@ -117,4 +117,3 @@ Since Polish Pass was a deliberate subset, these three genuinely-unresolved Play
 
 *Content and design scope is now solid. The remaining blockers are the handful of missing implementation files (mainly `GameExecutionManager` and `CoinManager`, since they're the connective tissue for zone state and economy) plus a few product-level decisions (platform, leaderboard build order, engine language).*
 *Once `GameExecutionManager` and `CoinManager` are in hand, plus answers on scope items 2–4 above, I can build the actual state-flow diagram (menu → customization → zone → combat → wave progression) and start the Unreal architecture mapping.*
-

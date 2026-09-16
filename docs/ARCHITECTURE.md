@@ -2,7 +2,7 @@
 
 > Audience: the new engineering team taking ownership of **PIMLR**.
 > Project: `/Users/greenmachine2.0/pilr/YannickThurz-Merge_HR_Project`
-> Engine: **Unity 2022.3.12f1**, **URP** (Universal Render Pipeline), primary build target **WebGL**.
+> Engine: **Unity 6000.6.0f1 (Unity 6.6)**, **URP** (Universal Render Pipeline), primary build target **WebGL**.
 > Scope: **PIMLR only.** This repo also contains two other, unrelated games that are **out of scope** for this team:
 > **Helix** (`Assets/CarControllerwithShooting/`) and **Humanity Rocks** (`Assets/ARC/`). They are mentioned here only where
 > their presence affects PIMLR (build settings, shared render pipeline assets).
@@ -22,7 +22,7 @@ earned in combat and spent on music tracks; coins persist to a remote backend.
 
 The game is built on three third-party / shared foundations:
 - **Julhiecio TPS Controller (JUTPS)** — character movement, camera, weapons, AI, vehicles, input.
-- **Ready Player Me (RPM)** — runtime avatar creation/loading for the player character.
+- **Local GLB avatar assets** — player avatars imported from `Assets/Avatars`.
 - A custom **manager + singleton** layer (`AuthManager`, `SceneManagerScript`, `UIManager`, `GameExecutionManager`,
   `CoinManager`) plus shared **MusicSystem** and **DialogueSysyem** (sic — the folder is misspelled on disk).
 
@@ -70,7 +70,7 @@ Assets/
 │   │   ├── Other/                      # BoundsRestriction (#5), FMVSequencer (#9),
 │   │   │                               #   MusicInputHandler (#8), Ai Chat Interaction, MinimapBlipController
 │   │   ├── Customization/              # CodeMonkey-style color/material swap (living-room preview)
-│   │   ├── GameReadyPlayerMe/          # RPM runtime avatar creation hook
+│   │   ├── GameReadyPlayerMe/          # Local GLB avatar loading compatibility scripts
 │   │   └── Enum/EnumManager.cs         # GameMode / GameScene enums
 │   ├── CC-CharaterCustomization/       # Mesh-swap customization data model (CodeMonkey)
 │   ├── Resources/                      # Prefabs instantiated by name (UI, AuthManager, PIMLR_UI, Loading Screen...)
@@ -88,7 +88,7 @@ Assets/
 │   ├── Scripts/AI/...                  #   JUCharacterArtificialInteligenceBrain, ZombieAI, PatrolAI
 │   └── Inputs/JUTPSInputControlls.*    #   InputSystem actions + generated (baked) C# wrapper
 │
-├── Ready Player Me/                    # RPM SDK (avatar creator + loader, network-dependent)
+├── Avatars/                            # Local GLB avatar files used by the player loader
 ├── MusicSystem/Script/MusicSystem.cs   # Music playback + boost triggering (shared asset)
 ├── DialogueSysyem/                     # Baked dialogue system (ScriptableObject trees + event system)
 │   ├── Scripts/                        #   Dialogue, DialogueManager, DialogueScriptable, Response, ResponseHandler
@@ -99,7 +99,7 @@ Assets/
 ├── Constant.cs                         # Scene names, game URLs, coin meta-key (root-level)
 ├── Editor/PimlrBuildScript.cs          # Headless WebGL build entry point
 ├── StreamingAssets/                    # Loadingvideo.mp4, PLMRVideo.mp4 (FMV)
-├── WebGLTemplates/                     # Better2020 (splash video), Responsive, RPMTemplate
+├── WebGLTemplates/                     # Better2020 (splash video), Responsive
 │
 ├── CarControllerwithShooting/          # ── Helix (OUT OF SCOPE) ──
 └── ARC/                                # ── Humanity Rocks (OUT OF SCOPE) ──
@@ -116,9 +116,7 @@ Assets/
 
 ## 3. Scenes
 
-PIMLR has four live scenes. Note the disconnect between **build index** and the **disabled** `03_LevelSelection`: index 1
-is disabled, so `LoadScene()` with **no argument** (`buildIndex + 1`) will skip from index 0 to... index 1's *path*,
-which is disabled — see the gotcha in §4.1. In practice PIMLR always loads **by name**, sidestepping this.
+PIMLR has three build scenes. Scene transitions should always load by name rather than relying on build indices.
 
 ### 3.1 `00_MainMenu` (build 0) — startup / login
 
@@ -144,20 +142,20 @@ which is disabled — see the gotcha in §4.1. In practice PIMLR always loads **
     and calls `SceneManagerScript.Instance.LoadScene(sceneToLoad)`.
 - **UI:** `PlmrMainMenuPanel` (zone/game-mode selection, also routes to the out-of-scope Helix/HR via
   `Constant.Helix_Scene_Name` / `Constant.Humanity_Scene_Name`), `PlmrAvatarCreatePanel` (customization).
-- **Avatar:** Ready Player Me creation + a CodeMonkey-style color/mesh customization preview (see §4.5).
+- **Avatar:** Local GLB avatar selection from `Assets/Avatars` plus a CodeMonkey-style color/mesh customization preview (see §4.5).
 
 ### 3.3 `YannicksWorld` (build 3) — downtown gameplay
 
 - **Role:** The main play space. Zone progression, enemy/boss combat, vehicle chase, infinite mode.
 - **Manager:** `GameExecutionManager` (`Assets/AddedImplements/Scripts/GameExecutionManager.cs`) — the gameplay brain.
-- **Other key objects:** the player prefab (JUTPS + RPM avatar, tagged `Player`), `zombieSpawner` (`JUAutoInstantiate`),
+- **Other key objects:** the player prefab (JUTPS + local GLB avatar, tagged `Player`), `zombieSpawner` (`JUAutoInstantiate`),
   `zombieBoss`, `waterBallonzombie`, `PlayerCar`/`AiCar` (vehicles, initially disabled), `ai_Chat_Triger` (NPC trigger),
   `MovementLeash` (a `BoundsRestriction`, PIMLR #5, must be wired in the scene), the music system, and the goal HUD.
 - Zone behavior is driven by `PlayerPrefs["currentZoneMode"]` parsed into the `Zone` enum at `Start()` — see §4.2.
 
-### 3.4 `03_LevelSelection` (build 1) — disabled
+### 3.4 Legacy scenes — excluded
 
-- Present in the project and in build settings but **disabled** (`enabled: 0`). It was the original pre-gameplay zone
+- Legacy scenes are present in the project but excluded from the build. The original pre-gameplay zone
   selector; the demo flow replaced it with in-hub selection (`PlmrMainMenuPanel`). Kept for reference; not in the live
   flow. Several other non-build scenes exist in the folder (`01_Game`, `02_CharacterSelection`, `04_Pimlrp`,
   `DemoBuild`, `YannicksWorld backup 15_08`, `03_LevelSelection_Old`) — all legacy, none in `EditorBuildSettings`.
@@ -492,7 +490,7 @@ UIStaminaBar (#11) ◀── NormalizedSprintStamina
 
 ---
 
-### 4.5 UI / customization / RPM avatars
+### 4.5 UI / customization / local avatars
 
 **UI dispatch:** `UIManager` (named-panel show/hide, see §4.1). Loading art is mode-aware via `UILodingScreen`
 (`LoadingBarData[]` indexed by `GameMode`). `UIFader` does fades. `UILevelCompletePopUp` defines the `Zone` enum and the
@@ -503,12 +501,11 @@ level-complete popup (reached via the hardcoded `UIMenus[5]`).
    `Assets/_Game/Scripts/Customization/Customization_Handler.cs` / `Customization_Applier.cs`): fast living-room preview.
    Color/mesh selections persist in PlayerPrefs keyed by renderer name; a hardcoded `DEFAULT_SAVE_JSON` provides the base
    preset. `Customization_Applier.ApplyCustomization()` writes colors onto renderer materials on start.
-2. **Ready Player Me** (`Assets/_Game/Scripts/GameReadyPlayerMe/GameReadyPlayerManager.cs`): runtime avatar creation via
-   `AvatarCreatorStateMachine`; on `OnAvatarSaved(avatarId)` it uses `AvatarObjectLoader.LoadAvatar(...)` to download a
-   `.glb` from the RPM CDN and `AvatarAnimatorHelper.SetupAnimator(...)` to rig it.
+2. **Local GLB avatars** (`Assets/_Game/Scripts/GameReadyPlayerMe/LocalAvatarLoader.cs`): editor-populated references to
+   `.glb` assets under `Assets/Avatars`; the selected model is instantiated locally with no avatar-service dependency.
 
-**Gotcha:** the two paths don't sync — a color chosen in the living-room preview is not guaranteed to appear on the RPM
-gameplay avatar. RPM loading is network-dependent with no offline fallback (a slow/unreachable CDN stalls avatar load).
+**Gotcha:** imported GLBs must use a humanoid rig if JUTPS hand/foot IK and humanoid bone lookup are required. Non-humanoid
+avatars can still render, but weapon and foot-placement systems will remain disabled by their runtime guards.
 
 **System map (UI/customization):**
 
@@ -517,14 +514,14 @@ UIManager.ShowMenu(name) ──▶ UI_Screen[] (Login_Panel, Loading Screen, JUT
 PlmrMainMenuPanel.OnSelectLevel ─▶ PlayerPrefs["currentZoneMode"] ─▶ LoadScene("YannicksWorld")
 
 Customization_Handler/Applier (CodeMonkey color+mesh, PlayerPrefs)        ┐  (NOT synced)
-GameReadyPlayerManager (RPM create ─▶ AvatarObjectLoader ─▶ CDN .glb)     ┘
+LocalAvatarLoader (local GLB catalog ─▶ instantiate selected avatar)       ┘
 ```
 
 ---
 
 ## 5. Build & deploy workflow
 
-- **Engine:** Unity **2022.3.12f1** (LTS). **Color space: Linear** (`ProjectSettings/ProjectSettings.asset`,
+- **Engine:** Unity **6000.6.0f1 (Unity 6.6)**. **Color space: Linear** (`ProjectSettings/ProjectSettings.asset`,
   `m_ActiveColorSpace: 1`) — imported textures must have correct sRGB flags or colors render wrong.
 - **Render pipeline (PIMLR):** `Assets/Reversed Interactive/New Gen Urban/URPSettings/UniversalRP-HighQuality.asset`.
   Its `m_RendererType: 1` is the *RendererType enum* pointing at a renderer-data asset in `m_RendererDataList`; that asset
@@ -547,12 +544,12 @@ GameReadyPlayerManager (RPM create ─▶ AvatarObjectLoader ─▶ CDN .glb)   
       -executeMethod PimlrBuildScript.BuildWebGL -logFile <log>
     ```
 - **WebGL templates:** `Assets/WebGLTemplates/Better2020` (splash video; expects `Stryker_14.mp4` under
-  `TemplateData/`), plus `Responsive` and `RPMTemplate`.
+  `TemplateData/`), plus `Responsive`.
 - **StreamingAssets:** `Loadingvideo.mp4` (loading loop) and `PLMRVideo.mp4` (#9 inter-level FMV fallback).
 
 **Pre-build checklist:** only PIMLR scenes enabled (0,2,3; 1 disabled); default WebGL quality → Forward/Reversed asset;
 no PIMLR material references an ARC deferred shader; StreamingAssets videos present; `AuthManager.baseUrl` correct;
-Flowise disabled or reachable if the AI-chat path is used; RPM reachable.
+Flowise is optional legacy functionality and is not required for the baked Sirihanna gameplay path.
 
 ---
 
@@ -562,7 +559,7 @@ Flowise disabled or reachable if the AI-chat path is used; RPM reachable.
 |---|---|---|---|
 | **Login API** `https://www.idea-labs.xyz/api/` | `AuthManager.cs:10` | register/login/logout + `get-activity`/`save-activity` (coins, achievements) | Hard network dependency. Failures fall back to `DummyLogin()` (dev). Coin saves fail silently if down. |
 | **Flowise LLM** `https://flowise-h06w.onrender.com/api/v1/prediction/<id>` | `FlowiseAPI.cs:13–14` (bearer token hardcoded line 14) | Sirihanna AI chat (legacy/optional) | **Render free tier sleeps** on idle → first request after sleep is slow/times out, and there is **no offline fallback** (chat UI opens but never responds). Earlier endpoints (e.g. `flowise.thecela.com`, and historically ngrok-style tunnels) are commented out — **ngrok/tunnel URLs are ephemeral and rotate**, so any hardcoded tunnel will die. The supported direction is to replace this with the **baked DialogueSystem** (§4.2). |
-| **Ready Player Me CDN** | `GameReadyPlayerManager.cs` (`AvatarObjectLoader`) | runtime avatar `.glb` download | Network-dependent, no offline fallback; slow CDN stalls avatar load. |
+| **Local GLB avatars** | `LocalAvatarLoader.cs` | runtime avatar selection/instantiation | Requires editor-populated asset references; no network dependency. |
 | **Inter-level FMV** | `SceneManagerScript` (#9) / `FMVSequencer.cs` | optional cutscene; `StreamingAssets/PLMRVideo.mp4` or remote URL | Off by default; 60s safety timeout (`fmvMaxWaitSeconds`) prevents a stuck video from hanging the load. A remote video URL (e.g. an `idea-nfts.com` land video referenced historically) is only as reliable as that host. |
 | **WebGL JS interop** | `AiChatInteraction.OnClosePanel` → `Application.ExternalCall("stopSpeaking")` | stop TTS | Requires a `stopSpeaking()` JS function in the host page; missing = silent no-op. |
 

@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+
 
 public class UserCar : MonoBehaviour
 {
-    public CinemachineVirtualCamera[] carCameras; // Assign your car cameras in the order: Helix, Hero, Hype
+    public Unity.Cinemachine.CinemachineVirtualCamera[] carCameras; // Assign your car cameras in the order: Helix, Hero, Hype
 
     private void Start()
     {

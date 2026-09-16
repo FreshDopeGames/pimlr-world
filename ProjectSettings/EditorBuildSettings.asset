@@ -8,57 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/Scene/Pimlr/00_MainMenu.unity
     guid: cf10fb144a9a2e349ac8b016383b9e39
-  - enabled: 0
-    path: Assets/_Game/Scene/Pimlr/03_LevelSelection.unity
-    guid: 7e0f455472bf52742938b2786387716b
   - enabled: 1
     path: Assets/_Game/Scene/Pimlr/SceneStaticEU.unity
     guid: bca6d85947b26cb43899abf7dc72d999
   - enabled: 1
     path: Assets/_Game/Scene/Pimlr/YannicksWorld.unity
     guid: 2712fa55a16aaf64ebcd0884f087c394
-  - enabled: 0
-    path: Assets/CarControllerwithShooting/Scenes/00_MainMenu - Helix.unity
-    guid: 874b614665f0a4145935143166410bc0
-  - enabled: 0
-    path: Assets/CarControllerwithShooting/Scenes/FirstScene.unity
-    guid: d49dd2e2da909ee428bb316db47a9123
-  - enabled: 0
-    path: Assets/CarControllerwithShooting/Scenes/Gameplay(terrain).unity
-    guid: 130ce0662ac71d84da9be4b8924a9d53
-  - enabled: 0
-    path: Assets/CarControllerwithShooting/Scenes/Gameplay(colloseum).unity
-    guid: 93f2117acad535144a54d5d673e388ab
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/MainMenu/HumanityRocks_Login.unity
-    guid: 07ca5ec6429d5394cb6931df7cb60ec5
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/MainMenu/NeonCityScene.unity
-    guid: a79d5e7de5e50fb4d8b67bb964206080
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/MainMenu/01_MM.unity
-    guid: aedc8f38ef5363d4f8d872fad29b09be
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Track_00.unity
-    guid: 248dc11de39ac934db0575df1d4e1399
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Track_01.unity
-    guid: 73be282f295f024489f5424ac17a03ff
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Track_02.unity
-    guid: a3224ef51b9a35745868e114e846c408
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Track_03.unity
-    guid: 7355ae14a61a4b04fb2c547a2a3ac335
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Track_04.unity
-    guid: 3a490177b3679c1409711eef7bcabe21
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Track_05.unity
-    guid: 4e34cb94208748b4a8a8ac969ae8102e
-  - enabled: 0
-    path: Assets/ARC/Assets/Scenes/Tracks/Demo/Sci-Fi_Track_06.unity
-    guid: 2288531e9763eaa44ba29b15a98272d2
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: 2ec44aec0dd0a564fa6de8ea4b3c5852,
-      type: 2}
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 2ec44aec0dd0a564fa6de8ea4b3c5852, type: 2}

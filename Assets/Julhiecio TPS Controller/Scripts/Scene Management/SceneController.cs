@@ -83,7 +83,7 @@ namespace JUTPS
             //Reset Rigidbody
             pl.GetComponent<Rigidbody>().useGravity = true;
             pl.GetComponent<Rigidbody>().isKinematic = false;
-            pl.GetComponent<Rigidbody>().velocity = transform.up * pl.GetComponent<Rigidbody>().velocity.y;
+            pl.GetComponent<Rigidbody>().linearVelocity = transform.up * pl.GetComponent<Rigidbody>().linearVelocity.y;
             pl.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
 
             //Enable Tps Script

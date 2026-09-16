@@ -67,7 +67,7 @@ namespace JUTPS.WeaponSystem
             //If movement is physic type
             if (MovementType == BulletMovementType.Physics)
             {
-                rb.velocity = transform.forward * BulletVelocity;
+                rb.linearVelocity = transform.forward * BulletVelocity;
             }
             else
             {
@@ -117,7 +117,7 @@ namespace JUTPS.WeaponSystem
 
         private void MovePhysically()
         {
-            rb.velocity = transform.forward * BulletVelocity;
+            rb.linearVelocity = transform.forward * BulletVelocity;
         }
         private void MoveForward()
         {

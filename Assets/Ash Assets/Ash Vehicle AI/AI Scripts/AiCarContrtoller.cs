@@ -145,7 +145,7 @@ namespace AshVP
 
         void FixedUpdate()
 		{
-			carVelocity = transform.InverseTransformDirection(rb.velocity); //local velocity of car
+			carVelocity = transform.InverseTransformDirection(rb.linearVelocity); //local velocity of car
 
 			curveVelocity = Mathf.Abs(carVelocity.magnitude) / 100;
 
@@ -196,15 +196,15 @@ namespace AshVP
 				frictionLogic();
 				brakeLogic();
 				//for drift behaviour
-				rb.angularDrag = dragAmount * driftCurve.Evaluate(Mathf.Abs(carVelocity.x) / 70);
+				rb.angularDamping = dragAmount * driftCurve.Evaluate(Mathf.Abs(carVelocity.x) / 70);
 
 				//draws green ground checking ray ....ingnore
 				Debug.DrawLine(groundCheck.position, hit.point, Color.green);
 				grounded = true;
-				rb.drag = 0.1f;
+				rb.linearDamping = 0.1f;
                 if (StopVehicle)
                 {
-					rb.drag = 5f;
+					rb.linearDamping = 5f;
 				}
 
 				rb.centerOfMass = centerOfMass_ground;
@@ -213,11 +213,11 @@ namespace AshVP
 			else
 			{
 				grounded = false;
-				rb.drag = 0.1f;
+				rb.linearDamping = 0.1f;
 				rb.centerOfMass = CenterOfMass.localPosition;
 				if (!airDrag)
 				{
-					rb.angularDrag = 0.1f;
+					rb.angularDamping = 0.1f;
 				}
 			}
 		}
@@ -314,7 +314,7 @@ namespace AshVP
 
 			Health = 100;
 
-			rb.velocity = Vector3.zero;
+			rb.linearVelocity = Vector3.zero;
 
 			IsInvincible = true;
 

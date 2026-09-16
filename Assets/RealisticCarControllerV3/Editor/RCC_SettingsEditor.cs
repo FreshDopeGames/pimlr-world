@@ -20,7 +20,7 @@ public class RCC_SettingsEditor : Editor {
 
     Color originalGUIColor;
     Vector2 scrollPos;
-    PhysicMaterial[] physicMaterials;
+    PhysicsMaterial[] physicMaterials;
 
     bool foldGeneralSettings = false;
     bool foldBehaviorSettings = false;
@@ -222,12 +222,12 @@ public class RCC_SettingsEditor : Editor {
                 EditorGUILayout.BeginVertical(GUI.skin.box);
                 GUILayout.Label("Ground Physic Materials", EditorStyles.boldLabel);
 
-                physicMaterials = new PhysicMaterial[RCC_GroundMaterials.Instance.frictions.Length];
+                physicMaterials = new PhysicsMaterial[RCC_GroundMaterials.Instance.frictions.Length];
 
                 for (int i = 0; i < physicMaterials.Length; i++) {
                     physicMaterials[i] = RCC_GroundMaterials.Instance.frictions[i].groundMaterial;
                     EditorGUILayout.BeginVertical(GUI.skin.box);
-                    EditorGUILayout.ObjectField("Ground Physic Materials " + i, physicMaterials[i], typeof(PhysicMaterial), false);
+                    EditorGUILayout.ObjectField("Ground Physic Materials " + i, physicMaterials[i], typeof(PhysicsMaterial), false);
                     EditorGUILayout.EndVertical();
                 }
 
