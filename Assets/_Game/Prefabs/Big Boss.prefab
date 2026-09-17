@@ -3139,6 +3139,7 @@ MonoBehaviour:
   UseDefaultInputsOnVehicleInteraction: 1
   CheckVehiclesByTrigger: 1
   DriveSelectedVehicleOnStart: 0
+  UnequipWeaponOnEnter: 0
   VehicleDrivableNearby: 0
   IsDriving: 0
   IsDrivingByShoot: 0
@@ -3314,6 +3315,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   IsDead: 0
+  healthSlider: {fileID: 0}
+  rcc_CarControllerV3: {fileID: 0}
+  rcc_AICarController: {fileID: 0}
 --- !u!114 &4202924397591902424
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2684,6 +2684,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   IsDead: 0
+  healthSlider: {fileID: 0}
+  rcc_CarControllerV3: {fileID: 0}
+  rcc_AICarController: {fileID: 0}
 --- !u!114 &2727300709961517303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2761,6 +2764,7 @@ MonoBehaviour:
   OnInstantiate:
     m_PersistentCalls:
       m_Calls: []
+  Spawneds: []
 --- !u!114 &2600005680899196244
 MonoBehaviour:
   m_ObjectHideFlags: 0

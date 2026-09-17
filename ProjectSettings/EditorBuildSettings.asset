@@ -6,16 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Game/Scene/Pimlr/00_MainMenu.unity
+    path: Assets/_Game/Scene/PIMLR_World/00_MainMenu.unity
     guid: cf10fb144a9a2e349ac8b016383b9e39
   - enabled: 0
-    path: Assets/_Game/Scene/Pimlr/03_LevelSelection.unity
+    path: Assets/_Game/Scene/PIMLR_World/DoNotUse/03_LevelSelection.unity
     guid: 7e0f455472bf52742938b2786387716b
   - enabled: 1
-    path: Assets/_Game/Scene/Pimlr/SceneStaticEU.unity
+    path: Assets/_Game/Scene/PIMLR_World/SceneStaticEU.unity
     guid: bca6d85947b26cb43899abf7dc72d999
   - enabled: 1
-    path: Assets/_Game/Scene/Pimlr/YannicksWorld.unity
+    path: Assets/_Game/Scene/PIMLR_World/YannicksWorld.unity
     guid: 2712fa55a16aaf64ebcd0884f087c394
   - enabled: 0
     path: Assets/CarControllerwithShooting/Scenes/00_MainMenu - Helix.unity
