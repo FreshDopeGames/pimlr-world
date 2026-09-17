@@ -1,7 +1,7 @@
 # PIMLR World
 
 Standalone **PIMLR** game, isolated from the original multi-game "YannickThurz" project.
-**Unity 2022.3.12f1**, URP, WebGL target.
+**Unity 2022.3.62f3**, URP, WebGL target.
 
 ## What this is
 PIMLR is a single-player third-person action/story game: a living-room hub that leads into
