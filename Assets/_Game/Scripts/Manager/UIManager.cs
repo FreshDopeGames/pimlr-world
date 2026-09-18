@@ -47,8 +47,11 @@ public class UIManager : MonoBehaviour
         }
 
         //fadeIn
-        if (UI_fader != null) UI_fader.gameObject.SetActive(true);
-        UI_fader.Fade(UIFader.FADE.FadeIn, .5f, .3f);
+        if (UI_fader != null)
+        {
+            UI_fader.gameObject.SetActive(true);
+            UI_fader.Fade(UIFader.FADE.FadeIn, .5f, .3f);
+        }
     }
 
     public void ShowMenu(string name)

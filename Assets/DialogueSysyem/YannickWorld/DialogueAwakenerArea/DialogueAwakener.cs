@@ -59,8 +59,26 @@ public class DialogueAwakener : MonoBehaviour
     {
         
 
-        if (other.tag == "Player" && !isInteracted)
+        if (other.CompareTag("Player") && !isInteracted)
         {
+            if (DialogueManager.instance == null)
+            {
+                Debug.LogWarning("DialogueAwakener: no DialogueManager exists in the scene.", this);
+                return;
+            }
+
+            if (DialogueManager.instance.ScreenDialogue == null)
+            {
+                Debug.LogWarning("DialogueAwakener: DialogueManager.ScreenDialogue is not assigned.", this);
+                return;
+            }
+
+            if (dialogueScript == null)
+            {
+                Debug.LogWarning("DialogueAwakener: dialogueScript is not assigned.", this);
+                return;
+            }
+
             isInteracted = true;
 
             PlayerPoints = 0;

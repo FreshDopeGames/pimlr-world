@@ -28,28 +28,45 @@ public class ChatbotUIController : MonoBehaviour
     };
     int currentLine = 0;
 
+    private void OnEnable()
+    {
+        ConfigureDialogueButton();
+    }
+
     void Start()
     {
         // PIMLR #3: scripted dialogue. The Send/Next button advances lines; after the last line the water gun unlocks.
-        chatText.text = "\n";
-        if (sendButton != null)
-        {
-            sendButton.onClick.RemoveAllListeners();
-            sendButton.onClick.AddListener(AdvanceDialogue);
-        }
+        if (chatText != null)
+            chatText.text = "\n";
+        ConfigureDialogueButton();
         currentLine = 0;
         ShowCurrentLine();
     }
 
+    private void ConfigureDialogueButton()
+    {
+        if (sendButton != null)
+        {
+            sendButton.onClick.RemoveListener(AdvanceDialogue);
+            sendButton.onClick.AddListener(AdvanceDialogue);
+        }
+    }
+
     void ShowCurrentLine()
     {
-        if (currentLine >= 0 && currentLine < bakedLines.Length)
+        if (bakedLines != null && currentLine >= 0 && currentLine < bakedLines.Length)
             AppendToChat($"<color=yellow>Sirihanna: {bakedLines[currentLine]} </color>\n");
     }
 
     // Advance to the next scripted line; unlock the water gun after the last one.
     public void AdvanceDialogue()
     {
+        if (bakedLines == null || bakedLines.Length == 0)
+        {
+            EndDialogBoxAndSpawnZonbies();
+            return;
+        }
+
         currentLine++;
         if (currentLine < bakedLines.Length)
             ShowCurrentLine();
@@ -100,15 +117,20 @@ public class ChatbotUIController : MonoBehaviour
 
     public void AppendToChat(string message)
     {
+        if (chatText == null)
+            return;
+
         chatText.text += $"{message}\n";
-        StartCoroutine(ScrollToBottom());
+        if (scrollRect != null)
+            StartCoroutine(ScrollToBottom());
     }
 
     private IEnumerator ScrollToBottom()
     {
         // Wait for end of frame so that the UI elements can update their positions
         yield return new WaitForEndOfFrame();
-        scrollRect.normalizedPosition = new Vector2(0, 0);
+        if (scrollRect != null)
+            scrollRect.normalizedPosition = new Vector2(0, 0);
     }
 
     [System.Obsolete]
@@ -130,7 +152,12 @@ public class ChatbotUIController : MonoBehaviour
     {
         Debug.Log(":::>>>>EndDialogBoxAndSpawnZonbies");
 
-        SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.ChatWithSirihanna);
+        // Close first so a missing optional progression dependency cannot trap the player in the chat.
+        if (aiChatInteraction != null)
+            aiChatInteraction.OnClosePanel();
+
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.goalPanel != null)
+            SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.ChatWithSirihanna);
 
         //DialogueManager.instance.EndDialogue();
         if (uILevelCompletePopUp == null)
@@ -139,22 +166,34 @@ public class ChatbotUIController : MonoBehaviour
             uILevelCompletePopUp = SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
         }
 
-        if (uILevelCompletePopUp != null)
+        if (uILevelCompletePopUp == null && SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null && SceneManagerScript.Instance.uiManager.UIMenus != null && SceneManagerScript.Instance.uiManager.UIMenus.Length > 5 && SceneManagerScript.Instance.uiManager.UIMenus[5] != null && SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject != null)
         {
 
-            GameExecutionManager.Instance.currentZoneMode = Zone.Zone1;
-            PlayerPrefs.SetString("currentZoneMode", GameExecutionManager.Instance.currentZoneMode.ToString());
+            if (GameExecutionManager.Instance != null)
+            {
+                GameExecutionManager.Instance.currentZoneMode = Zone.Zone1;
+                PlayerPrefs.SetString("currentZoneMode", GameExecutionManager.Instance.currentZoneMode.ToString());
+            }
 
-            JUGameManager.InstancedPlayer.StartCoroutine(WaitForscreenfadeOut());
+            if (JUGameManager.InstancedPlayer != null)
+                JUGameManager.InstancedPlayer.StartCoroutine(WaitForscreenfadeOut());
         }
 
-        aiChatInteraction.OnClosePanel();
+        if (aiChatInteraction != null)
+        {
+            if (aiChatInteraction.transform.parent != null)
+                aiChatInteraction.transform.parent.gameObject.SetActive(false);
 
-        aiChatInteraction.transform.parent.gameObject.SetActive(false);
+            if (aiChatInteraction.characterController != null)
+            {
+                ItemSwitchManager itemSwitchManager = aiChatInteraction.characterController.GetComponent<ItemSwitchManager>();
+                if (itemSwitchManager != null)
+                    itemSwitchManager.IsPlayer = true;
+            }
+        }
 
-        aiChatInteraction.characterController.GetComponent<ItemSwitchManager>().IsPlayer = true;
-
-        GameExecutionManager.Instance.Zone1Start();
+        if (GameExecutionManager.Instance != null)
+            GameExecutionManager.Instance.Zone1Start();
 
 
         //gameme

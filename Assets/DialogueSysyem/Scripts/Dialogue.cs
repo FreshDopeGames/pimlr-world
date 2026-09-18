@@ -53,16 +53,29 @@ public class Dialogue : MonoBehaviour
     [ContextMenu("skip")]
     public void Skip()
     {
+        if (isTyping)
+            skip = true;
+        else
+            advanceRequested = true;
 
-        skip = true;
+        if (skipBtn)
+            skipBtn.SetActive(false);
+    }
+
+    public void Next()
+    {
+        advanceRequested = true;
     }
 
     string newstring = "";
-    bool skip=false;
+    bool skip = false;
+    bool isTyping = false;
+    bool advanceRequested = false;
 
     public IEnumerator StepThroughDialogue(DialogueScriptable dialogueScriptable)
     {
         skip = false;
+        advanceRequested = false;
         if(skipBtn)
         {
             skipBtn.SetActive(true);
@@ -74,7 +87,17 @@ public class Dialogue : MonoBehaviour
             string dialogue = dialogueScriptable.Dialogue[i];
             //Debug.Log("::::");
             newstring= dialogue;
+            skip = false;
+            isTyping = true;
+            if (i == 1 && skipBtn)
+                skipBtn.SetActive(true);
             yield return Type(dialogue, text);
+            isTyping = false;
+
+            if (i == dialogueScriptable.Dialogue.Length - 1 && skipBtn)
+                skipBtn.SetActive(false);
+            else if (i == 1 && skipBtn)
+                skipBtn.SetActive(false);
 
             if (contentSizeFitter)
             {
@@ -86,10 +109,21 @@ public class Dialogue : MonoBehaviour
             if (i == dialogueScriptable.Dialogue.Length - 1 && dialogueScriptable.HasResponses)
                 break;
 
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Mouse0));
+            if (i == 0 && dialogueScriptable.Dialogue.Length > 1)
+            {
+                if (skipBtn)
+                    skipBtn.SetActive(false);
+                responseHandler.ShowNextButton();
+            }
+
+            yield return new WaitUntil(() => advanceRequested || Input.GetKeyDown(KeyCode.Mouse0));
+            advanceRequested = false;
+            responseHandler.HideNextButton();
 
 
         }
+
+        responseHandler.HideNextButton();
 
         if (dialogueScriptable.HasResponses && dialogueScriptable.Responses[0].isEvent)
         {
@@ -166,13 +200,6 @@ public class Dialogue : MonoBehaviour
         }
 
         text.text = textToWrite;
-        if (skipBtn)
-            skipBtn.SetActive(false);
-
-        //if (contentSizeFitter)
-        //{
-        //    contentSizeFitter.enabled = false;
-        //}
     }
 
 }

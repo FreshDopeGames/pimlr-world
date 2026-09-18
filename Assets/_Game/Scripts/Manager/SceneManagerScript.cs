@@ -111,10 +111,11 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
                                                                             //Debug.Log("Load scene =" + progress);
 
             //UILodingScreen loadingScreen = FindObjectOfType<UILodingScreen>();
-            if (loadingScreen != null) loadingScreen.loadingSlider.value = progress;
+            if (loadingScreen != null && loadingScreen.loadingSlider != null)
+                loadingScreen.loadingSlider.value = progress;
 
             // Update loading text
-            if (loadingScreen.loadingText != null)
+            if (loadingScreen != null && loadingScreen.loadingText != null)
                 loadingScreen.loadingText.text = "Loading: " + (progress * 100f).ToString("F0") + "%";
             //Debug.Log(loadingScreen.loadingText.text);
             // Check if the loading is almost complete (progress >= 0.9)
@@ -256,8 +257,17 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
 
     public void FetchMusicData()
     {
+        if (musicData == null)
+        {
+            Debug.LogWarning("SceneManagerScript: musicData is not assigned.");
+            return;
+        }
+
         for (int i = 0; i < musicData.Length; i++)
         {
+            if (musicData[i] == null || musicData[i].audioClip == null)
+                continue;
+
             musicData[i].isPurchased = PlayerPrefs.GetInt(musicData[i].audioClip.name) != 0;
             if (!musicData[i].isPurchased && musicData[i].isFree)
             {
@@ -265,7 +275,8 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
             }
         }
 
-        SceneManagerScript.Instance.musicSystem.RefreshList();
+        if (musicSystem != null)
+            musicSystem.RefreshList();
     }
     private void OnDisable()
     {

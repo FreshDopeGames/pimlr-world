@@ -8,6 +8,7 @@ using System.Collections;
     {
         [SerializeField] private RectTransform responseBox;
         [SerializeField] private RectTransform responseButtonTemplate;
+        [SerializeField] private Button nextButton;
         [SerializeField] internal RectTransform responseContainer;
         [SerializeField] private RectTransform mixamalsAnswersToggle;
 
@@ -20,6 +21,23 @@ using System.Collections;
         private void Start()
         {
             dialogue = GetComponent<Dialogue>();
+            HideNextButton();
+        }
+
+        public void ShowNextButton()
+        {
+            if (nextButton == null)
+                return;
+
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(dialogue.Next);
+            nextButton.gameObject.SetActive(true);
+        }
+
+        public void HideNextButton()
+        {
+            if (nextButton != null)
+                nextButton.gameObject.SetActive(false);
         }
 
 

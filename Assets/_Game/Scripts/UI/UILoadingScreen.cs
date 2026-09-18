@@ -7,7 +7,7 @@ public class UILodingScreen : MonoBehaviour
 {
     public LoadingBarData[] loadingBarDatas;
     public Image backGroundimg;
-    public TMPro.TextMeshProUGUI titelText;
+    public TMPro.TextMeshProUGUI titleText;
     public TMPro.TextMeshProUGUI descriptionText;
     public TMPro.TextMeshProUGUI loadingText;
     public Slider loadingSlider;
@@ -16,29 +16,24 @@ public class UILodingScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        if (AuthManager.Instance)
+        if (AuthManager.Instance == null || loadingBarDatas == null)
+            return;
+
+        int index = AuthManager.Instance.currentGameMode switch
         {
-            if (GameMode.IdeaLabs == AuthManager.Instance.currentGameMode)
-            {
-                titelText.text = loadingBarDatas[0]._Titel;
-                descriptionText.text = loadingBarDatas[0]._Description;
-            }
-            if (GameMode.Pimlr == AuthManager.Instance.currentGameMode)
-            {
-                titelText.text = loadingBarDatas[1]._Titel;
-                descriptionText.text = loadingBarDatas[1]._Description;
-            }
-            if (GameMode.Helix == AuthManager.Instance.currentGameMode)
-            {
-                titelText.text = loadingBarDatas[2]._Titel;
-                descriptionText.text = loadingBarDatas[2]._Description;
-            }
-            if (GameMode.HumanityRocks == AuthManager.Instance.currentGameMode)
-            {
-                titelText.text = loadingBarDatas[3]._Titel;
-                descriptionText.text = loadingBarDatas[3]._Description;
-            }
-        }
+            GameMode.IdeaLabs => 0,
+            GameMode.Pimlr => 1,
+            GameMode.Helix => 2,
+            GameMode.HumanityRocks => 3,
+            _ => -1
+        };
+        if (index < 0 || index >= loadingBarDatas.Length || loadingBarDatas[index] == null)
+            return;
+
+        if (titleText != null)
+            titleText.text = loadingBarDatas[index]._Titel;
+        if (descriptionText != null)
+            descriptionText.text = loadingBarDatas[index]._Description;
     }
 
 }

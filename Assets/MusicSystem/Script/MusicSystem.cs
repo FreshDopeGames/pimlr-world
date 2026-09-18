@@ -57,7 +57,10 @@ public class MusicSystem : MonoBehaviour
 
         startMusic = true;
         if (SceneManager.GetActiveScene().name != "YannicksWorld")
+        {
+            music = false;
             PlayMusic();
+        }
     }
 
     public void RefreshList()
@@ -120,7 +123,8 @@ public class MusicSystem : MonoBehaviour
             }
             music = false;
 
-            if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu")
+            // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null" — scenes like SceneStaticEU have no UI_GoalPanel.
+            if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
             {
 
                 AuthManager.Instance.PowerChange(AchievementReward.Nothing);
@@ -131,7 +135,8 @@ public class MusicSystem : MonoBehaviour
         }
         else
         {
-            if (SceneManagerScript.Instance.goalPanel.boosterPanel != null)
+            // PIMLR #14: this line previously had no guard at all — added the full scene/goalPanel check.
+            if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null && SceneManagerScript.Instance.goalPanel.boosterPanel != null)
                 SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
             Debug.Log("isPlaying:::>>" + currentTime);
             musicSystem.time = Mathf.Clamp(currentTime, 0f, musicSystem.clip.length);
@@ -141,7 +146,8 @@ public class MusicSystem : MonoBehaviour
             activeSystem.SetActive(true);
             music = true;
 
-            if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu")
+            // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
+            if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
             {
                 for (int i = 0; i < SceneManagerScript.Instance.musicData.Length; i++)
                 {
@@ -177,7 +183,9 @@ public class MusicSystem : MonoBehaviour
     int currentSoundClipCount = 0;
     public void ChangeMusicForward()
     {
-        SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
+        // PIMLR #14: this line previously had no guard at all.
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.goalPanel != null && SceneManagerScript.Instance.goalPanel.boosterPanel != null)
+            SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
         // PIMLR #4: clear the previous track's attribute boost before applying the new one.
         AuthManager.Instance.PowerChange(AchievementReward.Nothing);
         currentSoundClipCount++;
@@ -189,7 +197,8 @@ public class MusicSystem : MonoBehaviour
         songName = musicSystem.clip.name;
         //Debug.Log("  " + musicSystem.clip.length);
         musicSystem.Play();
-        if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu")
+        // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
+        if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
         {
             for (int i = 0; i < SceneManagerScript.Instance.musicData.Length; i++)
             {
@@ -204,7 +213,9 @@ public class MusicSystem : MonoBehaviour
 
     public void ChangeMusic(string clipname)
     {
-        SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
+        // PIMLR #14: this line previously had no guard at all.
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.goalPanel != null && SceneManagerScript.Instance.goalPanel.boosterPanel != null)
+            SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
         // PIMLR #4: clear the previous track's attribute boost before applying the new one.
         AuthManager.Instance.PowerChange(AchievementReward.Nothing);
 
@@ -221,7 +232,8 @@ public class MusicSystem : MonoBehaviour
         songName = musicSystem.clip.name;
         //Debug.Log("  " + musicSystem.clip.length);
         musicSystem.Play();
-        if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu")
+        // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
+        if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
         {
             for (int i = 0; i < SceneManagerScript.Instance.musicData.Length; i++)
             {
@@ -236,7 +248,9 @@ public class MusicSystem : MonoBehaviour
 
     public void ChangeMusicBackward()
     {
-        SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
+        // PIMLR #14: this line previously had no guard at all.
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.goalPanel != null && SceneManagerScript.Instance.goalPanel.boosterPanel != null)
+            SceneManagerScript.Instance.goalPanel.boosterPanel.gameObject.SetActive(false);
         // PIMLR #4: clear the previous track's attribute boost before applying the new one.
         AuthManager.Instance.PowerChange(AchievementReward.Nothing);
         currentSoundClipCount--;
@@ -247,7 +261,8 @@ public class MusicSystem : MonoBehaviour
         musicSystem.clip = audioList[currentSoundClipCount];
         songName = musicSystem.clip.name;
         musicSystem.Play();
-        if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu")
+        // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
+        if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
         {
             for (int i = 0; i < SceneManagerScript.Instance.musicData.Length; i++)
             {

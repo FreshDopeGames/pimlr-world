@@ -11,20 +11,29 @@ public class AiChatInteraction : MonoBehaviour
     [SerializeField] internal JUCharacterController characterController; //AUTO ASSIGN
     private void Start()
     {
-        ai_BOT_Canvas.SetActive(false);
+        if (ai_BOT_Canvas != null)
+            ai_BOT_Canvas.SetActive(false);
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            ai_BOT_Canvas.SetActive(true);
-            characterController = other.gameObject.GetComponent<JUCharacterController>();
+            if (ai_BOT_Canvas != null)
+                ai_BOT_Canvas.SetActive(true);
+
+            characterController = other.GetComponentInParent<JUCharacterController>();
 
             PlayerControllerStop();
         }
     }
     void PlayerControllerStop()
     {
+        if (characterController == null)
+        {
+            Debug.LogWarning("AiChatInteraction: no JUCharacterController found on the player collider.", this);
+            return;
+        }
+
         characterController.BlockHorizontalInput = true;
 
         characterController.BlockVerticalInput = true;
@@ -44,16 +53,23 @@ public class AiChatInteraction : MonoBehaviour
     [System.Obsolete]
     public void OnClosePanel()
     {
-        SceneManagerScript.Instance.musicSystem.musicSystem.volume = 0.1f;
-        ai_BOT_Canvas.SetActive(false);
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.musicSystem != null && SceneManagerScript.Instance.musicSystem.musicSystem != null)
+            SceneManagerScript.Instance.musicSystem.musicSystem.volume = 0.1f;
 
-        Application.ExternalCall("stopSpeaking");
+        if (ai_BOT_Canvas != null)
+            ai_BOT_Canvas.SetActive(false);
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            Application.ExternalCall("stopSpeaking");
         PlayerControllerStart();
 
 
     }
     public void PlayerControllerStart()
     {
+        if (characterController == null)
+            return;
+
         characterController.BlockHorizontalInput = false;
 
         characterController.BlockVerticalInput = false;
