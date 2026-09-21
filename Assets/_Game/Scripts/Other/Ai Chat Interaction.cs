@@ -59,8 +59,6 @@ public class AiChatInteraction : MonoBehaviour
         if (ai_BOT_Canvas != null)
             ai_BOT_Canvas.SetActive(false);
 
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-            Application.ExternalCall("stopSpeaking");
         PlayerControllerStart();
 
 

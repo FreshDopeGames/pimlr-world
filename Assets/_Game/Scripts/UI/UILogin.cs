@@ -38,10 +38,8 @@ public class UILogin : MonoBehaviour
     void Start()
     {
 
-        username.text = PlayerPrefs.GetString("username", string.Empty);
-        password.text = PlayerPrefs.GetString("password", string.Empty);
-
-        //Debug.Log($"username ={username.text}/password ={password.text}");
+        username.text = PlayerProfile.DisplayName;
+        password.text = string.Empty;
 
         if (rememberMe != null)
         {
@@ -53,11 +51,7 @@ public class UILogin : MonoBehaviour
             loadingIndicator.SetActive(false);
         }
 
-        if (!string.IsNullOrEmpty(username.text) && !string.IsNullOrEmpty(password.text))
-        {
-            OnLogin();
-        }
-        else
+        if (string.IsNullOrEmpty(username.text))
             username.Select();
     }
 
@@ -100,29 +94,11 @@ public class UILogin : MonoBehaviour
             return;
 
         }
-        else if (string.IsNullOrEmpty(password.text))
-        {
-            ShowWarningText("Please Enter PASSWORD");
-            return;
-        }
         else
         {
-
-            SceneManagerScript.Instance.uiManager.Preloader.SetActive(true);
-
-            // Save username and password
-            if (rememberMe != null && rememberMe.isOn)
-            {
-                PlayerPrefs.SetString("username", username.text);
-                PlayerPrefs.SetString("password", password.text);
-            }
-            else
-            {
-                PlayerPrefs.DeleteKey("username");
-                PlayerPrefs.DeleteKey("password");
-            }
-
-            AuthManager.Instance.LoginUser(username.text, password.text);
+            PlayerProfile.SetDisplayName(username.text);
+            if (AuthManager.Instance != null)
+                AuthManager.Instance.KeepPlaying();
         }
     }
 

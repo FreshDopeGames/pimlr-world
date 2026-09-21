@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using System.Collections;
 
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class AuthManager : Singleton<AuthManager>
 {
@@ -58,7 +59,119 @@ public class AuthManager : Singleton<AuthManager>
     private void Start()
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "00_MainMenu")
-            DummyLogin();
+        {
+            WirePimlrStartButtons();
+            if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null)
+                SceneManagerScript.Instance.uiManager.ShowMenu("Loading Screen");
+        }
+    }
+
+    private void WirePimlrStartButtons()
+    {
+        Button newGameButton = FindButton("NewGame Button");
+        Button keepPlayingButton = FindButton("KeepPlaying Button");
+
+        if (newGameButton != null)
+            SetLoadingChoiceVisible(newGameButton.transform);
+        else if (keepPlayingButton != null)
+            SetLoadingChoiceVisible(keepPlayingButton.transform);
+
+        if (newGameButton != null)
+        {
+            newGameButton.onClick.RemoveListener(NewGame);
+            newGameButton.onClick.AddListener(NewGame);
+        }
+        else
+            Debug.LogWarning("AuthManager could not find a button named 'NewGame Button'.");
+
+        if (keepPlayingButton != null)
+        {
+            keepPlayingButton.onClick.RemoveListener(KeepPlaying);
+            keepPlayingButton.onClick.AddListener(KeepPlaying);
+        }
+        else
+            Debug.LogWarning("AuthManager could not find a button named 'KeepPlaying Button'.");
+    }
+
+    private static Button FindButton(string objectName)
+    {
+        Button[] buttons = FindObjectsOfType<Button>(true);
+        foreach (Button button in buttons)
+        {
+            if (button.gameObject.name == objectName && button.gameObject.scene.IsValid())
+                return button;
+        }
+
+        return null;
+    }
+
+    private static void SetLoadingChoiceVisible(Transform buttonTransform)
+    {
+        Transform current = buttonTransform;
+        while (current != null)
+        {
+            if (current.name == "Loading Screen")
+            {
+                current.gameObject.SetActive(true);
+                return;
+            }
+
+            current = current.parent;
+        }
+    }
+
+    public void NewGame()
+    {
+        PlayerProfile.StartNewPlayer();
+        ShowLoadingProgress("NewGame Button");
+        LoadSceneStaticEU();
+    }
+
+    public void KeepPlaying()
+    {
+        ShowLoadingProgress("KeepPlaying Button");
+        LoadSceneStaticEU();
+    }
+
+    private void ShowLoadingProgress(string pressedButtonName)
+    {
+        Button pressedButton = FindButton(pressedButtonName);
+        if (pressedButton == null) return;
+
+        Transform loadingScreen = pressedButton.transform;
+        while (loadingScreen != null && loadingScreen.name != "Loading Screen")
+            loadingScreen = loadingScreen.parent;
+
+        if (loadingScreen == null) return;
+
+        pressedButton.gameObject.SetActive(false);
+
+        Button otherButton = FindButton(pressedButtonName == "NewGame Button"
+            ? "KeepPlaying Button"
+            : "NewGame Button");
+        if (otherButton != null)
+            otherButton.gameObject.SetActive(false);
+
+        Transform loadingText = FindDescendant(loadingScreen, "loadingText (TMP)");
+        Transform loadingSlider = FindDescendant(loadingScreen, "Slider");
+        if (loadingText != null) loadingText.gameObject.SetActive(true);
+        if (loadingSlider != null) loadingSlider.gameObject.SetActive(true);
+    }
+
+    private static Transform FindDescendant(Transform root, string objectName)
+    {
+        foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == objectName)
+                return child;
+        }
+
+        return null;
+    }
+
+    private void LoadSceneStaticEU()
+    {
+        SceneManagerScript.Instance.LoadScene("SceneStaticEU");
     }
 
     public void RegisterUser(string name, string email, string password, string passwordConfirmation)
@@ -137,10 +250,8 @@ public class AuthManager : Singleton<AuthManager>
     [ContextMenu("Dummy Login")]
     public void DummyLogin()
     {
-        PlayerPrefs.SetString("username", "developer");
-        PlayerPrefs.SetString("password", "developer");
-        // PIMLR #2: load the living room directly (no-arg LoadScene() resolves to buildIndex+1 = the disabled 03_LevelSelection).
-        SceneManagerScript.Instance.LoadScene("SceneStaticEU");
+        KeepPlaying();
+        // Legacy behavior preserved: KeepPlaying will handle the scene loading.
     }
     private void HandleLoginResponse(string response)
     {

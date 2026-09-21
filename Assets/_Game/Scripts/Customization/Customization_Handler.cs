@@ -131,6 +131,7 @@ public class Customization_Handler : MonoBehaviour
         customizationApplier.renderers[selectedRenderedInt].materials[0].color = customizationApplier.colors[i];
         string rendererName = customizationApplier.renderers[selectedRenderedInt].name;
         PlayerPrefs.SetInt(rendererName, i);
+        PlayerPrefs.Save();
 
     }
     void CloseAllPanels()

@@ -57,6 +57,7 @@ public class changeColor : MonoBehaviour
         renderers[selectedRenderedInt].materials[0].color = colors[i];
         string rendererName = renderers[selectedRenderedInt].name;
         PlayerPrefs.SetInt(rendererName, i);
+        PlayerPrefs.Save();
     }
 
 

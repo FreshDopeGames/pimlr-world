@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
                 if (UI.UI_Gameobject != null)
                 {
                     //Debug.Log(":::::::::<<??????????????????"+targetname);
-                    UI?.UI_Gameobject?.SetActive(true);
+                    SetScreenAndParentsActive(UI.UI_Gameobject);
                     break;
                 }
                 //else
@@ -65,6 +65,16 @@ public class UIManager : MonoBehaviour
         foreach (UI_Screen UI in UIMenus)
         {
             if (UI.UI_Name == name) UI.UI_Gameobject.SetActive(false);
+        }
+    }
+
+    private void SetScreenAndParentsActive(GameObject screen)
+    {
+        Transform current = screen.transform;
+        while (current != null)
+        {
+            current.gameObject.SetActive(true);
+            current = current.parent;
         }
     }
 

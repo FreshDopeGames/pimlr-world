@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlmrMainMenuPanel : MonoBehaviour
 {
     public UIManager _UIManager;
+    [SerializeField] private PlayerNameEntryUI playerNameEntryUI;
     private bool loadSceneInProgress;
+    private string pendingSceneName;
     public UILodingScreen loadingScreen;
     public JUCharacterController characterController;
     public GameObject target;
@@ -34,6 +36,24 @@ public class PlmrMainMenuPanel : MonoBehaviour
     }
     public void LoadScene(string sceneName)
     {
+        if (!PlayerProfile.HasSetDisplayName)
+        {
+            pendingSceneName = sceneName;
+            if (playerNameEntryUI == null)
+                playerNameEntryUI = FindObjectOfType<PlayerNameEntryUI>(true);
+
+            if (playerNameEntryUI != null)
+                playerNameEntryUI.gameObject.SetActive(true);
+            else
+                Debug.LogError("PlmrMainMenuPanel could not find a PlayerNameEntryUI, so the scene load is waiting for a player name.");
+            return;
+        }
+
+        LoadSceneAfterName(sceneName);
+    }
+
+    private void LoadSceneAfterName(string sceneName)
+    {
         if (SceneManagerScript.Instance.uiManager && SceneManagerScript.Instance.uiManager.UI_fader != null)
             SceneManagerScript.Instance.uiManager.UI_fader.Fade(UIFader.FADE.FadeOut, 10f, 0f);
         SceneManagerScript.Instance.LoadScene(sceneName);
@@ -44,6 +64,15 @@ public class PlmrMainMenuPanel : MonoBehaviour
     {
         _UIManager.ShowMenu("CharaterCreatePanel");
     }
+
+    public void OnLeaderboardButton()
+    {
+        if (_UIManager != null)
+            _UIManager.ShowMenu("LeaderboardPanel");
+        else
+            gameObject.SetActive(false);
+    }
+
     public void OnHelixGamePlayClick()
     {
         // SceneManager.LoadScene("FirstScene");
@@ -53,7 +82,7 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
         AuthManager.Instance.currentGameMode = GameMode.Helix;
 
-        SceneManagerScript.Instance.LoadScene(Constant.Helix_Scene_Name);
+        LoadScene(Constant.Helix_Scene_Name);
 
 
 
@@ -65,7 +94,7 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
         AuthManager.Instance.currentGameMode = GameMode.HumanityRocks;
 
-        SceneManagerScript.Instance.LoadScene(Constant.Humanity_Scene_Name);
+        LoadScene(Constant.Humanity_Scene_Name);
     }
 
 
@@ -98,7 +127,8 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
         }
 
-        SceneManagerScript.Instance.LoadScene("YannicksWorld");
+        PlayerPrefs.Save();
+        LoadScene("YannicksWorld");
     }
 
     /* private void Update()
@@ -146,6 +176,13 @@ public class PlmrMainMenuPanel : MonoBehaviour
      }*/
     private void Update()
     {
+        if (!string.IsNullOrEmpty(pendingSceneName) && PlayerProfile.HasSetDisplayName)
+        {
+            string sceneName = pendingSceneName;
+            pendingSceneName = null;
+            LoadSceneAfterName(sceneName);
+        }
+
         HandleToggleTarget();
 
         if (target.activeSelf)

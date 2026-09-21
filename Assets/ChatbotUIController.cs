@@ -31,6 +31,7 @@ public class ChatbotUIController : MonoBehaviour
     private void OnEnable()
     {
         ConfigureDialogueButton();
+        ConfigureCloseButton();
     }
 
     void Start()
@@ -47,8 +48,32 @@ public class ChatbotUIController : MonoBehaviour
     {
         if (sendButton != null)
         {
+            sendButton.interactable = true;
             sendButton.onClick.RemoveListener(AdvanceDialogue);
             sendButton.onClick.AddListener(AdvanceDialogue);
+        }
+    }
+
+    private void ConfigureCloseButton()
+    {
+        if (aiChatInteraction == null)
+            return;
+
+        Button[] buttons = aiChatInteraction.ai_BOT_Canvas != null
+            ? aiChatInteraction.ai_BOT_Canvas.GetComponentsInChildren<Button>(true)
+            : null;
+
+        if (buttons == null)
+            return;
+
+        foreach (Button button in buttons)
+        {
+            if (button != null && button.name == "Close Button")
+            {
+                button.interactable = true;
+                button.onClick.RemoveListener(aiChatInteraction.OnClosePanel);
+                button.onClick.AddListener(aiChatInteraction.OnClosePanel);
+            }
         }
     }
 
@@ -159,16 +184,13 @@ public class ChatbotUIController : MonoBehaviour
         if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.goalPanel != null)
             SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.ChatWithSirihanna);
 
-        //DialogueManager.instance.EndDialogue();
-        if (uILevelCompletePopUp == null)
+        if (uILevelCompletePopUp == null && SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null && SceneManagerScript.Instance.uiManager.UIMenus != null && SceneManagerScript.Instance.uiManager.UIMenus.Length > 5 && SceneManagerScript.Instance.uiManager.UIMenus[5] != null && SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject != null)
         {
-
             uILevelCompletePopUp = SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
         }
 
-        if (uILevelCompletePopUp == null && SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null && SceneManagerScript.Instance.uiManager.UIMenus != null && SceneManagerScript.Instance.uiManager.UIMenus.Length > 5 && SceneManagerScript.Instance.uiManager.UIMenus[5] != null && SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject != null)
+        if (uILevelCompletePopUp != null)
         {
-
             if (GameExecutionManager.Instance != null)
             {
                 GameExecutionManager.Instance.currentZoneMode = Zone.Zone1;

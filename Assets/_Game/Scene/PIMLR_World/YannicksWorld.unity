@@ -14989,7 +14989,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 137, y: -84.999985}
+  m_AnchoredPosition: {x: 137, y: -84.99994}
   m_SizeDelta: {x: 260, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &150690262
@@ -196692,7 +196692,7 @@ GameObject:
   - component: {fileID: 1050523194}
   - component: {fileID: 1050523196}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Chat BG Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -235657,7 +235657,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1115845438}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99944204
+  m_Size: 0.99867177
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -278711,7 +278711,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1535903023
 RectTransform:
   m_ObjectHideFlags: 0
@@ -387540,8 +387540,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 50.481846
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 15
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -441242,7 +441242,7 @@ GameObject:
   - component: {fileID: 8980071513207746887}
   - component: {fileID: 8980071513207746888}
   m_Layer: 5
-  m_Name: AI_CHAT_Canvas
+  m_Name: Dialogue_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

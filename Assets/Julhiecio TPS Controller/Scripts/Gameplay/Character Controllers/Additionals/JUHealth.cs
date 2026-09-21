@@ -39,7 +39,7 @@ namespace JUTPS
 #if UNITY_EDITOR
             if (gameObject.name == "My Player")
             {
-                MaxHealth = 1000;
+                MaxHealth = 100;
             }
 #endif
             rb = GetComponent<Rigidbody>();

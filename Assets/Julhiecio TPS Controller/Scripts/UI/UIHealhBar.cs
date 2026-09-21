@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using JUTPS;
+using TMPro;
 
 namespace JUTPS.UI
 {
@@ -15,7 +16,7 @@ namespace JUTPS.UI
         [SerializeField] private bool IsPlayerHealthBar = true;
         [SerializeField] private Image HealthBarImage;
         [SerializeField] private float Speed = 6;
-        [SerializeField] private Text HealthPointsText;
+        [SerializeField] private TextMeshProUGUI HealthPointsText;
 
         [Header("Health Bar Color Change")]
         [SerializeField] private Color EmptyHPColor = Color.red;
