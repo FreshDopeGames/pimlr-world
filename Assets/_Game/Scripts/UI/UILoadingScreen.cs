@@ -10,11 +10,7 @@ public class UILodingScreen : MonoBehaviour
     public TMPro.TextMeshProUGUI titleText;
     public TMPro.TextMeshProUGUI descriptionText;
     public TMPro.TextMeshProUGUI loadingText;
-    public Slider loadingSlider;
-    public Button NewGameButton;
-    public Button KeepPlayingButton;
-
-  
+    public Slider loadingSlider;  
 
     private void OnEnable()
     {

@@ -5,9 +5,6 @@ using UnityEngine;
 public class PlmrMainMenuPanel : MonoBehaviour
 {
     public UIManager _UIManager;
-    [SerializeField] private PlayerNameEntryUI playerNameEntryUI;
-    private bool loadSceneInProgress;
-    private string pendingSceneName;
     public UILodingScreen loadingScreen;
     public JUCharacterController characterController;
     public GameObject target;
@@ -36,24 +33,6 @@ public class PlmrMainMenuPanel : MonoBehaviour
     }
     public void LoadScene(string sceneName)
     {
-        if (!PlayerProfile.HasSetDisplayName)
-        {
-            pendingSceneName = sceneName;
-            if (playerNameEntryUI == null)
-                playerNameEntryUI = FindObjectOfType<PlayerNameEntryUI>(true);
-
-            if (playerNameEntryUI != null)
-                playerNameEntryUI.gameObject.SetActive(true);
-            else
-                Debug.LogError("PlmrMainMenuPanel could not find a PlayerNameEntryUI, so the scene load is waiting for a player name.");
-            return;
-        }
-
-        LoadSceneAfterName(sceneName);
-    }
-
-    private void LoadSceneAfterName(string sceneName)
-    {
         if (SceneManagerScript.Instance.uiManager && SceneManagerScript.Instance.uiManager.UI_fader != null)
             SceneManagerScript.Instance.uiManager.UI_fader.Fade(UIFader.FADE.FadeOut, 10f, 0f);
         SceneManagerScript.Instance.LoadScene(sceneName);
@@ -67,10 +46,15 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
     public void OnLeaderboardButton()
     {
-        if (_UIManager != null)
-            _UIManager.ShowMenu("LeaderboardPanel");
-        else
-            gameObject.SetActive(false);
+        LeaderboardUI leaderboard = FindObjectOfType<LeaderboardUI>(true);
+        if (leaderboard == null)
+        {
+            Debug.LogWarning("PlmrMainMenuPanel could not find a LeaderboardUI in the current scene.");
+            return;
+        }
+
+        gameObject.SetActive(false);
+        leaderboard.gameObject.SetActive(true);
     }
 
     public void OnHelixGamePlayClick()
@@ -176,13 +160,6 @@ public class PlmrMainMenuPanel : MonoBehaviour
      }*/
     private void Update()
     {
-        if (!string.IsNullOrEmpty(pendingSceneName) && PlayerProfile.HasSetDisplayName)
-        {
-            string sceneName = pendingSceneName;
-            pendingSceneName = null;
-            LoadSceneAfterName(sceneName);
-        }
-
         HandleToggleTarget();
 
         if (target.activeSelf)

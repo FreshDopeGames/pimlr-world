@@ -28,6 +28,9 @@ public class LeaderboardUI : MonoBehaviour
     public Transform storyModeRowHolder;
     public LeaderboardRow storyModeRowPrefab;
 
+    [Header("Name Entry")]
+    [SerializeField] private PlayerNameEntryUI playerNameEntryUI;
+
     [Header("Navigation")]
     [SerializeField] private UIManager uiManager;
     [SerializeField] private GameObject mainMenuPanel;
@@ -38,32 +41,61 @@ public class LeaderboardUI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (waveTabButton != null) waveTabButton.onClick.AddListener(ShowWaveMode);
-        if (killsTabButton != null) killsTabButton.onClick.AddListener(ShowKillsMode);
-        if (timeTabButton != null) timeTabButton.onClick.AddListener(ShowTimeMode);
+        if (waveTabButton != null) waveTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave));
+        if (killsTabButton != null) killsTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Kills));
+        if (timeTabButton != null) timeTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.SurvivalTime));
 
-        ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave); // default tab on open
-        ShowStoryMode();
+        if (playerNameEntryUI == null)
+            playerNameEntryUI = FindObjectOfType<PlayerNameEntryUI>(true);
+
+        if (!PlayerProfile.HasSetDisplayName && playerNameEntryUI != null)
+        {
+            playerNameEntryUI.NameSubmitted += RefreshAfterNameEntry;
+            playerNameEntryUI.gameObject.SetActive(true);
+            return;
+        }
+
+        if (!PlayerProfile.HasSetDisplayName)
+        {
+            Debug.LogError("LeaderboardUI requires a PlayerNameEntryUI reference or object in the scene.");
+            return;
+        }
+
+        RefreshLeaderboard();
     }
 
     private void OnDisable()
     {
-        if (waveTabButton != null) waveTabButton.onClick.RemoveListener(ShowWaveMode);
-        if (killsTabButton != null) killsTabButton.onClick.RemoveListener(ShowKillsMode);
-        if (timeTabButton != null) timeTabButton.onClick.RemoveListener(ShowTimeMode);
+        if (waveTabButton != null) waveTabButton.onClick.RemoveAllListeners();
+        if (killsTabButton != null) killsTabButton.onClick.RemoveAllListeners();
+        if (timeTabButton != null) timeTabButton.onClick.RemoveAllListeners();
+        if (playerNameEntryUI != null)
+            playerNameEntryUI.NameSubmitted -= RefreshAfterNameEntry;
     }
 
-    private void ShowWaveMode() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave);
-    private void ShowKillsMode() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Kills);
-    private void ShowTimeMode() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.SurvivalTime);
+    private void RefreshAfterNameEntry()
+    {
+        RefreshLeaderboard();
+    }
+
+    private void RefreshLeaderboard()
+    {
+        ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave);
+        ShowStoryMode();
+    }
 
     public void OnBackButton()
     {
         gameObject.SetActive(false);
+
+        if (mainMenuPanel != null)
+        {
+            mainMenuPanel.SetActive(true);
+            return;
+        }
+
         if (uiManager != null)
             uiManager.ShowMenu(mainMenuScreenName);
-        else if (mainMenuPanel != null)
-            mainMenuPanel.SetActive(true);
     }
 
     public void ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode sortMode)

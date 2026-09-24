@@ -1,4 +1,5 @@
 using TMPro;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ using UnityEngine.UI;
 //      Room, or add it as another "showMenuAtStart" case alongside LevelInit's UI panels.
 public class PlayerNameEntryUI : MonoBehaviour
 {
+    public event Action NameSubmitted;
+
     [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private Button submitButton;
     [SerializeField] private TextMeshProUGUI warningText;
@@ -41,6 +44,7 @@ public class PlayerNameEntryUI : MonoBehaviour
         nameInputField.text = stored;
 
         gameObject.SetActive(false);
+        NameSubmitted?.Invoke();
     }
 
     private void ShowWarning(string msg)

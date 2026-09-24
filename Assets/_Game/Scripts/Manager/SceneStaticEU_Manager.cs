@@ -21,20 +21,14 @@ public class SceneStaticEU_Manager : MonoBehaviour
     GameObject dialogueBox;
     [SerializeField]
     TextMeshProUGUI coins;
-    [SerializeField] private PlayerNameEntryUI playerNameEntryUI;
 
     public GameObject gO_ScriptChangeColor;
-    private string pendingSceneName;
 
 
 
     private void Start()
     {
         characterController.BlockHorizontalInput = true;
-        if (playerNameEntryUI == null)
-            playerNameEntryUI = FindObjectOfType<PlayerNameEntryUI>(true);
-        if (playerNameEntryUI != null && !PlayerProfile.HasSetDisplayName)
-            playerNameEntryUI.gameObject.SetActive(true);
         if (CoinManager.Instance && coins!=null)
         {
 
@@ -69,16 +63,6 @@ public class SceneStaticEU_Manager : MonoBehaviour
             CoinManager.Instance.coinValueChanged -= OnCoinValueChange;
     }
 
-    private void Update()
-    {
-        if (!string.IsNullOrEmpty(pendingSceneName) && PlayerProfile.HasSetDisplayName)
-        {
-            string sceneName = pendingSceneName;
-            pendingSceneName = null;
-            LoadSceneAfterName(sceneName);
-        }
-    }
-
     public void OnCoinValueChange(int value)
     {
         coins.text = value.ToString();
@@ -107,21 +91,6 @@ public class SceneStaticEU_Manager : MonoBehaviour
     }
 
     public void SceneLoad(string sceneToLoad)
-    {
-        if (!PlayerProfile.HasSetDisplayName)
-        {
-            pendingSceneName = sceneToLoad;
-            if (playerNameEntryUI != null)
-                playerNameEntryUI.gameObject.SetActive(true);
-            else
-                Debug.LogWarning("SceneStaticEU_Manager needs a PlayerNameEntryUI reference before loading another scene.");
-            return;
-        }
-
-        LoadSceneAfterName(sceneToLoad);
-    }
-
-    private void LoadSceneAfterName(string sceneToLoad)
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
