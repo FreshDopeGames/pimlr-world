@@ -63,7 +63,6 @@ public class AuthManager : Singleton<AuthManager>
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "00_MainMenu")
         {
-            Debug.Log($"[AuthManager:{GetInstanceID()}] Starting in 00_MainMenu. SceneManagerScript={(SceneManagerScript.Instance != null ? SceneManagerScript.Instance.GetInstanceID().ToString() : "NULL")}, UIManager={(SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null ? SceneManagerScript.Instance.uiManager.name : "NULL")}.");
             WirePimlrStartButtons();
             if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null)
                 SceneManagerScript.Instance.uiManager.ShowMenu("Loading Screen");
@@ -82,8 +81,6 @@ public class AuthManager : Singleton<AuthManager>
             keepPlayingButton.interactable = PlayerSession.HasName;
         PlayerSession.NameChanged -= RefreshKeepPlayingButton;
         PlayerSession.NameChanged += RefreshKeepPlayingButton;
-
-        Debug.Log($"[AuthManager:{GetInstanceID()}] Button search: NewGame={(newGameButton != null ? newGameButton.gameObject.scene.name + "/" + newGameButton.name : "NOT FOUND")}, KeepPlaying={(keepPlayingButton != null ? keepPlayingButton.gameObject.scene.name + "/" + keepPlayingButton.name : "NOT FOUND")}.");
 
         if (newGameButton != null)
             SetLoadingChoiceVisible(newGameButton.transform);
@@ -151,7 +148,6 @@ public class AuthManager : Singleton<AuthManager>
     // PIMLR (playtest): reset local identity and progress, then wait for a name before loading.
     public void NewGame()
     {
-        Debug.Log($"[AuthManager:{GetInstanceID()}] NewGame button callback received; resetting player session and requesting a name.");
         PlayerSession.Reset();
         SessionState.ResetProgress();
 
@@ -168,7 +164,6 @@ public class AuthManager : Singleton<AuthManager>
     // PIMLR (playtest): route unnamed sessions through the New Game naming flow.
     public void KeepPlaying()
     {
-        Debug.Log($"[AuthManager:{GetInstanceID()}] KeepPlaying button callback received; requesting SceneStaticEU.");
         if (!PlayerSession.HasName)
         {
             NewGame();
@@ -231,7 +226,6 @@ public class AuthManager : Singleton<AuthManager>
         Transform loadingSlider = FindDescendant(loadingScreen, "Slider");
         if (loadingText != null) loadingText.gameObject.SetActive(true);
         if (loadingSlider != null) loadingSlider.gameObject.SetActive(true);
-        Debug.Log($"[AuthManager:{GetInstanceID()}] Progress UI prepared under '{loadingScreen.name}': text={(loadingText != null ? loadingText.name : "NOT FOUND")}, slider={(loadingSlider != null ? loadingSlider.name : "NOT FOUND")}.");
     }
 
     private static Transform FindDescendant(Transform root, string objectName)

@@ -14,11 +14,6 @@ public class UILodingScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        string sliderDetails = loadingSlider != null
-            ? $"{loadingSlider.name} range={loadingSlider.minValue:F2}-{loadingSlider.maxValue:F2}, normalized={loadingSlider.normalizedValue:F2}, active={loadingSlider.gameObject.activeInHierarchy}"
-            : "NULL";
-        Debug.Log($"[UILodingScreen:{GetInstanceID()}] Enabled on '{gameObject.scene.name}/{name}'. Slider={sliderDetails}, text={(loadingText != null ? loadingText.name : "NULL")}.");
-
         if (AuthManager.Instance == null || loadingBarDatas == null)
         {
             Debug.LogWarning($"[UILodingScreen:{GetInstanceID()}] Cannot populate loading-screen title/description: AuthManager={(AuthManager.Instance != null ? "available" : "NULL")}, loadingBarDatas={(loadingBarDatas != null ? loadingBarDatas.Length.ToString() : "NULL")}.");

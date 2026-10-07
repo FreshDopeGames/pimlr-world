@@ -12,7 +12,6 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log($"[UIManager:{GetInstanceID()}] Awake in scene '{gameObject.scene.name}'. Registered menu count={(UIMenus != null ? UIMenus.Length : 0)}, fader={(UI_fader != null ? UI_fader.name : "NULL")}.");
         DisableAllScreens();
 
         //don't destroy

@@ -93,7 +93,6 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
     public override void Awake()
     {
         base.Awake();
-        Debug.Log($"[SceneManagerScript:{GetInstanceID()}] Awake in scene '{gameObject.scene.name}'. IsActiveSingleton={Instance == this}, UIManager={(uiManager != null ? uiManager.name : "NULL")}, LoadingScreen={(loadingScreen != null ? loadingScreen.name : "NULL")}.");
         if (Instance != this)
             Debug.LogWarning($"[SceneManagerScript:{GetInstanceID()}] Duplicate manager instance detected; Singleton will destroy this GameObject.");
     }
@@ -266,8 +265,6 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
     }
     private void Start()
     {
-        Debug.Log($"[SceneManagerScript:{GetInstanceID()}] Start in scene '{SceneManager.GetActiveScene().name}'. UIManager={(uiManager != null ? uiManager.name : "NULL")}, LoadingScreen={(loadingScreen != null ? loadingScreen.name : "NULL")}.");
-
         if (loadingVideoPlayer != null)
             loadingVideoPlayer.url = Application.streamingAssetsPath + "/Loadingvideo.mp4";
         else
