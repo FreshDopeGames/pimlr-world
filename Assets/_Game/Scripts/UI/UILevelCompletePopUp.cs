@@ -12,30 +12,41 @@ public class UILevelCompletePopUp : MonoBehaviour
 
     private void OnEnable()
     {
-        if (Zone.Zone1 == GameExecutionManager.Instance.currentZoneMode)
+        // PIMLR (playtest): select the zone copy once and guard each configured data slot.
+        switch (GameExecutionManager.Instance.currentZoneMode)
         {
-            titelText.text = loadingBarDatas[0]._Titel;
-            descriptionText.text = loadingBarDatas[0]._Description;
-        }
-        if (Zone.ZoneBoss1 == GameExecutionManager.Instance.currentZoneMode)
-        {
-            titelText.text = loadingBarDatas[1]._Titel;
-            descriptionText.text = loadingBarDatas[1]._Description;
-        }
-        if (Zone.Zone2 == GameExecutionManager.Instance.currentZoneMode)
-        {
-            titelText.text = loadingBarDatas[2]._Titel;
-            descriptionText.text = loadingBarDatas[2]._Description;
-        }
-        if (Zone.ZoneBoss2 == GameExecutionManager.Instance.currentZoneMode)
-        {
-            titelText.text = loadingBarDatas[3]._Titel;
-            descriptionText.text = loadingBarDatas[3]._Description;
-        }
-        if(Zone.InfiniteMode == GameExecutionManager.Instance.currentZoneMode)
-        {
-            titelText.text = "<color=green>Wave "+ InfiniteMode.Instance.currentWave+ " begins</color>";
-            descriptionText.text = infiniteModeDescription;
+            case Zone.Zone1:
+                if (loadingBarDatas != null && loadingBarDatas.Length > 0 && loadingBarDatas[0] != null)
+                {
+                    titelText.text = loadingBarDatas[0]._Titel;
+                    descriptionText.text = loadingBarDatas[0]._Description;
+                }
+                break;
+            case Zone.ZoneBoss1:
+                if (loadingBarDatas != null && loadingBarDatas.Length > 1 && loadingBarDatas[1] != null)
+                {
+                    titelText.text = loadingBarDatas[1]._Titel;
+                    descriptionText.text = loadingBarDatas[1]._Description;
+                }
+                break;
+            case Zone.Zone2:
+                if (loadingBarDatas != null && loadingBarDatas.Length > 2 && loadingBarDatas[2] != null)
+                {
+                    titelText.text = loadingBarDatas[2]._Titel;
+                    descriptionText.text = loadingBarDatas[2]._Description;
+                }
+                break;
+            case Zone.ZoneBoss2:
+                if (loadingBarDatas != null && loadingBarDatas.Length > 3 && loadingBarDatas[3] != null)
+                {
+                    titelText.text = loadingBarDatas[3]._Titel;
+                    descriptionText.text = loadingBarDatas[3]._Description;
+                }
+                break;
+            case Zone.InfiniteMode:
+                titelText.text = "<color=green>Wave "+ InfiniteMode.Instance.currentWave+ " begins</color>";
+                descriptionText.text = infiniteModeDescription;
+                break;
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
@@ -22,23 +23,20 @@ public class UIManager : MonoBehaviour
 
     }
 
-    // PIMLR (load-flow fix): fader null-guard, explicit not-found warning
+    // PIMLR (playtest): resolve menus by name and activate inactive ancestors consistently.
     public void ShowMenu(string targetname, bool disableAllScreens)
     {
         if (disableAllScreens) DisableAllScreens();
 
-        bool found = false;
-        foreach (UI_Screen UI in UIMenus)
+        GameObject menuObject = GetMenu(targetname);
+        if (menuObject != null)
         {
-            if (UI.UI_Name == targetname && UI.UI_Gameobject != null)
-            {
-                UI.UI_Gameobject.SetActive(true);
-                found = true;
-                break;
-            }
+            SetScreenAndParentsActive(menuObject);
         }
-        if (!found)
+        else
+        {
             Debug.LogWarning($"UIManager: no menu named '{targetname}' (or its GameObject is null).", this);
+        }
 
         if (UI_fader != null)
         {
@@ -52,22 +50,61 @@ public class UIManager : MonoBehaviour
         ShowMenu(name, true);
     }
 
-    //close a menu by name
-    public void CloseMenu(string name)
+    // PIMLR (playtest): expose safe menu lookup for callers that need a menu or component.
+    public GameObject GetMenu(string name)
     {
-        bool found = false;
+        if (UIMenus == null)
+            return null;
+
         foreach (UI_Screen UI in UIMenus)
         {
-            if (UI.UI_Name == name && UI.UI_Gameobject != null)
-            {
-                UI.UI_Gameobject.SetActive(false);
-                found = true;
-            }
+            if (UI != null && UI.UI_Name == name && UI.UI_Gameobject != null)
+                return UI.UI_Gameobject;
         }
-        if (!found)
-            Debug.LogWarning($"UIManager: CloseMenu('{name}') matched nothing.", this);
+
+        return null;
     }
 
+    // PIMLR (playtest): return the requested component without requiring callers to index menus.
+    public T GetMenu<T>(string name) where T : Component
+    {
+        GameObject menuObject = GetMenu(name);
+        return menuObject != null ? menuObject.GetComponent<T>() : null;
+    }
+
+    // PIMLR (playtest): fade out before showing a menu while tolerating a missing fader.
+    public void FadeThenShow(string menuName, float delay = 2f, float fadeDuration = 0.4f)
+    {
+        StartCoroutine(FadeThenShowCoroutine(menuName, delay, fadeDuration));
+    }
+
+    private IEnumerator FadeThenShowCoroutine(string menuName, float delay, float fadeDuration)
+    {
+        if (UI_fader != null)
+        {
+            UI_fader.gameObject.SetActive(true);
+            UI_fader.Fade(UIFader.FADE.FadeOut, fadeDuration, 0f);
+        }
+
+        yield return new WaitForSeconds(delay);
+        ShowMenu(menuName);
+    }
+
+    // PIMLR (playtest): close the same named menu resolved by GetMenu.
+    public void CloseMenu(string name)
+    {
+        GameObject menuObject = GetMenu(name);
+        if (menuObject != null)
+        {
+            menuObject.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning($"UIManager: CloseMenu('{name}') matched nothing.", this);
+        }
+    }
+
+    // PIMLR (playtest): activate inactive parents so nested menus become visible.
     private void SetScreenAndParentsActive(GameObject screen)
     {
         Transform current = screen.transform;

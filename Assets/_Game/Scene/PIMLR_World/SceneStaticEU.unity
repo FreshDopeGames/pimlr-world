@@ -36366,6 +36366,36 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3359961590155012766, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_text
+      value: "\u200B"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3359961590155012766, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3359961590155012766, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3359961590155012766, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_fontColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3359961590155012766, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3359961590155012766, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278190080
+      objectReference: {fileID: 0}
     - target: {fileID: 3707834539273677297, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_Name

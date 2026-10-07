@@ -77,8 +77,11 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
         Debug.Log(":::::>>>>>>>>>>" + currentZoneMode);
 
-        //var _uiMAnager = GameObject.FindObjectOfType<UIManager>();
-        uILevelCompletePopUp = SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
+        // PIMLR (playtest): retrieve the popup by its registered name instead of menu-array position.
+        UIManager uiManager = SceneManagerScript.Instance != null ? SceneManagerScript.Instance.uiManager : null;
+        uILevelCompletePopUp = uiManager != null ? uiManager.GetMenu<UILevelCompletePopUp>("Zone Panel") : null;
+        if (uILevelCompletePopUp == null)
+            Debug.LogWarning("GameExecutionManager: UIManager could not find UILevelCompletePopUp on 'Zone Panel'.", this);
 
         PlayerCar.SetActive(false);
         AiCar.SetActive(false);

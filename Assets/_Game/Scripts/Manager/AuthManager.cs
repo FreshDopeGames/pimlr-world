@@ -10,6 +10,9 @@ public class AuthManager : Singleton<AuthManager>
 {
     private const string baseUrl = "https://www.idea-labs.xyz/api/";
 
+    // PIMLR (playtest): keep the splash choice synchronized with the local player identity.
+    private Button _keepPlayingButton;
+
     public string message;
     //[HideInInspector]
     public string token;
@@ -73,6 +76,13 @@ public class AuthManager : Singleton<AuthManager>
     {
         Button newGameButton = FindButton("NewGame Button");
         Button keepPlayingButton = FindButton("KeepPlaying Button");
+        // PIMLR (playtest): keep returning players from selecting Keep Playing without a saved name.
+        _keepPlayingButton = keepPlayingButton;
+        if (keepPlayingButton != null)
+            keepPlayingButton.interactable = PlayerSession.HasName;
+        PlayerSession.NameChanged -= RefreshKeepPlayingButton;
+        PlayerSession.NameChanged += RefreshKeepPlayingButton;
+
         Debug.Log($"[AuthManager:{GetInstanceID()}] Button search: NewGame={(newGameButton != null ? newGameButton.gameObject.scene.name + "/" + newGameButton.name : "NOT FOUND")}, KeepPlaying={(keepPlayingButton != null ? keepPlayingButton.gameObject.scene.name + "/" + keepPlayingButton.name : "NOT FOUND")}.");
 
         if (newGameButton != null)
@@ -95,6 +105,20 @@ public class AuthManager : Singleton<AuthManager>
         }
         else
             Debug.LogWarning("AuthManager could not find a button named 'KeepPlaying Button'.");
+    }
+
+    // PIMLR (playtest): refresh the splash choice whenever the local player name changes.
+    private void RefreshKeepPlayingButton(string _)
+    {
+        if (_keepPlayingButton != null)
+            _keepPlayingButton.interactable = PlayerSession.HasName;
+    }
+
+    // PIMLR (playtest): avoid retaining this manager through static session events.
+    private void OnDestroy()
+    {
+        PlayerSession.NameChanged -= RefreshKeepPlayingButton;
+        PlayerSession.NameCancelled -= RestorePimlrStartButtons;
     }
 
     private static Button FindButton(string objectName)
@@ -124,19 +148,56 @@ public class AuthManager : Singleton<AuthManager>
         }
     }
 
+    // PIMLR (playtest): reset local identity and progress, then wait for a name before loading.
     public void NewGame()
     {
-        Debug.Log($"[AuthManager:{GetInstanceID()}] NewGame button callback received; resetting player profile and requesting SceneStaticEU.");
-        PlayerProfile.StartNewPlayer();
-        ShowLoadingProgress("NewGame Button");
-        LoadSceneStaticEU();
+        Debug.Log($"[AuthManager:{GetInstanceID()}] NewGame button callback received; resetting player session and requesting a name.");
+        PlayerSession.Reset();
+        SessionState.ResetProgress();
+
+        Button newGameButton = FindButton("NewGame Button");
+        Button keepPlayingButton = FindButton("KeepPlaying Button");
+        if (newGameButton != null) newGameButton.gameObject.SetActive(false);
+        if (keepPlayingButton != null) keepPlayingButton.gameObject.SetActive(false);
+
+        PlayerSession.NameCancelled -= RestorePimlrStartButtons;
+        PlayerSession.NameCancelled += RestorePimlrStartButtons;
+        PlayerSession.EnsureName(() => BeginLoad("NewGame Button"));
     }
 
+    // PIMLR (playtest): route unnamed sessions through the New Game naming flow.
     public void KeepPlaying()
     {
         Debug.Log($"[AuthManager:{GetInstanceID()}] KeepPlaying button callback received; requesting SceneStaticEU.");
-        ShowLoadingProgress("KeepPlaying Button");
+        if (!PlayerSession.HasName)
+        {
+            NewGame();
+            return;
+        }
+
+        BeginLoad("KeepPlaying Button");
+    }
+
+    // PIMLR (playtest): share the splash loading UI and scene transition for both choices.
+    private void BeginLoad(string pressedButtonName)
+    {
+        PlayerSession.NameCancelled -= RestorePimlrStartButtons;
+        ShowLoadingProgress(pressedButtonName);
         LoadSceneStaticEU();
+    }
+
+    // PIMLR (playtest): restore both splash choices after the name prompt is cancelled.
+    private void RestorePimlrStartButtons()
+    {
+        PlayerSession.NameCancelled -= RestorePimlrStartButtons;
+        Button newGameButton = FindButton("NewGame Button");
+        Button keepPlayingButton = FindButton("KeepPlaying Button");
+        if (newGameButton != null) newGameButton.gameObject.SetActive(true);
+        if (keepPlayingButton != null)
+        {
+            keepPlayingButton.interactable = PlayerSession.HasName;
+            keepPlayingButton.gameObject.SetActive(true);
+        }
     }
 
     private void ShowLoadingProgress(string pressedButtonName)
@@ -545,4 +606,3 @@ public class AuthManager : Singleton<AuthManager>
         }
     }
 }
-

@@ -184,9 +184,13 @@ public class ChatbotUIController : MonoBehaviour
         if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.goalPanel != null)
             SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.ChatWithSirihanna);
 
-        if (uILevelCompletePopUp == null && SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null && SceneManagerScript.Instance.uiManager.UIMenus != null && SceneManagerScript.Instance.uiManager.UIMenus.Length > 5 && SceneManagerScript.Instance.uiManager.UIMenus[5] != null && SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject != null)
+        if (uILevelCompletePopUp == null)
         {
-            uILevelCompletePopUp = SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
+            // PIMLR (playtest): retrieve the popup by its registered name instead of menu-array position.
+            UIManager uiManager = SceneManagerScript.Instance != null ? SceneManagerScript.Instance.uiManager : null;
+            uILevelCompletePopUp = uiManager != null ? uiManager.GetMenu<UILevelCompletePopUp>("Zone Panel") : null;
+            if (uILevelCompletePopUp == null)
+                Debug.LogWarning("ChatbotUIController: UIManager could not find UILevelCompletePopUp on 'Zone Panel'.", this);
         }
 
         if (uILevelCompletePopUp != null)

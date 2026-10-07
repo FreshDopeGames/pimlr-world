@@ -28,8 +28,11 @@ public class DialogueAwakener : MonoBehaviour
 
     private void Start()
     {
-        var _uiMAnager = SceneManagerScript.Instance.uiManager;
-        uILevelCompletePopUp = _uiMAnager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
+        // PIMLR (playtest): retrieve the popup by its registered name instead of menu-array position.
+        UIManager uiManager = SceneManagerScript.Instance != null ? SceneManagerScript.Instance.uiManager : null;
+        uILevelCompletePopUp = uiManager != null ? uiManager.GetMenu<UILevelCompletePopUp>("Zone Panel") : null;
+        if (uILevelCompletePopUp == null)
+            Debug.LogWarning("DialogueAwakener: UIManager could not find UILevelCompletePopUp on 'Zone Panel'.", this);
         if (SceneManager.GetActiveScene().name != "SceneStaticEU")
         {
             // PIMLR (playtest): compare the typed persisted zone instead of string values.
@@ -165,8 +168,11 @@ public class DialogueAwakener : MonoBehaviour
         DialogueManager.instance.EndDialogue();
         if (uILevelCompletePopUp == null)
         {
-          
-            uILevelCompletePopUp = SceneManagerScript.Instance.uiManager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
+            // PIMLR (playtest): retrieve the popup by its registered name instead of menu-array position.
+            UIManager uiManager = SceneManagerScript.Instance != null ? SceneManagerScript.Instance.uiManager : null;
+            uILevelCompletePopUp = uiManager != null ? uiManager.GetMenu<UILevelCompletePopUp>("Zone Panel") : null;
+            if (uILevelCompletePopUp == null)
+                Debug.LogWarning("DialogueAwakener: UIManager could not find UILevelCompletePopUp on 'Zone Panel'.", this);
         }
 
         if (uILevelCompletePopUp != null)

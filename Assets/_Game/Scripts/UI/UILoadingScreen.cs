@@ -25,21 +25,14 @@ public class UILodingScreen : MonoBehaviour
             return;
         }
 
-        int index = AuthManager.Instance.currentGameMode switch
-        {
-            GameMode.IdeaLabs => 0,
-            GameMode.Pimlr => 1,
-            GameMode.Helix => 2,
-            GameMode.HumanityRocks => 3,
-            _ => -1
-        };
-        if (index < 0 || index >= loadingBarDatas.Length || loadingBarDatas[index] == null)
+        // PIMLR (playtest): loading copy is shared and always comes from the first configured entry.
+        if (loadingBarDatas.Length == 0 || loadingBarDatas[0] == null)
             return;
 
         if (titleText != null)
-            titleText.text = loadingBarDatas[index]._Titel;
+            titleText.text = loadingBarDatas[0]._Titel;
         if (descriptionText != null)
-            descriptionText.text = loadingBarDatas[index]._Description;
+            descriptionText.text = loadingBarDatas[0]._Description;
     }
 
 }
@@ -51,4 +44,3 @@ public class LoadingBarData
     public string _Titel;
     public string _Description;
 }
-
