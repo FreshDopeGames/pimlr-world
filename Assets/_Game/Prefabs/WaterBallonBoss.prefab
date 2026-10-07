@@ -1668,13 +1668,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 831bb874795e4204598f8a40a1c17ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionEffectPrefab: {fileID: 5487987287800275805, guid: c60c426e0d9b8c84db014246ac940b46,
+  explosionEffectPrefab: {fileID: 196758, guid: e2550dae06524a94bbc4bcdf375a88b9,
     type: 3}
   explosionParticleOffset: {x: 0, y: 1, z: 0}
+  effectLifetime: 4
+  alignEffectToSurface: 1
   audioSourcePrefab: {fileID: 0}
+  explodeOnTimer: 1
   explosionDelay: 3
+  armDelay: 0.1
+  maxLifetime: 10
   explosionForce: 700
   explosionRadius: 5
+  playExplosionSound: 0
   explosionSound: {fileID: 0}
   impactSound: {fileID: 0}
 --- !u!82 &5075213487985414587
@@ -1793,7 +1799,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b668b9689d47f7d45a6a5da9de3ed9d7, type: 2}
+  - {fileID: 2100000, guid: 6a15b1f15432b6f4b9a8066e1e6ca4df, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4297,6 +4303,7 @@ MonoBehaviour:
   UseDefaultInputsOnVehicleInteraction: 1
   CheckVehiclesByTrigger: 1
   DriveSelectedVehicleOnStart: 0
+  UnequipWeaponOnEnter: 0
   VehicleDrivableNearby: 0
   IsDriving: 0
   IsDrivingByShoot: 0
@@ -4497,6 +4504,8 @@ MonoBehaviour:
         m_CallState: 2
   IsDead: 0
   healthSlider: {fileID: 7991000616227263435}
+  rcc_CarControllerV3: {fileID: 0}
+  rcc_AICarController: {fileID: 0}
 --- !u!114 &4656437805547736320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4637,16 +4646,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39f56e6a5e318d34ca40f0e4822abce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grenadePrefab: {fileID: 4269098207636650712, guid: 7e89bb377e99c0d4b97a68899f2545f8,
-    type: 3}
-  throwKey: 103
+  grenadePrefab: {fileID: 100002, guid: 5ae1b6d4c894f9c449d33837a633a8ec, type: 3}
   throwPosition: {fileID: 8489830277526310743}
-  throwDirection: {x: 0, y: 1, z: 0}
-  throwForce: 250
-  maxForce: 250
-  trajectoryLine: {fileID: 0}
-  linePoints: 25
-  timeBetweenPoint: 0.1
+  playerTag: Player
+  throwSpeed: 28
+  upwardFactor: 0.5
+  aimHeightOffset: 1
+  maxThrowDistance: 40
+  firstThrowDelay: 3
+  minInterval: 3
+  maxInterval: 15
 --- !u!114 &2484185397483726159
 MonoBehaviour:
   m_ObjectHideFlags: 0
