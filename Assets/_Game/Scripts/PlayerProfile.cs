@@ -17,7 +17,9 @@ public static class PlayerProfile
 {
     private const string DisplayNameKey = "PIMLR_PlayerDisplayName";
     private const string AnonymousIdKey = "PIMLR_AnonymousId";
-    private const int MaxNameLength = 16;
+    // PIMLR (playtest): keep name limits shared with the session name-entry flow.
+    public const int MaxNameLength = 12;
+    public const int MinNameLength = 2;
 
     public static string DisplayName
     {
@@ -52,7 +54,9 @@ public static class PlayerProfile
     /// <summary>Cleans/clamps input and stores it; returns the name actually saved.</summary>
     public static string SetDisplayName(string rawInput)
     {
-        string cleaned = string.IsNullOrWhiteSpace(rawInput) ? "Player" : rawInput.Trim();
+        // PIMLR (playtest): strip TMP tag delimiters before trimming and storing a safe leaderboard name.
+        string cleaned = (rawInput ?? string.Empty).Replace("<", "").Replace(">", "").Trim();
+        if (cleaned.Length == 0) cleaned = "Player";
         if (cleaned.Length > MaxNameLength) cleaned = cleaned.Substring(0, MaxNameLength);
         DisplayName = cleaned;
         PlayerPrefs.Save();

@@ -71,14 +71,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
     void Start()
     {
-        if (Enum.TryParse(PlayerPrefs.GetString("currentZoneMode"), out Zone parsedZone))
-        {
-            currentZoneMode = parsedZone;
-        }
-        else
-        {
-            currentZoneMode = Zone.ChatWilly;
-        }
+        // PIMLR (playtest): load the persisted zone through its typed owner.
+        currentZoneMode = ZoneProgress.Current;
 
 
         Debug.Log(":::::>>>>>>>>>>" + currentZoneMode);
@@ -179,7 +173,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
 
                 currentZoneMode = Zone.ZoneBoss1;
-                PlayerPrefs.SetString("currentZoneMode", currentZoneMode.ToString());
+                // PIMLR (playtest): persist zone progression through its typed owner.
+                ZoneProgress.Current = currentZoneMode;
                 SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone1_Enemy_Battle);
                 //SpawnBoss();
                 StartCoroutine(WaitForscreenfadeOut("0/1"));
@@ -200,7 +195,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
                 SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone2_Enemy_Battle);
                 currentZoneMode = Zone.ZoneBoss2;
 
-                PlayerPrefs.SetString("currentZoneMode", currentZoneMode.ToString());
+                // PIMLR (playtest): persist zone progression through its typed owner.
+                ZoneProgress.Current = currentZoneMode;
                 //SceneManagerScript.Instance.goalPanel.
             }
         }
@@ -212,7 +208,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
             SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone1_Boss_Battle);
 
             currentZoneMode = Zone.Zone2;
-            PlayerPrefs.SetString("currentZoneMode", currentZoneMode.ToString());
+            // PIMLR (playtest): persist zone progression through its typed owner.
+            ZoneProgress.Current = currentZoneMode;
             SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo("1/ 1");
             StartCoroutine(WaitForscreenfadeOut("0/10"));
             zone1Finish = false;

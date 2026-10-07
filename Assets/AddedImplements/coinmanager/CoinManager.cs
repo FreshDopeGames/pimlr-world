@@ -4,98 +4,35 @@ using UnityEngine.UI;
 
 public class CoinManager : Singleton<CoinManager>
 {
-    int coinValue = 0;
+    // PIMLR (playtest): keep the locally persisted balance as the single runtime value.
+    private int coinValue;
     public Text coinText;
-    int Coins
-    {
-        get { return coinValue; }
-        set
-        {
-            coinValue = value;
-            sendDataToServer();
-
-            if (coinValueChanged != null)
-            {               
-                coinValueChanged.Invoke(coinValue);
-            }
-            if (coinText != null)
-            {
-                coinText.text = coinValue.ToString();
-            }
-
-            if (SceneManagerScript.Instance && SceneManagerScript.Instance._coins != null)
-            {
-                SceneManagerScript.Instance._coins.text = value.ToString();
-            }
-        }
-    }
-
-
-    //internal delegate void CoinDelegate(int value);
-    //internal CoinDelegate coinValueChanged;
-
 
     internal Action<int> coinValueChanged;
 
-
+    // PIMLR (playtest): load and publish the local balance after establishing the singleton.
     public override void Awake()
     {
-
         base.Awake();
-
-        if (AuthManager.Instance)
-        {
-            StartCoroutine(AuthManager.Instance.GetUserData(Constant.coinKey, (value) =>
-            {
-                if (value != null)
-                {
-                    //Debug.Log(value);
-                    coinValue = int.Parse(value);
-                    if(coinText!=null)
-                    {
-                        coinText.text = coinValue.ToString();
-                    }
-                    if (coinValueChanged != null)
-                    {
-                        coinValueChanged.Invoke(coinValue);
-                    }
-                }
-            }));
-        }
+        if (Instance != this) return;
+        SetCoins(PlayerPrefs.GetInt(SessionState.CoinsKey, 0));
     }
 
-
-   
-    void sendDataToServer()
-    {
-        StartCoroutine(AuthManager.Instance.SetUserData(Constant.coinKey, coinValue.ToString(), (value) =>
-         {
-             //Debug.Log("Set::" + value);
-         }));
-    }
-
-
-    
-
-    //private int Coins
-    //{
-    //    get { return _coins; }
-    //    set { _coins = value; }
-    //}
-
-
+    // PIMLR (playtest): persist a nonnegative balance before notifying UI and listeners.
     public void SetCoins(int newcoins)
     {
-        if (newcoins < 0)
-        {
-            Coins = 0;
-        }
-        else
-            Coins = newcoins;
+        coinValue = Mathf.Max(0, newcoins);
+        PlayerPrefs.SetInt(SessionState.CoinsKey, coinValue);
+        PlayerPrefs.Save();
+
+        coinValueChanged?.Invoke(coinValue);
+        if (coinText != null)
+            coinText.text = coinValue.ToString();
+
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance._coins != null)
+            SceneManagerScript.Instance._coins.text = coinValue.ToString();
     }
 
-    public int GetCoins()
-    {
-        return Coins;
-    }
+    // PIMLR (playtest): expose the currently loaded balance to existing callers.
+    public int GetCoins() => coinValue;
 }

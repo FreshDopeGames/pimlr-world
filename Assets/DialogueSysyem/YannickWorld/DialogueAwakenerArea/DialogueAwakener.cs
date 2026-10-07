@@ -30,11 +30,10 @@ public class DialogueAwakener : MonoBehaviour
     {
         var _uiMAnager = SceneManagerScript.Instance.uiManager;
         uILevelCompletePopUp = _uiMAnager.UIMenus[5].UI_Gameobject.GetComponent<UILevelCompletePopUp>();
-        //Debug.Log(PlayerPrefs.GetString("currentZoneMode"));
-
         if (SceneManager.GetActiveScene().name != "SceneStaticEU")
         {
-            if (PlayerPrefs.GetString("currentZoneMode") == Zone.Zone1.ToString())
+            // PIMLR (playtest): compare the typed persisted zone instead of string values.
+            if (ZoneProgress.Current == Zone.Zone1)
             {
                 //Debug.Log("In PP");
                 if (uILevelCompletePopUp != null)
@@ -43,7 +42,7 @@ public class DialogueAwakener : MonoBehaviour
                     EndDialogBoxAndSpawnZonbies();
                 }
             }
-            else if (PlayerPrefs.GetString("currentZoneMode") == Zone.Zone2.ToString())
+            else if (ZoneProgress.Current == Zone.Zone2)
             {
                 GameExecutionManager.Instance.BossDead();
             }
@@ -176,7 +175,8 @@ public class DialogueAwakener : MonoBehaviour
             if (GameExecutionManager.Instance)
             {
                 GameExecutionManager.Instance.currentZoneMode = Zone.Zone1;
-                PlayerPrefs.SetString("currentZoneMode", GameExecutionManager.Instance.currentZoneMode.ToString());
+                // PIMLR (playtest): persist zone progression through its typed owner.
+                ZoneProgress.Current = GameExecutionManager.Instance.currentZoneMode;
             }
             StartCoroutine(WaitForscreenfadeOut());
         }
@@ -201,4 +201,3 @@ public class DialogueAwakener : MonoBehaviour
         GameObject.FindObjectOfType<UIManager>().ShowMenu("JUTPS Interface");
     }
 }
-

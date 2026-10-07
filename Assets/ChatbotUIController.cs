@@ -194,7 +194,8 @@ public class ChatbotUIController : MonoBehaviour
             if (GameExecutionManager.Instance != null)
             {
                 GameExecutionManager.Instance.currentZoneMode = Zone.Zone1;
-                PlayerPrefs.SetString("currentZoneMode", GameExecutionManager.Instance.currentZoneMode.ToString());
+                // PIMLR (playtest): persist zone progression through its typed owner.
+                ZoneProgress.Current = GameExecutionManager.Instance.currentZoneMode;
             }
 
             if (JUGameManager.InstancedPlayer != null)

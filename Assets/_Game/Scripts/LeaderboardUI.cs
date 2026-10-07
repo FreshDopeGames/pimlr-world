@@ -29,6 +29,7 @@ public class LeaderboardUI : MonoBehaviour
     public LeaderboardRow storyModeRowPrefab;
 
     [Header("Name Entry")]
+    // PIMLR (playtest): retained for existing Inspector references; name entry is requested through PlayerSession.
     [SerializeField] private PlayerNameEntryUI playerNameEntryUI;
 
     [Header("Navigation")]
@@ -45,19 +46,10 @@ public class LeaderboardUI : MonoBehaviour
         if (killsTabButton != null) killsTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Kills));
         if (timeTabButton != null) timeTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.SurvivalTime));
 
-        if (playerNameEntryUI == null)
-            playerNameEntryUI = FindObjectOfType<PlayerNameEntryUI>(true);
-
-        if (!PlayerProfile.HasSetDisplayName && playerNameEntryUI != null)
-        {
-            playerNameEntryUI.NameSubmitted += RefreshAfterNameEntry;
-            playerNameEntryUI.gameObject.SetActive(true);
-            return;
-        }
-
+        // PIMLR (playtest): route missing-name flow through the PlayerSession overlay request.
         if (!PlayerProfile.HasSetDisplayName)
         {
-            Debug.LogError("LeaderboardUI requires a PlayerNameEntryUI reference or object in the scene.");
+            PlayerSession.EnsureName(RefreshAfterNameEntry);
             return;
         }
 
@@ -69,8 +61,6 @@ public class LeaderboardUI : MonoBehaviour
         if (waveTabButton != null) waveTabButton.onClick.RemoveAllListeners();
         if (killsTabButton != null) killsTabButton.onClick.RemoveAllListeners();
         if (timeTabButton != null) timeTabButton.onClick.RemoveAllListeners();
-        if (playerNameEntryUI != null)
-            playerNameEntryUI.NameSubmitted -= RefreshAfterNameEntry;
     }
 
     private void RefreshAfterNameEntry()

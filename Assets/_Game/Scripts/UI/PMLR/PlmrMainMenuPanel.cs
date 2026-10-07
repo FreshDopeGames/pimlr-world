@@ -84,28 +84,27 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
     public void OnSelectLevel(int levelCount)
     {
-
-
+        // PIMLR (playtest): persist the selected level through the typed zone progress owner.
         switch (levelCount)
         {
             case -1:
-                PlayerPrefs.SetString("currentZoneMode", Zone.InfiniteMode.ToString());
+                ZoneProgress.Current = Zone.InfiniteMode;
                 break;
 
             case 1:
-                PlayerPrefs.SetString("currentZoneMode", Zone.ChatWilly.ToString());
+                ZoneProgress.Current = Zone.ChatWilly;
                 break;
 
             case 2:
-                PlayerPrefs.SetString("currentZoneMode", Zone.ZoneBoss1.ToString());
+                ZoneProgress.Current = Zone.ZoneBoss1;
                 break;
 
             case 3:
-                PlayerPrefs.SetString("currentZoneMode", Zone.Zone2.ToString());
+                ZoneProgress.Current = Zone.Zone2;
                 break;
 
             default:
-                PlayerPrefs.SetString("currentZoneMode", Zone.ChatWilly.ToString());
+                ZoneProgress.Current = Zone.ChatWilly;
                 break;
 
 
