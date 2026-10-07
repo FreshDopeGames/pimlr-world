@@ -18,6 +18,11 @@ public class LeaderboardEntry
     // Story Mode field
     public float completionTime; // seconds
 
+    // Run summary fields
+    public int coinsEarned;
+    public int bossKills;
+    public string startZone;
+
     public string dateISO;
 
     public LeaderboardEntry(string playerName)

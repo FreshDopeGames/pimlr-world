@@ -30,6 +30,15 @@ public class UILodingScreen : MonoBehaviour
             descriptionText.text = loadingBarDatas[0]._Description;
     }
 
+    public void ShowProgress()
+    {
+        if (loadingSlider != null) loadingSlider.gameObject.SetActive(true);
+        if (loadingText != null) loadingText.gameObject.SetActive(true);
+        foreach (Button b in GetComponentsInChildren<Button>(true))
+            if (b.name == "NewGame Button" || b.name == "KeepPlaying Button")
+                b.gameObject.SetActive(false);
+    }
+
 }
 
 [System.Serializable]

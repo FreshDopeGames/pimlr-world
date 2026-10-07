@@ -44,8 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8475a0da9b0fd2842baf613208c3524d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontdestry: 0
+  dontdestry: 1
   message: 
   token: 
-  currentGameMode: 1
+  currentGameMode: 2
   fullGame: 0
+  achievementReward: 0

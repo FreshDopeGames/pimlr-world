@@ -47,6 +47,21 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
         Save();
     }
 
+    public void SubmitInfiniteModeRun(RunSnapshot s)
+    {
+        data.infiniteModeEntries.Add(new LeaderboardEntry(GetPlayerName())
+        {
+            anonymousPlayerId = PlayerProfile.AnonymousId,
+            wave = s.wave,
+            kills = s.kills,
+            survivalTime = s.elapsed,
+            coinsEarned = s.coinsEarned,
+            bossKills = s.bossKills,
+            startZone = s.startZone.ToString()
+        });
+        Save();
+    }
+
     /// <summary>Call when Story Mode is completed (final zone/boss cleared).</summary>
     public void SubmitStoryModeRun(string playerName, float completionTimeSeconds)
     {
@@ -56,6 +71,56 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
             completionTime = completionTimeSeconds
         });
         Save();
+    }
+
+    public void SubmitStoryModeRun(RunSnapshot s)
+    {
+        data.storyModeEntries.Add(new LeaderboardEntry(GetPlayerName())
+        {
+            anonymousPlayerId = PlayerProfile.AnonymousId,
+            completionTime = s.elapsed,
+            kills = s.kills,
+            wave = s.wave,
+            survivalTime = s.elapsed,
+            coinsEarned = s.coinsEarned,
+            bossKills = s.bossKills,
+            startZone = s.startZone.ToString()
+        });
+        Save();
+    }
+
+    public static bool TrySubmit(RunSnapshot s)
+    {
+        LeaderboardManager manager = Instance;
+        if (manager == null)
+        {
+            Debug.LogWarning("LeaderboardManager: cannot submit run because no manager instance is available.");
+            return false;
+        }
+
+        switch (s.mode)
+        {
+            case RunMode.Infinite:
+                if (s.kills == 0 && s.wave <= 1)
+                    return false;
+                manager.SubmitInfiniteModeRun(s);
+                return true;
+
+            case RunMode.Story:
+                if (s.endReason != RunEndReason.Completed || s.startZone != Zone.ChatWilly)
+                    return false;
+                manager.SubmitStoryModeRun(s);
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    private static string GetPlayerName()
+    {
+        string displayName = PlayerProfile.DisplayName;
+        return string.IsNullOrEmpty(displayName) ? "Player" : displayName;
     }
     #endregion
 
@@ -76,6 +141,16 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
     public List<LeaderboardEntry> GetStoryModeTop(int count = 10)
     {
         return data.storyModeEntries.OrderBy(e => e.completionTime).Take(count).ToList();
+    }
+
+    public IReadOnlyList<LeaderboardEntry> GetAllInfinite()
+    {
+        return data.infiniteModeEntries;
+    }
+
+    public IReadOnlyList<LeaderboardEntry> GetAllStory()
+    {
+        return data.storyModeEntries;
     }
     #endregion
 

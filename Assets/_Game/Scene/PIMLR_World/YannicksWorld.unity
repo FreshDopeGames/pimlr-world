@@ -14679,7 +14679,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 137, y: -84.9999}
+  m_AnchoredPosition: {x: 137, y: -84.999954}
   m_SizeDelta: {x: 260, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &150690262
@@ -225910,6 +225910,7 @@ MonoBehaviour:
   createPlayerManager: 0
   createEnumManager: 1
   authManager: 1
+  uiPrefabName: Global UI
 --- !u!4 &1293535482
 Transform:
   m_ObjectHideFlags: 0
@@ -226866,7 +226867,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1115845438}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9994924
+  m_Size: 0.99988085
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -421348,6 +421349,7 @@ GameObject:
   - component: {fileID: 9181554750322756826}
   - component: {fileID: 3592009727251720647}
   - component: {fileID: 6153877559178025812}
+  - component: {fileID: 9181554750322756827}
   m_Layer: 0
   m_Name: Tiana
   m_TagString: Untagged
@@ -424368,12 +424370,12 @@ MonoBehaviour:
   scrollRect: {fileID: 1234360118}
   aiChatInteraction: {fileID: 929118619}
   bakedLines:
-  - I've detected your haters from the BM Hive gathering around this area. You may
-    need to protect yourself with a hydraulic tool.
-  - Take this water gun - it's loaded with soapy water, the one thing these haters
-    can't stand.
-  - Head downtown and wash them off the streets. I'll be tracking your progress -
-    good luck.
+  - I've detected some crudely constructed robots gathering around this area. Your
+    best bet is to protect yourself with a hydraulic tool.
+  - Take this water gun - it's loaded with soapy water, the one thing these hater
+    bots can't stand.
+  - Head to the intersection here and wash them off the streets. I'll be tracking
+    your progress - good luck.
 --- !u!4 &7959690137921429129
 Transform:
   m_ObjectHideFlags: 0
@@ -426861,6 +426863,7 @@ GameObject:
   - component: {fileID: 5674807125873805219}
   - component: {fileID: 6492403526584438759}
   - component: {fileID: 340434421926191231}
+  - component: {fileID: 8980071513207746889}
   - component: {fileID: 7958083783675535430}
   - component: {fileID: 8980071513207746887}
   - component: {fileID: 8980071513207746888}
@@ -426896,6 +426899,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a148627a0afa4169884c451a2995017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8980071513207746889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8980071513207746886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b49179b007779bf4e8005563f7025e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chat: {fileID: 0}
+  logClickProbe: 1
 --- !u!137 &8980647874524696602
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -427701,6 +427718,18 @@ Transform:
   - {fileID: 4850799488592094701}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &9181554750322756827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6733494159056072947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cd4af4299ee4a148786885a9f6c0f72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!23 &9184756586331040588
 MeshRenderer:
   m_ObjectHideFlags: 0

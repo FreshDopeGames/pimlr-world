@@ -147,6 +147,9 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
                 yield break;
             }
 
+            UILodingScreen screen = loadingScreen != null ? loadingScreen : (uiManager != null ? uiManager.GetMenu<UILodingScreen>(loadingMenuName) : null);
+            if (screen != null) screen.ShowProgress();
+
             if (uiManager != null) uiManager.ShowMenu(loadingMenuName);
             SetLoadingProgress(0f);
 
