@@ -60,9 +60,12 @@ public class AuthManager : Singleton<AuthManager>
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "00_MainMenu")
         {
+            Debug.Log($"[AuthManager:{GetInstanceID()}] Starting in 00_MainMenu. SceneManagerScript={(SceneManagerScript.Instance != null ? SceneManagerScript.Instance.GetInstanceID().ToString() : "NULL")}, UIManager={(SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null ? SceneManagerScript.Instance.uiManager.name : "NULL")}.");
             WirePimlrStartButtons();
             if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null)
                 SceneManagerScript.Instance.uiManager.ShowMenu("Loading Screen");
+            else
+                Debug.LogError($"[AuthManager:{GetInstanceID()}] Cannot show Loading Screen: SceneManagerScript or its UIManager reference is NULL.");
         }
     }
 
@@ -70,6 +73,7 @@ public class AuthManager : Singleton<AuthManager>
     {
         Button newGameButton = FindButton("NewGame Button");
         Button keepPlayingButton = FindButton("KeepPlaying Button");
+        Debug.Log($"[AuthManager:{GetInstanceID()}] Button search: NewGame={(newGameButton != null ? newGameButton.gameObject.scene.name + "/" + newGameButton.name : "NOT FOUND")}, KeepPlaying={(keepPlayingButton != null ? keepPlayingButton.gameObject.scene.name + "/" + keepPlayingButton.name : "NOT FOUND")}.");
 
         if (newGameButton != null)
             SetLoadingChoiceVisible(newGameButton.transform);
@@ -122,6 +126,7 @@ public class AuthManager : Singleton<AuthManager>
 
     public void NewGame()
     {
+        Debug.Log($"[AuthManager:{GetInstanceID()}] NewGame button callback received; resetting player profile and requesting SceneStaticEU.");
         PlayerProfile.StartNewPlayer();
         ShowLoadingProgress("NewGame Button");
         LoadSceneStaticEU();
@@ -129,6 +134,7 @@ public class AuthManager : Singleton<AuthManager>
 
     public void KeepPlaying()
     {
+        Debug.Log($"[AuthManager:{GetInstanceID()}] KeepPlaying button callback received; requesting SceneStaticEU.");
         ShowLoadingProgress("KeepPlaying Button");
         LoadSceneStaticEU();
     }
@@ -136,13 +142,21 @@ public class AuthManager : Singleton<AuthManager>
     private void ShowLoadingProgress(string pressedButtonName)
     {
         Button pressedButton = FindButton(pressedButtonName);
-        if (pressedButton == null) return;
+        if (pressedButton == null)
+        {
+            Debug.LogWarning($"[AuthManager:{GetInstanceID()}] Cannot show loading progress: '{pressedButtonName}' was not found.");
+            return;
+        }
 
         Transform loadingScreen = pressedButton.transform;
         while (loadingScreen != null && loadingScreen.name != "Loading Screen")
             loadingScreen = loadingScreen.parent;
 
-        if (loadingScreen == null) return;
+        if (loadingScreen == null)
+        {
+            Debug.LogWarning($"[AuthManager:{GetInstanceID()}] Button '{pressedButtonName}' is not beneath an object named 'Loading Screen'; progress widgets were not toggled.");
+            return;
+        }
 
         pressedButton.gameObject.SetActive(false);
 
@@ -156,6 +170,7 @@ public class AuthManager : Singleton<AuthManager>
         Transform loadingSlider = FindDescendant(loadingScreen, "Slider");
         if (loadingText != null) loadingText.gameObject.SetActive(true);
         if (loadingSlider != null) loadingSlider.gameObject.SetActive(true);
+        Debug.Log($"[AuthManager:{GetInstanceID()}] Progress UI prepared under '{loadingScreen.name}': text={(loadingText != null ? loadingText.name : "NOT FOUND")}, slider={(loadingSlider != null ? loadingSlider.name : "NOT FOUND")}.");
     }
 
     private static Transform FindDescendant(Transform root, string objectName)
@@ -171,6 +186,12 @@ public class AuthManager : Singleton<AuthManager>
 
     private void LoadSceneStaticEU()
     {
+        if (SceneManagerScript.Instance == null)
+        {
+            Debug.LogError($"[AuthManager:{GetInstanceID()}] Cannot load SceneStaticEU: SceneManagerScript.Instance is NULL.");
+            return;
+        }
+
         SceneManagerScript.Instance.LoadScene("SceneStaticEU");
     }
 

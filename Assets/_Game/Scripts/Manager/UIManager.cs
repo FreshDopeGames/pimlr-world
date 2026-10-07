@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log($"[UIManager:{GetInstanceID()}] Awake in scene '{gameObject.scene.name}'. Registered menu count={(UIMenus != null ? UIMenus.Length : 0)}, fader={(UI_fader != null ? UI_fader.name : "NULL")}.");
         DisableAllScreens();
 
         //don't destroy
@@ -21,32 +22,24 @@ public class UIManager : MonoBehaviour
 
     }
 
-    //shows a menu by name
+    // PIMLR (load-flow fix): fader null-guard, explicit not-found warning
     public void ShowMenu(string targetname, bool disableAllScreens)
     {
         if (disableAllScreens) DisableAllScreens();
 
+        bool found = false;
         foreach (UI_Screen UI in UIMenus)
         {
-
-            if (UI.UI_Name == targetname)
+            if (UI.UI_Name == targetname && UI.UI_Gameobject != null)
             {
-                if (UI.UI_Gameobject != null)
-                {
-                    //Debug.Log(":::::::::<<??????????????????"+targetname);
-                    SetScreenAndParentsActive(UI.UI_Gameobject);
-                    break;
-                }
-                //else
-                //{
-                //    Debug.Log("no menu found with name: " + name);
-                //}
+                UI.UI_Gameobject.SetActive(true);
+                found = true;
+                break;
             }
-            //else
-            //    Debug.Log(":::::>>" + UI.UI_Name + ":::::::::<<<>>>" + targetname);
         }
+        if (!found)
+            Debug.LogWarning($"UIManager: no menu named '{targetname}' (or its GameObject is null).", this);
 
-        //fadeIn
         if (UI_fader != null)
         {
             UI_fader.gameObject.SetActive(true);
@@ -62,10 +55,17 @@ public class UIManager : MonoBehaviour
     //close a menu by name
     public void CloseMenu(string name)
     {
+        bool found = false;
         foreach (UI_Screen UI in UIMenus)
         {
-            if (UI.UI_Name == name) UI.UI_Gameobject.SetActive(false);
+            if (UI.UI_Name == name && UI.UI_Gameobject != null)
+            {
+                UI.UI_Gameobject.SetActive(false);
+                found = true;
+            }
         }
+        if (!found)
+            Debug.LogWarning($"UIManager: CloseMenu('{name}') matched nothing.", this);
     }
 
     private void SetScreenAndParentsActive(GameObject screen)
@@ -81,6 +81,12 @@ public class UIManager : MonoBehaviour
     //disable all the menus
     public void DisableAllScreens()
     {
+        if (UIMenus == null)
+        {
+            Debug.LogError($"[UIManager:{GetInstanceID()}] UIMenus is NULL; cannot disable screens.");
+            return;
+        }
+
         foreach (UI_Screen UI in UIMenus)
         {
             if (UI.UI_Gameobject != null)
