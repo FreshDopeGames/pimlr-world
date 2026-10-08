@@ -44,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 328302593721395996}
-  m_Mesh: {fileID: 3955581854578622944, guid: 1022f258e3204454d994c9765686f594, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 5ae1b6d4c894f9c449d33837a633a8ec, type: 3}
 --- !u!54 &355098894348917336
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -107,15 +107,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 831bb874795e4204598f8a40a1c17ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionEffectPrefab: {fileID: 5487987287800275805, guid: c60c426e0d9b8c84db014246ac940b46,
+  explosionEffectPrefab: {fileID: 8294947810415399850, guid: 7a16f43b4abbc0846a15aa17f7ba39bd,
     type: 3}
   explosionParticleOffset: {x: 0, y: 1, z: 0}
+  effectLifetime: 4
+  alignEffectToSurface: 1
   audioSourcePrefab: {fileID: 359470296725590032, guid: 7e0b6f5f390cf1f49bde2523d025d8f1,
     type: 3}
+  explodeOnTimer: 0
   explosionDelay: 3
+  armDelay: 0.1
+  maxLifetime: 10
   explosionForce: 700
   explosionRadius: 10
-  explosionSound: {fileID: 8300000, guid: e5b38460354db7f47811f530f2bda662, type: 3}
+  playExplosionSound: 1
+  explosionSound: {fileID: 8300000, guid: c0177a27ed550de44b9845112fe2617f, type: 3}
   impactSound: {fileID: 8300000, guid: 4c05a8cdfbec615458d075d1e07a7d4c, type: 3}
 --- !u!82 &6080084615303272362
 AudioSource:
@@ -233,7 +239,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b668b9689d47f7d45a6a5da9de3ed9d7, type: 2}
+  - {fileID: 2100000, guid: 6a15b1f15432b6f4b9a8066e1e6ca4df, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

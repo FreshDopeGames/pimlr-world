@@ -27,18 +27,91 @@ public class InfiniteMode : Singleton<InfiniteMode>
 
    public int currentEnemyCount;
 
+    // PIMLR (playtest): track the player's death event and prevent duplicate run submission.
+    private JUHealth playerHealth;
+    private bool runEnded;
+
     void Start()
     {
         StartCoroutine(SpawnWave());
         SceneManagerScript.Instance.goalPanel.gameObject.SetActive(false);
+
+        // PIMLR (playtest): start and initialize the Infinite Mode run snapshot.
+        RunStats.Begin(RunMode.Infinite, Zone.InfiniteMode);
+        RunStats.SetWave(currentWave);
+
+        GameExecutionManager gameExecutionManager = GameExecutionManager.Instance;
+        if (gameExecutionManager != null &&
+            gameExecutionManager.playerHandler != null &&
+            gameExecutionManager.playerHandler.jUCharacterController != null)
+        {
+            playerHealth = gameExecutionManager.playerHandler.jUCharacterController.CharacterHealth;
+        }
+
+        if (playerHealth == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+                playerHealth = player.GetComponentInChildren<JUHealth>(true);
+        }
+
+        if (playerHealth != null)
+            playerHealth.OnDeath.AddListener(HandlePlayerDeath);
+        else
+            Debug.LogWarning("InfiniteMode: could not find the player's JUHealth component.", this);
     }
 
+    // PIMLR (playtest): delay death submission so the existing death presentation can finish.
+    private void HandlePlayerDeath()
+    {
+        if (!runEnded)
+            StartCoroutine(EndRunAfterDeath());
+    }
+
+    // PIMLR (playtest): use realtime so death cleanup still completes while gameplay is paused.
+    private IEnumerator EndRunAfterDeath()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+        EndRun(RunEndReason.Died);
+    }
+
+    // PIMLR (playtest): stop the run once and submit its final snapshot when appropriate.
+    public void EndRun(RunEndReason reason)
+    {
+        if (runEnded)
+            return;
+
+        runEnded = true;
+        StopAllCoroutines();
+        RunSnapshot final = RunStats.End(reason);
+        if (reason != RunEndReason.Abandoned)
+            LeaderboardManager.TrySubmit(final);
+    }
+
+    // PIMLR (playtest): expose a parameterless method for Inspector UnityEvents.
+    public void QuitRun()
+    {
+        EndRun(RunEndReason.Quit);
+    }
+
+    // PIMLR (playtest): detach the health listener and mark destroyed active runs abandoned.
+    private void OnDestroy()
+    {
+        if (playerHealth != null)
+            playerHealth.OnDeath.RemoveListener(HandlePlayerDeath);
+
+        if (RunStats.Active && RunStats.Mode == RunMode.Infinite)
+            RunStats.End(RunEndReason.Abandoned);
+    }
 
     public void CompleteWave()
     {
         CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() + 50 * currentWave);
+        // PIMLR (playtest): keep run stats aligned with the existing wave reward and progression.
+        RunStats.AddCoins(50 * currentWave);
         currentEnemyCount = 0;
         currentWave++;
+        RunStats.SetWave(currentWave);
         if (currentWave % 2 == 1)
             normalEnemyCount += 5;
         else
@@ -115,6 +188,8 @@ public class InfiniteMode : Singleton<InfiniteMode>
     {
         currentEnemyCount++;
 
+        // PIMLR (playtest): record kills and classify kills on even waves as boss kills.
+        RunStats.RegisterKill(isBoss: currentWave % 2 == 0);
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(currentEnemyCount.ToString() + "/" + (currentWave % 2 == 1 ? normalEnemyCount : bossCount));
         if (currentWave % 2 == 1)
         {

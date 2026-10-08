@@ -54,7 +54,8 @@ public class AiChatInteraction : MonoBehaviour
     public void OnClosePanel()
     {
         if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.musicSystem != null && SceneManagerScript.Instance.musicSystem.musicSystem != null)
-            SceneManagerScript.Instance.musicSystem.musicSystem.volume = 0.1f;
+            // PIMLR (playtest): restore the catalog player to full volume. 0.1 left every song nearly silent after the Sirihanna chat. Keep the existing null checks.
+            SceneManagerScript.Instance.musicSystem.musicSystem.volume = 1f;
 
         if (ai_BOT_Canvas != null)
             ai_BOT_Canvas.SetActive(false);

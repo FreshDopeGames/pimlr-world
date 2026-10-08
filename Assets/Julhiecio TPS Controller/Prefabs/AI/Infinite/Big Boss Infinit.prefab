@@ -1757,33 +1757,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
   FootstepAudioClips:
-  - SurfaceTag: Untagged
+  - SurfaceTag: Concrete
+    AudioClips:
+    - {fileID: 8300000, guid: 0d022e4f5b405d742b4e7997c5992d6a, type: 3}
+    - {fileID: 8300000, guid: 715698226d8df724785ab9db90d2775f, type: 3}
+    - {fileID: 8300000, guid: 78e2ce3c64e256742a7439d674f2c5d7, type: 3}
+    - {fileID: 8300000, guid: 1f97e96c6a43950469f0841f3a2dd8eb, type: 3}
+    Effects: []
+  - SurfaceTag: Stone
+    AudioClips:
+    - {fileID: 8300000, guid: 552ef03bc34126f4a9664ffa15e18a3e, type: 3}
+    - {fileID: 8300000, guid: 9113d32e36fc0c747948b20eef11e3a9, type: 3}
+    - {fileID: 8300000, guid: 68bfc9eea80c1fa4f8b6c67c39b0d632, type: 3}
+    - {fileID: 8300000, guid: 4c809cb150ac6524fa03e1a56d188974, type: 3}
+    Effects: []
+  - SurfaceTag: Grass
+    AudioClips:
+    - {fileID: 8300000, guid: 7d6c4c413e2993648836914486367399, type: 3}
+    - {fileID: 8300000, guid: 156dd06212b561940a97770ff7eb657e, type: 3}
+    - {fileID: 8300000, guid: 196174c6690290c46b18708bc8352d1c, type: 3}
+    - {fileID: 8300000, guid: 9b7426b90bc845a42b6aa7130b6b0834, type: 3}
+    Effects: []
+  - SurfaceTag: Tiles
     AudioClips:
     - {fileID: 8300000, guid: d4ca11b41b110a5408e14d099b2bcba7, type: 3}
     - {fileID: 8300000, guid: 54447728ce511874d859593d5d94e697, type: 3}
     - {fileID: 8300000, guid: ad91f6dd1877ac24eaa9f10474597ced, type: 3}
     - {fileID: 8300000, guid: 26f502cf42482a44996df100ebd487b4, type: 3}
-    Effects: []
-  - SurfaceTag: Stone
-    AudioClips:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    Effects: []
-  - SurfaceTag: Grass
-    AudioClips:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    Effects: []
-  - SurfaceTag: Tiles
-    AudioClips:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     Effects: []
   InvertX: 0
   MinTimeToPlayAudio: 0.3
@@ -1834,6 +1834,7 @@ MonoBehaviour:
   UseDefaultInputsOnVehicleInteraction: 1
   CheckVehiclesByTrigger: 1
   DriveSelectedVehicleOnStart: 0
+  UnequipWeaponOnEnter: 0
   VehicleDrivableNearby: 0
   IsDriving: 0
   IsDrivingByShoot: 0
@@ -2034,6 +2035,8 @@ MonoBehaviour:
         m_CallState: 2
   IsDead: 0
   healthSlider: {fileID: 3323870284314518615}
+  rcc_CarControllerV3: {fileID: 0}
+  rcc_AICarController: {fileID: 0}
 --- !u!114 &1330169421067903596
 MonoBehaviour:
   m_ObjectHideFlags: 0

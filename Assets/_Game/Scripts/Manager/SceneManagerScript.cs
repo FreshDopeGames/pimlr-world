@@ -167,6 +167,16 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
                 yield break;
             }
 
+            // PIMLR (playtest): preserve Infinite Mode stats when gameplay or pause UI exits through this scene loader.
+            if (RunStats.Active && RunStats.Mode == RunMode.Infinite)
+            {
+                InfiniteMode infiniteMode = InfiniteMode.Instance;
+                if (infiniteMode != null)
+                    infiniteMode.QuitRun();
+                else
+                    LeaderboardManager.TrySubmit(RunStats.End(RunEndReason.Quit));
+            }
+
             op.allowSceneActivation = false;
             float started = Time.unscaledTime;
 

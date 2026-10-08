@@ -120,7 +120,8 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
     private static string GetPlayerName()
     {
         string displayName = PlayerProfile.DisplayName;
-        return string.IsNullOrEmpty(displayName) ? "Player" : displayName;
+        // PIMLR (playtest): treat whitespace-only legacy names as unset too.
+        return string.IsNullOrWhiteSpace(displayName) ? "Player" : displayName;
     }
     #endregion
 

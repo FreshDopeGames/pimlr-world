@@ -41267,7 +41267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6349336257038149770
 RectTransform:
   m_ObjectHideFlags: 0
@@ -53243,7 +53243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -54818,7 +54818,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5241360393681569918
 RectTransform:
   m_ObjectHideFlags: 0
@@ -60149,7 +60149,7 @@ MonoBehaviour:
   uISignUp: {fileID: 4197827670445129508}
   goalPanel: {fileID: 0}
   musicSystem: {fileID: 0}
-  minimapBlipController: {fileID: 0}
+  minimapBlipController: {fileID: 5937299535019191391}
   musicPurchasePanel: {fileID: 585002429904624066}
   musicData:
   - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
@@ -74602,7 +74602,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.45490196}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -105822,7 +105822,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7281442592907354474
 RectTransform:
   m_ObjectHideFlags: 0
@@ -139218,6 +139218,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5209920185545613309, guid: 9466194a232336b4b8417fb11d26edd6,
+        type: 3}
+      propertyPath: m_MovementType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5209920185545613309, guid: 9466194a232336b4b8417fb11d26edd6,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 5209920185545613309, guid: 9466194a232336b4b8417fb11d26edd6,
         type: 3}
