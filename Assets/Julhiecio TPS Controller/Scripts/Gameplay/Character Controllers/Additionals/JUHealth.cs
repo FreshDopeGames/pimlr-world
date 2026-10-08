@@ -81,9 +81,12 @@ namespace JUTPS
                 {
                     if (gameObject.name != "Police (AI Chaser)")
                     {
-                        rb.isKinematic = true;
-                        animator.enabled = false;
+                        // PIMLR (playtest): null-safe freeze. A new hit restarts the thaw timer instead of stacking timers, and the model turns blue while frozen.
+                        if (rb != null) rb.isKinematic = true;
+                        if (animator != null) animator.enabled = false;
+                        CancelInvoke(nameof(ReFreeze));
                         Invoke(nameof(ReFreeze), 3);
+                        FrostTint.Freeze(gameObject);
                     }
                     else
                     {
@@ -95,7 +98,10 @@ namespace JUTPS
                             rcc_AICarController.Stop();
                             rcc_AICarController.enabled = false;
                         }
+                        // PIMLR (playtest): restart the thaw timer and tint the police car too.
+                        CancelInvoke(nameof(ReFreeze));
                         Invoke(nameof(ReFreeze), 6);
+                        FrostTint.Freeze(gameObject);
                     }
 
                 }
@@ -121,7 +127,8 @@ namespace JUTPS
 
         void ReFreeze()
         {
-
+            // PIMLR (playtest): remove the blue tint first.
+            FrostTint.Thaw(gameObject);
 
             if (rcc_CarControllerV3 != null)
             {
@@ -132,8 +139,8 @@ namespace JUTPS
             }
             else
             {
-                rb.isKinematic = false;
-                animator.enabled = true;
+                if (rb != null) rb.isKinematic = false;
+                if (animator != null) animator.enabled = true;
             }
         }
         public void CheckHealthState()
