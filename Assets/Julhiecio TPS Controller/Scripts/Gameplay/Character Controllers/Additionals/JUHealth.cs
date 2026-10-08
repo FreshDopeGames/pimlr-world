@@ -86,6 +86,7 @@ namespace JUTPS
                         if (animator != null) animator.enabled = false;
                         CancelInvoke(nameof(ReFreeze));
                         Invoke(nameof(ReFreeze), 3);
+                        SetAIFrozen(true);
                         FrostTint.Freeze(gameObject);
                     }
                     else
@@ -122,12 +123,21 @@ namespace JUTPS
             }
         }
 
-
+        // PIMLR (playtest): a frozen enemy must not shoot, aim or chase. Switch its AI brain (PatrolAI, ZombieAI) off while frozen.
+        private void SetAIFrozen(bool frozen)
+        {
+            foreach (JUTPS.AI.JUCharacterArtificialInteligenceBrain brain in GetComponents<JUTPS.AI.JUCharacterArtificialInteligenceBrain>())
+            {
+                if (frozen) brain.enabled = false;
+                else if (!IsDead) brain.enabled = true;
+            }
+        }
 
 
         void ReFreeze()
         {
-            // PIMLR (playtest): remove the blue tint first.
+            // PIMLR (playtest): allow the gunner enemies to shoot again, and remove the blue tint from all enemies.
+            SetAIFrozen(false);
             FrostTint.Thaw(gameObject);
 
             if (rcc_CarControllerV3 != null)

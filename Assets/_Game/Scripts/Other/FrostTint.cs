@@ -14,6 +14,7 @@ public class FrostTint : MonoBehaviour
 
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor"); // URP Lit, Simple Lit, Unlit
     private static readonly int ColorId = Shader.PropertyToID("_Color");         // Built-in and legacy shaders
+    private static readonly int GltfColorId = Shader.PropertyToID("baseColorFactor"); // glTFast / Ready Player Me avatars (Shader Graphs/glTF-pbrMetallicRoughness)
     private static readonly HashSet<string> warnedShaders = new HashSet<string>();
 
     private struct Slot
@@ -66,11 +67,11 @@ public class FrostTint : MonoBehaviour
                 Material m = mats[i];
                 if (m == null) continue;
 
-                int id = m.HasProperty(BaseColorId) ? BaseColorId : (m.HasProperty(ColorId) ? ColorId : -1);
+                int id = m.HasProperty(BaseColorId) ? BaseColorId : (m.HasProperty(GltfColorId) ? GltfColorId : (m.HasProperty(ColorId) ? ColorId : -1));
                 if (id < 0)
                 {
                     if (warnedShaders.Add(m.shader.name))
-                        Debug.LogWarning("FrostTint: shader '" + m.shader.name + "' has no _BaseColor or _Color, so it will not turn blue.");
+                        Debug.LogWarning("FrostTint: shader '" + m.shader.name + "' has no _BaseColor, baseColorFactor or _Color, so it will not turn blue.");
                     continue;
                 }
 
