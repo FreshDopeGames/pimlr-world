@@ -3,19 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// PIMLR Leaderboards UI: three tab buttons re-sort the same Infinite Mode list
-// (Wave / Kills / Survival Time); Story Mode is a separate always-by-time list.
-// Follows the same "spawn a row prefab into a holder" pattern already used by
-// MusicPurchasePanel/MusicPurchaseEntry elsewhere in this project.
-//
-// EDITOR WIRING (residual step):
-//   1. Build a panel with two sections: Infinite Mode (3 tab buttons + a row holder
-//      under a ScrollRect content) and Story Mode (row holder only).
-//   2. Create a small row prefab: Rank / Name / Value as three TextMeshProUGUI fields,
-//      add the LeaderboardRow component below, assign the three text fields.
-//   3. Assign infiniteModeRowPrefab / storyModeRowPrefab to that prefab, and the two
-//      row holders to their ScrollRect Content transforms.
-//   4. Assign the 3 tab buttons; tab highlight Images are optional (simple active-tab dot/underline).
 public class LeaderboardUI : MonoBehaviour
 {
     [Header("Infinite Mode")]
@@ -29,7 +16,7 @@ public class LeaderboardUI : MonoBehaviour
     public LeaderboardRow storyModeRowPrefab;
 
     [Header("Name Entry")]
-    // PIMLR (playtest): retained for existing Inspector references; name entry is requested through PlayerSession.
+    // PIMLR (playtest): retained for existing Inspector references; opening the board never requests a name.
     [SerializeField] private PlayerNameEntryUI playerNameEntryUI;
 
     [Header("Navigation")]
@@ -37,43 +24,133 @@ public class LeaderboardUI : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private string mainMenuScreenName = "PLMRMainMenuPanel";
 
-    private readonly List<LeaderboardRow> spawnedInfiniteRows = new List<LeaderboardRow>();
-    private readonly List<LeaderboardRow> spawnedStoryRows = new List<LeaderboardRow>();
+    // PIMLR (playtest): optional shared controls and display fields for the single-board layout.
+    [Header("Board")]
+    [SerializeField] private Button infiniteModeButton;
+    [SerializeField] private Button storyModeButton;
+    [SerializeField] private Button backButton;
+    [SerializeField] private Image infiniteModeHighlight;
+    [SerializeField] private Image storyModeHighlight;
+    [SerializeField] private Transform rowHolder;
+    [SerializeField] private LeaderboardRow rowPrefab;
+    [SerializeField] private TextMeshProUGUI headerText;
+    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private TextMeshProUGUI yourStatsText;
+
+    // PIMLR (playtest): keep one list because both modes reuse the same visible row area.
+    private readonly List<LeaderboardRow> spawnedRows = new List<LeaderboardRow>();
+    private LeaderboardManager subscribedManager;
+
+    // PIMLR (playtest): the board defaults to Infinite Mode and its Wave sort whenever it opens.
+    private enum BoardMode { Infinite, Story }
+    private BoardMode currentMode;
+    private LeaderboardManager.InfiniteModeSortMode currentSort;
 
     private void OnEnable()
     {
-        if (waveTabButton != null) waveTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave));
-        if (killsTabButton != null) killsTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Kills));
-        if (timeTabButton != null) timeTabButton.onClick.AddListener(() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.SurvivalTime));
+        // PIMLR (playtest): named listeners make enable/disable cycles safe without removing prefab listeners.
+        if (waveTabButton != null) waveTabButton.onClick.AddListener(OnWaveTabClicked);
+        if (killsTabButton != null) killsTabButton.onClick.AddListener(OnKillsTabClicked);
+        if (timeTabButton != null) timeTabButton.onClick.AddListener(OnTimeTabClicked);
+        if (infiniteModeButton != null) infiniteModeButton.onClick.AddListener(OnInfiniteModeClicked);
+        if (storyModeButton != null) storyModeButton.onClick.AddListener(OnStoryModeClicked);
+        if (backButton != null) backButton.onClick.AddListener(OnBackButton);
 
-        // PIMLR (playtest): route missing-name flow through the PlayerSession overlay request.
-        if (!PlayerProfile.HasSetDisplayName)
-        {
-            PlayerSession.EnsureName(RefreshAfterNameEntry);
-            return;
-        }
+        currentMode = BoardMode.Infinite;
+        currentSort = LeaderboardManager.InfiniteModeSortMode.Wave;
 
-        RefreshLeaderboard();
+        subscribedManager = LeaderboardManager.Instance;
+        if (subscribedManager != null)
+            subscribedManager.Changed += OnLeaderboardChanged;
+
+        Refresh();
     }
 
     private void OnDisable()
     {
-        if (waveTabButton != null) waveTabButton.onClick.RemoveAllListeners();
-        if (killsTabButton != null) killsTabButton.onClick.RemoveAllListeners();
-        if (timeTabButton != null) timeTabButton.onClick.RemoveAllListeners();
+        // PIMLR (playtest): remove only this component's named listeners, preserving Inspector callbacks.
+        if (waveTabButton != null) waveTabButton.onClick.RemoveListener(OnWaveTabClicked);
+        if (killsTabButton != null) killsTabButton.onClick.RemoveListener(OnKillsTabClicked);
+        if (timeTabButton != null) timeTabButton.onClick.RemoveListener(OnTimeTabClicked);
+        if (infiniteModeButton != null) infiniteModeButton.onClick.RemoveListener(OnInfiniteModeClicked);
+        if (storyModeButton != null) storyModeButton.onClick.RemoveListener(OnStoryModeClicked);
+        if (backButton != null) backButton.onClick.RemoveListener(OnBackButton);
+
+        if (subscribedManager != null)
+            subscribedManager.Changed -= OnLeaderboardChanged;
+        subscribedManager = null;
     }
 
-    private void RefreshAfterNameEntry()
+    // PIMLR (playtest): all board changes converge here so the two modes cannot leave stale rows behind.
+    public void Refresh()
     {
-        RefreshLeaderboard();
+        ClearRows();
+
+        LeaderboardManager manager = LeaderboardManager.Instance;
+        if (manager == null)
+        {
+            if (statusText != null)
+            {
+                statusText.text = "Leaderboards unavailable";
+                statusText.gameObject.SetActive(true);
+            }
+            return;
+        }
+
+        if (headerText != null)
+            headerText.text = GetHeaderText();
+
+        bool isInfiniteMode = currentMode == BoardMode.Infinite;
+        if (waveTabButton != null) waveTabButton.gameObject.SetActive(isInfiniteMode);
+        if (killsTabButton != null) killsTabButton.gameObject.SetActive(isInfiniteMode);
+        if (timeTabButton != null) timeTabButton.gameObject.SetActive(isInfiniteMode);
+
+        SetActiveTabHighlight(currentSort);
+        if (infiniteModeHighlight != null)
+            infiniteModeHighlight.gameObject.SetActive(isInfiniteMode);
+        if (storyModeHighlight != null)
+            storyModeHighlight.gameObject.SetActive(!isInfiniteMode);
+
+        List<LeaderboardEntry> entries = isInfiniteMode
+            ? manager.GetInfiniteModeTop(currentSort, 50)
+            : manager.GetStoryModeTop(50);
+        Transform activeRowHolder = rowHolder != null
+            ? rowHolder
+            : isInfiniteMode ? infiniteModeRowHolder : storyModeRowHolder;
+        LeaderboardRow activeRowPrefab = rowPrefab != null
+            ? rowPrefab
+            : isInfiniteMode ? infiniteModeRowPrefab : storyModeRowPrefab;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            if (activeRowHolder == null || activeRowPrefab == null)
+                continue;
+
+            LeaderboardEntry entry = entries[i];
+            LeaderboardRow row = Instantiate(activeRowPrefab, activeRowHolder);
+            string value = isInfiniteMode
+                ? GetInfiniteValue(entry)
+                : FormatTime(entry.completionTime);
+            string detail = isInfiniteMode
+                ? $"{entry.kills} washes, {entry.bossKills} bosses, {entry.coinsEarned} coins"
+                : $"{entry.kills} washes, {entry.coinsEarned} coins";
+
+            row.Set(i + 1, entry.playerName, value,
+                entry.anonymousPlayerId == PlayerProfile.AnonymousId, detail);
+            spawnedRows.Add(row);
+        }
+
+        if (statusText != null)
+        {
+            bool isEmpty = entries.Count == 0;
+            statusText.text = isEmpty ? "No runs yet" : string.Empty;
+            statusText.gameObject.SetActive(isEmpty);
+        }
+
+        RefreshYourStats(manager);
     }
 
-    private void RefreshLeaderboard()
-    {
-        ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave);
-        ShowStoryMode();
-    }
-
+    // PIMLR (playtest): preserve the existing public navigation entry point.
     public void OnBackButton()
     {
         gameObject.SetActive(false);
@@ -84,78 +161,134 @@ public class LeaderboardUI : MonoBehaviour
             return;
         }
 
+        PlmrMainMenuPanel menuPanel = FindObjectOfType<PlmrMainMenuPanel>(true);
+        if (menuPanel != null)
+        {
+            menuPanel.gameObject.SetActive(true);
+            return;
+        }
+
         if (uiManager != null)
             uiManager.ShowMenu(mainMenuScreenName);
     }
 
+    // PIMLR (playtest): retain the existing public mode-switch API for external callers.
     public void ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode sortMode)
     {
-        SetActiveTabHighlight(sortMode);
-
-        List<LeaderboardEntry> entries = LeaderboardManager.Instance.GetInfiniteModeTop(sortMode);
-        ClearRows(spawnedInfiniteRows);
-
-        for (int i = 0; i < entries.Count; i++)
-        {
-            LeaderboardRow row = Instantiate(infiniteModeRowPrefab, infiniteModeRowHolder);
-            string valueText = sortMode switch
-            {
-                LeaderboardManager.InfiniteModeSortMode.Wave => $"Wave {entries[i].wave}",
-                LeaderboardManager.InfiniteModeSortMode.Kills => $"{entries[i].kills} kills",
-                LeaderboardManager.InfiniteModeSortMode.SurvivalTime => FormatTime(entries[i].survivalTime),
-                _ => string.Empty
-            };
-            row.Set(i + 1, entries[i].playerName, valueText);
-            spawnedInfiniteRows.Add(row);
-        }
+        currentMode = BoardMode.Infinite;
+        currentSort = sortMode;
+        Refresh();
     }
 
+    // PIMLR (playtest): retain the existing public mode-switch API for external callers.
     public void ShowStoryMode()
     {
-        List<LeaderboardEntry> entries = LeaderboardManager.Instance.GetStoryModeTop();
-        ClearRows(spawnedStoryRows);
-
-        for (int i = 0; i < entries.Count; i++)
-        {
-            LeaderboardRow row = Instantiate(storyModeRowPrefab, storyModeRowHolder);
-            row.Set(i + 1, entries[i].playerName, FormatTime(entries[i].completionTime));
-            spawnedStoryRows.Add(row);
-        }
+        currentMode = BoardMode.Story;
+        Refresh();
     }
 
+    // PIMLR (playtest): named button handlers keep serialized UI callbacks independent of anonymous delegates.
+    private void OnWaveTabClicked() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Wave);
+    private void OnKillsTabClicked() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.Kills);
+    private void OnTimeTabClicked() => ShowInfiniteMode(LeaderboardManager.InfiniteModeSortMode.SurvivalTime);
+    private void OnInfiniteModeClicked() => ShowInfiniteMode(currentSort);
+    private void OnStoryModeClicked() => ShowStoryMode();
+    private void OnLeaderboardChanged() => Refresh();
+
+    // PIMLR (playtest): keep tab indicators synchronized with the selected Infinite sort.
     private void SetActiveTabHighlight(LeaderboardManager.InfiniteModeSortMode sortMode)
     {
-        if (waveTabHighlight) waveTabHighlight.gameObject.SetActive(sortMode == LeaderboardManager.InfiniteModeSortMode.Wave);
-        if (killsTabHighlight) killsTabHighlight.gameObject.SetActive(sortMode == LeaderboardManager.InfiniteModeSortMode.Kills);
-        if (timeTabHighlight) timeTabHighlight.gameObject.SetActive(sortMode == LeaderboardManager.InfiniteModeSortMode.SurvivalTime);
+        bool showSortHighlights = currentMode == BoardMode.Infinite;
+        if (waveTabHighlight != null)
+            waveTabHighlight.gameObject.SetActive(showSortHighlights && sortMode == LeaderboardManager.InfiniteModeSortMode.Wave);
+        if (killsTabHighlight != null)
+            killsTabHighlight.gameObject.SetActive(showSortHighlights && sortMode == LeaderboardManager.InfiniteModeSortMode.Kills);
+        if (timeTabHighlight != null)
+            timeTabHighlight.gameObject.SetActive(showSortHighlights && sortMode == LeaderboardManager.InfiniteModeSortMode.SurvivalTime);
     }
 
-    private void ClearRows(List<LeaderboardRow> rows)
+    // PIMLR (playtest): clear all generated rows before any refresh result, including unavailable-manager state.
+    private void ClearRows()
     {
-        foreach (LeaderboardRow row in rows)
-            if (row != null) Destroy(row.gameObject);
-        rows.Clear();
+        foreach (LeaderboardRow row in spawnedRows)
+        {
+            if (row != null)
+                Destroy(row.gameObject);
+        }
+        spawnedRows.Clear();
     }
 
+    // PIMLR (playtest): keep visible labels consistent with each supported board mode and sort.
+    private string GetHeaderText()
+    {
+        if (currentMode == BoardMode.Story)
+            return "Story Mode: Fastest runs";
+
+        return currentSort switch
+        {
+            LeaderboardManager.InfiniteModeSortMode.Kills => "Infinite Mode: Most washes",
+            LeaderboardManager.InfiniteModeSortMode.SurvivalTime => "Infinite Mode: Longest run",
+            _ => "Infinite Mode: Most waves"
+        };
+    }
+
+    // PIMLR (playtest): Infinite values use player-facing washes terminology for kills.
+    private string GetInfiniteValue(LeaderboardEntry entry)
+    {
+        return currentSort switch
+        {
+            LeaderboardManager.InfiniteModeSortMode.Kills => $"{entry.kills} washes",
+            LeaderboardManager.InfiniteModeSortMode.SurvivalTime => FormatTime(entry.survivalTime),
+            _ => $"Wave {entry.wave}"
+        };
+    }
+
+    // PIMLR (playtest): rank and total are read from the same session-aware leaderboard API used by the board.
+    private void RefreshYourStats(LeaderboardManager manager)
+    {
+        if (yourStatsText == null)
+            return;
+
+        string sessionId = PlayerProfile.AnonymousId;
+        int rank = currentMode == BoardMode.Infinite
+            ? manager.GetInfiniteRank(currentSort, sessionId)
+            : manager.GetStoryRank(sessionId);
+        int count = currentMode == BoardMode.Infinite
+            ? manager.GetInfiniteCount()
+            : manager.GetStoryCount();
+        yourStatsText.text = rank == 0 ? "No runs yet" : $"Your rank: #{rank} of {count}";
+    }
+
+    // PIMLR (playtest): one shared clock format for Infinite and Story rows.
     private static string FormatTime(float seconds)
     {
-        int m = Mathf.FloorToInt(seconds / 60f);
-        int s = Mathf.FloorToInt(seconds % 60f);
-        return $"{m:00}:{s:00}";
+        int totalSeconds = Mathf.Max(0, Mathf.FloorToInt(seconds));
+        return $"{totalSeconds / 60}:{totalSeconds % 60:00}";
     }
 }
 
-// Attach to the row prefab; assign the three TMP fields on it.
+// PIMLR (playtest): optional visual row details let the shared prefab show mode-specific run information.
 public class LeaderboardRow : MonoBehaviour
 {
     public TextMeshProUGUI rankText;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI valueText;
+    // PIMLR (playtest): optional highlight and detail label for the current player's row.
+    [SerializeField] private Image highlight;
+    [SerializeField] private TextMeshProUGUI detailText;
 
-    public void Set(int rank, string playerName, string value)
+    // PIMLR (playtest): defaults preserve compatibility with existing three-argument row setup calls.
+    public void Set(int rank, string playerName, string value, bool isYou = false, string detail = "")
     {
-        rankText.text = rank.ToString();
-        nameText.text = playerName;
-        valueText.text = value;
+        if (rankText != null)
+            rankText.text = rank.ToString();
+        if (nameText != null)
+            nameText.text = isYou ? $"{playerName} (you)" : playerName;
+        if (valueText != null)
+            valueText.text = value;
+        if (highlight != null)
+            highlight.gameObject.SetActive(isYou);
+        if (detailText != null)
+            detailText.text = detail;
     }
 }

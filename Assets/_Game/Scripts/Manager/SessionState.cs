@@ -12,6 +12,10 @@ public static class SessionState
         PlayerPrefs.DeleteKey(CoinsKey);
         PlayerPrefs.DeleteKey(ZoneProgress.ZoneKey);
         PlayerPrefs.Save();
+
+        // PIMLR (playtest): clear the live balance so its next update cannot restore the previous session's coins.
+        if (CoinManager.Instance != null)
+            CoinManager.Instance.SetCoins(0);
     }
 }
 

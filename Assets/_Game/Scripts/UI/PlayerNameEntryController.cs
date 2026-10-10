@@ -17,11 +17,22 @@ public class PlayerNameEntryController : MonoBehaviour
         PlayerSession.NameRequested += Show;
         confirmButton.onClick.AddListener(Confirm);
         input.onSubmit.AddListener(_ => Confirm());
-        if (newSessionButton) newSessionButton.onClick.AddListener(PlayerSession.Reset);
+        if (newSessionButton) newSessionButton.onClick.AddListener(StartNewSession);
         if (randomizeButton) randomizeButton.onClick.AddListener(() => input.text = PlayerSession.SuggestName());
         if (cancelButton) cancelButton.onClick.AddListener(Cancel);
         input.characterLimit = PlayerSession.MaxLength;
         root.SetActive(false);
+    }
+
+    // PIMLR (playtest): abandon the current run and clear local identity/progress before requesting a fresh name.
+    private void StartNewSession()
+    {
+        if (RunStats.Active)
+            RunStats.End(RunEndReason.Abandoned);
+
+        PlayerSession.Reset();
+        SessionState.ResetProgress();
+        PlayerSession.EnsureName(null);
     }
 
     [ContextMenu("Test EnsureName")]
