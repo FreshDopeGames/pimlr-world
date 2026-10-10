@@ -72,8 +72,17 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     void Start()
     {
         // PIMLR (playtest): load the persisted zone through its typed owner.
-        currentZoneMode = ZoneProgress.Current;
+        Zone startZone = ZoneProgress.Current;
+        currentZoneMode = startZone;
 
+        if (startZone == Zone.ChatWilly ||
+            startZone == Zone.Zone1 ||
+            startZone == Zone.ZoneBoss1 ||
+            startZone == Zone.Zone2 ||
+            startZone == Zone.ZoneBoss2)
+        {
+            RunStats.Begin(RunMode.Story, startZone);
+        }
 
         Debug.Log(":::::>>>>>>>>>>" + currentZoneMode);
 
@@ -91,6 +100,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         {
             playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = false;
             currentZoneMode = Zone.Zone1;
+            RunStats.SetZone(currentZoneMode);
             PlayerCar.SetActive(false);
             AiCar.SetActive(false);
             ai_Chat_Triger.SetActive(true);
@@ -178,6 +188,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
                 currentZoneMode = Zone.ZoneBoss1;
                 // PIMLR (playtest): persist zone progression through its typed owner.
                 ZoneProgress.Current = currentZoneMode;
+                RunStats.SetZone(currentZoneMode);
                 SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone1_Enemy_Battle);
                 //SpawnBoss();
                 StartCoroutine(WaitForscreenfadeOut("0/1"));
@@ -200,6 +211,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
                 // PIMLR (playtest): persist zone progression through its typed owner.
                 ZoneProgress.Current = currentZoneMode;
+                RunStats.SetZone(currentZoneMode);
                 //SceneManagerScript.Instance.goalPanel.
             }
         }
@@ -213,6 +225,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
             currentZoneMode = Zone.Zone2;
             // PIMLR (playtest): persist zone progression through its typed owner.
             ZoneProgress.Current = currentZoneMode;
+            RunStats.SetZone(currentZoneMode);
             SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo("1/ 1");
             StartCoroutine(WaitForscreenfadeOut("0/10"));
             zone1Finish = false;
@@ -276,6 +289,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     public void OnKillEnemy()
     {
         zombiesKilled += 1;
+        RunStats.RegisterKill();
 
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(zombiesKilled.ToString() + " / 10");
 
@@ -283,15 +297,32 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         {
             //PersistentAudioManager.Instance.musicPlayer.shopPointsInt += 10;
             CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() + 10);
+            RunStats.AddCoins(10);
 
         }
         else
         {
             //PersistentAudioManager.Instance.musicPlayer.shopPointsInt += 5;
             CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() + 5);
+            RunStats.AddCoins(5);
         }
     }
 
+    public void CompleteStory()
+    {
+        if (!RunStats.Active || RunStats.Mode != RunMode.Story)
+            return;
+
+        RunSnapshot final = RunStats.End(RunEndReason.Completed);
+        LeaderboardManager.TrySubmit(final);
+        ZoneProgress.Current = Zone.ChatWilly;
+    }
+
+    private void OnDestroy()
+    {
+        if (RunStats.Active && RunStats.Mode == RunMode.Story)
+            RunStats.End(RunEndReason.Abandoned);
+    }
 
     public void BossDead()
     {

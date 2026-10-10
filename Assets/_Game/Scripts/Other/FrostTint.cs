@@ -10,7 +10,7 @@ public class FrostTint : MonoBehaviour
     [Tooltip("The colour the model is pushed toward while frozen.")]
     [SerializeField] private Color frostColor = new Color(0.35f, 0.65f, 1f, 1f);
     [Tooltip("0 = no tint, 1 = fully frostColor.")]
-    [Range(0f, 1f)] [SerializeField] private float strength = 0.7f;
+    [Range(0f, 1f)] [SerializeField] private float strength = 1f;
 
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor"); // URP Lit, Simple Lit, Unlit
     private static readonly int ColorId = Shader.PropertyToID("_Color");         // Built-in and legacy shaders

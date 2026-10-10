@@ -27,6 +27,7 @@ namespace JUTPS
         public bool IsDead;
 
         public Slider healthSlider;
+        private bool frozenByRay; // PIMLR (playtest): true while the Freeze Ray holds this character
 
         Rigidbody rb;
         Animator animator;
@@ -77,7 +78,7 @@ namespace JUTPS
                     damage = (damage / 2);
                 }
 
-                if (AuthManager.Instance.achievementReward == AchievementReward.FreezeRay && this.transform.name != "My Player")
+                if (AuthManager.Instance.achievementReward == AchievementReward.FreezeRay && this.transform.name != "My Player" && Health - damage > 0f)
                 {
                     if (gameObject.name != "Police (AI Chaser)")
                     {
@@ -87,6 +88,7 @@ namespace JUTPS
                         CancelInvoke(nameof(ReFreeze));
                         Invoke(nameof(ReFreeze), 3);
                         SetAIFrozen(true);
+                        frozenByRay = true;
                         FrostTint.Freeze(gameObject);
                     }
                     else
@@ -107,6 +109,8 @@ namespace JUTPS
 
                 }
             }
+            // PIMLR (playtest): release a frozen enemy the moment a hit would kill it.
+            if (frozenByRay && rcc_CarControllerV3 == null && Health - damage <= 0f) ReleaseFreezeForDeath();
             Health -= damage;
             if (healthSlider != null)
                 healthSlider.value = Health;
@@ -123,6 +127,17 @@ namespace JUTPS
             }
         }
 
+        // PIMLR (playtest): a killing blow on a frozen enemy releases the freeze at once so the ragdoll or death animation plays immediately.
+        // The AI brain is left off because a dead enemy needs none.
+        private void ReleaseFreezeForDeath()
+        {
+            CancelInvoke(nameof(ReFreeze));
+            frozenByRay = false;
+            FrostTint.Thaw(gameObject);
+            if (rb != null) rb.isKinematic = false;
+            if (animator != null) animator.enabled = true;
+        }
+
         // PIMLR (playtest): a frozen enemy must not shoot, aim or chase. Switch its AI brain (PatrolAI, ZombieAI) off while frozen.
         private void SetAIFrozen(bool frozen)
         {
@@ -136,9 +151,10 @@ namespace JUTPS
 
         void ReFreeze()
         {
-            // PIMLR (playtest): allow the gunner enemies to shoot again, and remove the blue tint from all enemies.
-            SetAIFrozen(false);
+            // PIMLR (playtest): remove the blue tint and re-enable the AI brain first.
             FrostTint.Thaw(gameObject);
+            SetAIFrozen(false);
+            frozenByRay = false;
 
             if (rcc_CarControllerV3 != null)
             {
@@ -149,6 +165,14 @@ namespace JUTPS
             }
             else
             {
+                // PIMLR (playtest): never pull a corpse out of its ragdoll or death pose. A ragdoll needs the animator off.
+                if (IsDead)
+                {
+                    JUTPS.PhysicsScripts.AdvancedRagdollController ragdoll = GetComponent<JUTPS.PhysicsScripts.AdvancedRagdollController>();
+                    if (animator != null && (ragdoll == null || !ragdoll.RagdollEnabled)) animator.enabled = true;
+                    return;
+                }
+
                 if (rb != null) rb.isKinematic = false;
                 if (animator != null) animator.enabled = true;
             }

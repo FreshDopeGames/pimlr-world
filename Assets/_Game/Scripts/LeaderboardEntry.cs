@@ -38,3 +38,16 @@ public class LeaderboardData
     public List<LeaderboardEntry> infiniteModeEntries = new List<LeaderboardEntry>();
     public List<LeaderboardEntry> storyModeEntries = new List<LeaderboardEntry>();
 }
+
+[Serializable]
+public class SessionSummary
+{
+    public string sessionId;
+    public string playerName;
+    public int runs;
+    public int bestWave;
+    public int bestKills;
+    public float bestSurvivalTime;
+    public float bestStoryTime;
+    public string lastPlayedISO;
+}

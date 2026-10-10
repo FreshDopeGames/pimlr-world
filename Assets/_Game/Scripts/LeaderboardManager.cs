@@ -26,6 +26,8 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
 
     public enum InfiniteModeSortMode { Wave, Kills, SurvivalTime }
 
+    public event Action Changed;
+
     public override void Awake()
     {
         base.Awake();
@@ -153,6 +155,79 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
     {
         return data.storyModeEntries;
     }
+
+    public List<SessionSummary> GetSessionSummaries()
+    {
+        return data.infiniteModeEntries
+            .Concat(data.storyModeEntries)
+            .GroupBy(entry => entry.anonymousPlayerId ?? string.Empty)
+            .Select(group =>
+            {
+                List<LeaderboardEntry> entries = group.ToList();
+                List<LeaderboardEntry> storyEntries = data.storyModeEntries
+                    .Where(entry => (entry.anonymousPlayerId ?? string.Empty) == group.Key)
+                    .ToList();
+                LeaderboardEntry mostRecentEntry = entries
+                    .OrderByDescending(entry => entry.dateISO)
+                    .First();
+
+                return new SessionSummary
+                {
+                    sessionId = group.Key,
+                    playerName = mostRecentEntry.playerName,
+                    runs = entries.Count,
+                    bestWave = entries.Max(entry => entry.wave),
+                    bestKills = entries.Max(entry => entry.kills),
+                    bestSurvivalTime = entries.Max(entry => entry.survivalTime),
+                    bestStoryTime = storyEntries.Count > 0
+                        ? storyEntries.Min(entry => entry.completionTime)
+                        : 0f,
+                    lastPlayedISO = mostRecentEntry.dateISO
+                };
+            })
+            .OrderByDescending(summary => summary.bestWave)
+            .ThenByDescending(summary => summary.bestKills)
+            .ToList();
+    }
+
+    public int GetInfiniteRank(InfiniteModeSortMode sortMode, string sessionId)
+    {
+        List<LeaderboardEntry> sortedEntries = GetInfiniteModeTop(sortMode, int.MaxValue);
+        for (int i = 0; i < sortedEntries.Count; i++)
+        {
+            if (string.Equals(sortedEntries[i].anonymousPlayerId, sessionId, StringComparison.Ordinal))
+                return i + 1;
+        }
+
+        return 0;
+    }
+
+    public int GetStoryRank(string sessionId)
+    {
+        List<LeaderboardEntry> sortedEntries = GetStoryModeTop(int.MaxValue);
+        for (int i = 0; i < sortedEntries.Count; i++)
+        {
+            if (string.Equals(sortedEntries[i].anonymousPlayerId, sessionId, StringComparison.Ordinal))
+                return i + 1;
+        }
+
+        return 0;
+    }
+
+    public int GetInfiniteCount()
+    {
+        return data.infiniteModeEntries.Count;
+    }
+
+    public int GetStoryCount()
+    {
+        return data.storyModeEntries.Count;
+    }
+
+    public string ExportJson()
+    {
+        return PlayerPrefs.GetString(SaveKey, string.Empty);
+    }
     #endregion
 
     #region Persistence
@@ -162,6 +237,7 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
         TrimOldest(data.storyModeEntries);
         PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(data));
         PlayerPrefs.Save();
+        Changed?.Invoke();
     }
 
     // Trims by date rather than any single metric, so pruning never biases
