@@ -222,12 +222,12 @@ public class LeaderboardUI : MonoBehaviour
     private string GetHeaderText()
     {
         if (currentMode == BoardMode.Story)
-            return "Story Mode: Fastest runs";
+            return "Story Mode: Fastest Runs";
 
         return currentSort switch
         {
-            LeaderboardManager.InfiniteModeSortMode.Kills => "Infinite Mode: Most washes",
-            LeaderboardManager.InfiniteModeSortMode.SurvivalTime => "Infinite Mode: Longest run",
+            LeaderboardManager.InfiniteModeSortMode.Kills => "Infinite Mode: Most Washes",
+            LeaderboardManager.InfiniteModeSortMode.SurvivalTime => "Infinite Mode: Longest Run",
             _ => "Infinite Mode: Most waves"
         };
     }
