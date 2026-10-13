@@ -1,6 +1,7 @@
 using JUTPS;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlmrMainMenuPanel : MonoBehaviour
 {
@@ -9,6 +10,16 @@ public class PlmrMainMenuPanel : MonoBehaviour
     public JUCharacterController characterController;
     public GameObject target;
     [SerializeField] TextMeshProUGUI coinText;
+    // PIMLR: this panel's own background. The panel GameObject must stay active (Update listens for Tab),
+    // so its background is shown/hidden alongside `target` instead. Auto-filled from this object if empty.
+    [SerializeField] Graphic panelBackground;
+
+    private void Awake()
+    {
+        if (panelBackground == null)
+            panelBackground = GetComponent<Graphic>();
+    }
+
     private void Start()
     {
         var player = GameObject.FindWithTag("Player");
@@ -160,6 +171,9 @@ public class PlmrMainMenuPanel : MonoBehaviour
     private void Update()
     {
         HandleToggleTarget();
+
+        if (panelBackground)
+            panelBackground.enabled = target.activeSelf;
 
         if (target.activeSelf)
         {
