@@ -37109,6 +37109,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5926591025741753149, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5968127779487638241, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: nameText
@@ -37187,6 +37192,26 @@ PrefabInstance:
     - target: {fileID: 6269894601344317667, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6407666362720285440, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.972549
+      objectReference: {fileID: 0}
+    - target: {fileID: 6407666362720285440, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6407666362720285440, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6407666362720285440, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
+        type: 3}
+      propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6865848879604488735, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
@@ -41727,10 +41752,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b737fcabde8ee108ac20
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 1
-    SkinTone: '#b37554'
 --- !u!4 &4057967204248243470
 Transform:
   m_ObjectHideFlags: 0
