@@ -128,7 +128,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         {
             playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = true;
             StartCoroutine(WaitForscreenfadeOut("0/1"));
-            Invoke("SpawnBoss", 3);
+            Invoke("SpawnBoss", 4.5f); // PIMLR: right as the zone card closes (was 3 s, under the card)
 
         }
         else if (currentZoneMode == Zone.Zone2)
@@ -223,7 +223,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
                 SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone1_Enemy_Battle);
                 //SpawnBoss();
                 StartCoroutine(WaitForscreenfadeOut("0/1"));
-                Invoke("SpawnBoss", 10f);
+                // PIMLR: was 10 s - left ~6 s of empty street after the "0/1" zone card (1 s fade + 3 s card).
+                Invoke("SpawnBoss", 4.5f);
             }
             if (zone2Start)
             {
@@ -366,7 +367,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         playerInventory.EquipItem(playerInventory.AllHoldableItems[0].ItemSwitchID);
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo("0 / 1");
         Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false;
-        zombieBoss.SetActive(true);
+        // PIMLR: the boss steps out of a portal where it's placed instead of popping in.
+        PimlrEnemySpawnDirector.Arrive(zombieBoss, relocate: false);
     }
 
     public void UpgradeGun()

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1e5a0d2b9f4e6a8d3c1b0a9f8e7d6c, type: 3}
+  m_Name: PimlrSpawnFX
+  m_EditorClassIdentifier: 
+  portalPrefab: {fileID: 152368, guid: 023211deead76c94dad691d75c768a7d, type: 3}
+  arrivalBurstPrefab: {fileID: 121496, guid: 5e8a137808d7d374487f34e236c723db, type: 3}
+  portalScale: 0.8
+  burstScale: 0.7
+  portalHeight: 1.1
+  portalLifetime: 2.6
+  burstLifetime: 2.5
+  portalOpenSfx: {fileID: 8300000, guid: b7a210df23bd255428bdf4def67109f2, type: 3}
+  arrivalSfx: {fileID: 8300000, guid: 96bbf34d7aee725449bb8a5f1a46bfbb, type: 3}
+  sfxVolume: 0.685
+  sfxMaxDistance: 60
+  stepThroughDelay: 0.65
+  minDistanceFromPlayer: 10
+  maxDistanceFromPlayer: 55
+  preferOffScreen: 0
+  maxHeightDifference: 3
+  spreadRadius: 3

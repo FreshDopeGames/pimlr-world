@@ -153,9 +153,10 @@ public class InfiniteMode : Singleton<InfiniteMode>
 
                 enemy.Health = enemy.MaxHealth;
 
-                enemy.gameObject.SetActive(true);
+                // PIMLR: trickle in through portals down the street instead of all appearing in the intersection.
+                PimlrEnemySpawnDirector.Arrive(enemy.gameObject);
 
-                yield return new WaitForSeconds(0.3f);
+                yield return new WaitForSeconds(Random.Range(0.9f, 1.8f));
             }
         }
         else
@@ -177,8 +178,9 @@ public class InfiniteMode : Singleton<InfiniteMode>
 
                 enemy.Health = enemy.MaxHealth;
 
-                enemy.gameObject.SetActive(true);
-
+                // PIMLR: bosses arrive through portals too, a beat apart.
+                PimlrEnemySpawnDirector.Arrive(enemy.gameObject);
+                yield return new WaitForSeconds(Random.Range(1.5f, 2.5f));
             }
         }
     }

@@ -41,7 +41,7 @@ public class LeaderboardUI : MonoBehaviour
     private readonly List<LeaderboardRow> spawnedRows = new List<LeaderboardRow>();
     private LeaderboardManager subscribedManager;
 
-    // PIMLR (playtest): the board defaults to Infinite Mode and its Wave sort whenever it opens.
+    // PIMLR (playtest): the board opens on Story Mode; Infinite keeps its Wave sort ready for when you switch.
     private enum BoardMode { Infinite, Story }
     private BoardMode currentMode;
     private LeaderboardManager.InfiniteModeSortMode currentSort;
@@ -56,7 +56,7 @@ public class LeaderboardUI : MonoBehaviour
         if (storyModeButton != null) storyModeButton.onClick.AddListener(OnStoryModeClicked);
         if (backButton != null) backButton.onClick.AddListener(OnBackButton);
 
-        currentMode = BoardMode.Infinite;
+        currentMode = BoardMode.Story;
         currentSort = LeaderboardManager.InfiniteModeSortMode.Wave;
 
         subscribedManager = LeaderboardManager.Instance;
@@ -228,7 +228,7 @@ public class LeaderboardUI : MonoBehaviour
         {
             LeaderboardManager.InfiniteModeSortMode.Kills => "Infinite Mode: Most Washes",
             LeaderboardManager.InfiniteModeSortMode.SurvivalTime => "Infinite Mode: Longest Run",
-            _ => "Infinite Mode: Most waves"
+            _ => "Infinite Mode: Most Waves"
         };
     }
 

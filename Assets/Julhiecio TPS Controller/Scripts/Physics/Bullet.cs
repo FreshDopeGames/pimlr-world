@@ -47,6 +47,14 @@ namespace JUTPS.WeaponSystem
 
         public TrailRenderer trailRenderer;
 
+        // PIMLR: optional bullet drop (m/s^2). 0 = stock straight-line bullet. The water gun uses this so a
+        // stream arcs down over distance instead of sniping across the map.
+        [Header("PIMLR Ballistics")]
+        [Tooltip("Downward acceleration in m/s^2 (9.81 = real gravity). 0 = no drop.")]
+        public float DropGravity = 0f;
+        private Vector3 ballisticVelocity;
+        private bool UsesDrop => DropGravity > 0f;
+
         void Start()
         {
             if (AuthManager.Instance)
@@ -64,10 +72,18 @@ namespace JUTPS.WeaponSystem
 
             if (IsDestinationAHead() == false && MovementType != BulletMovementType.Physics) MovementType = BulletMovementType.Physics;
 
+            // PIMLR: a dropping bullet can't fly a straight path to the crosshair point - simulate it instead.
+            if (UsesDrop)
+            {
+                MovementType = BulletMovementType.Physics;
+                ballisticVelocity = transform.forward * BulletVelocity;
+            }
+
             //If movement is physic type
             if (MovementType == BulletMovementType.Physics)
             {
                 rb.velocity = transform.forward * BulletVelocity;
+                if (UsesDrop) rb.useGravity = false; // we apply DropGravity ourselves
             }
             else
             {
@@ -117,6 +133,13 @@ namespace JUTPS.WeaponSystem
 
         private void MovePhysically()
         {
+            if (UsesDrop)
+            {
+                ballisticVelocity += Vector3.down * DropGravity * Time.fixedDeltaTime;
+                rb.velocity = ballisticVelocity;
+                if (ballisticVelocity.sqrMagnitude > 0.01f) transform.rotation = Quaternion.LookRotation(ballisticVelocity);
+                return;
+            }
             rb.velocity = transform.forward * BulletVelocity;
         }
         private void MoveForward()

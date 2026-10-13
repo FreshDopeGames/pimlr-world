@@ -32,6 +32,19 @@ public class ChatbotUIController : MonoBehaviour
     {
         ConfigureDialogueButton();
         ConfigureCloseButton();
+        ConfigureControllerNavigation();
+    }
+
+    // PIMLR: controller support - Next is focused when the dialog opens (A / Cross presses it),
+    // B / Circle closes the dialog, and the unused text field is never focused.
+    private void ConfigureControllerNavigation()
+    {
+        if (sendButton != null) PimlrNavHint.On(sendButton).defaultPriority = 100;
+        if (inputField != null) PimlrNavHint.On(inputField).skip = true;
+
+        if (aiChatInteraction != null && aiChatInteraction.ai_BOT_Canvas != null)
+            foreach (Button button in aiChatInteraction.ai_BOT_Canvas.GetComponentsInChildren<Button>(true))
+                if (button != null && button.name == "Close Button") PimlrNavHint.On(button).isCancel = true;
     }
 
     void Start()

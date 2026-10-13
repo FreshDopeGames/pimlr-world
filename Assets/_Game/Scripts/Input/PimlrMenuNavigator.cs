@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,10 +10,13 @@ using UnityEngine.UI;
 /// <summary>
 /// PIMLR: controller menu navigation for every scene (added to the PIMLR_Input object by PimlrInputRuntime).
 /// Active when a controller is the current input and a menu is up (cursor visible):
-///   - auto-selects a button so there is always a focus,
-///   - D-pad / left stick cycles through every visible, clickable button in reading order
-///     (top-to-bottom, left-to-right; buttons covered by an overlay are skipped),
+///   - auto-selects a button when a menu opens (a PimlrNavHint default, e.g. Story Mode / Sirihanna's Next,
+///     otherwise the first button in reading order),
+///   - D-pad / left stick moves spatially: up/down/left/right go to the nearest button in that direction.
+///     Moving up/down into a different group (another panel, the music player) lands on that group's FIRST
+///     button; inside a group (a grid of swatches, a column of tabs) it keeps the same column/row,
 ///   - A / Cross confirms (the scene's InputSystemUIInputModule submits the selected button),
+///   - B / Circle presses the visible Close / Back / Cancel button (or a PimlrNavHint marked as cancel),
 ///   - a pulsing green ring is drawn around the selected button.
 /// While active, JUInputManager mutes gameplay buttons so A doesn't also jump, etc.
 /// </summary>
@@ -36,7 +40,8 @@ public class PimlrMenuNavigator : MonoBehaviour
     Sprite ringSprite;
 
     float rescanTimer, repeatTimer;
-    int heldDir;
+    Vector2Int heldDir;
+    bool wasActive;
 
     InputSystemUIInputModule mutedModule;
     InputActionReference mutedMove;
@@ -63,19 +68,26 @@ public class PimlrMenuNavigator : MonoBehaviour
         if (!active)
         {
             HideRing();
-            heldDir = 0;
+            heldDir = Vector2Int.zero;
+            wasActive = false;
             return;
         }
 
         int index = IndexOf(es.currentSelectedGameObject);
-        if (index < 0)
+        if (index < 0 || !wasActive)
         {
-            index = 0;
-            es.SetSelectedGameObject(items[0].gameObject);
+            // A menu just opened (or the focused button went away): go to its default button.
+            if (index < 0 || HasPreferredDefault(out _)) es.SetSelectedGameObject(PickDefault().gameObject);
+            index = IndexOf(es.currentSelectedGameObject);
+            heldDir = ReadDirection(); // don't treat a still-held D-pad as a fresh press
         }
+        wasActive = true;
 
-        int dir = ReadDirection();
-        if (dir != 0)
+        if (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame && TryCancel())
+            return;
+
+        Vector2Int dir = ReadDirection();
+        if (dir != Vector2Int.zero)
         {
             if (dir != heldDir)
             {
@@ -117,6 +129,7 @@ public class PimlrMenuNavigator : MonoBehaviour
                 continue;
             if (!s.isActiveAndEnabled || !s.IsInteractable()) continue;
             if (IsGameplayHud(s)) continue;
+            if (s.TryGetComponent(out PimlrNavHint skipHint) && skipHint.skip) continue;
 
             var canvas = s.GetComponentInParent<Canvas>();
             if (canvas == null || !canvas.isActiveAndEnabled) continue;
@@ -187,27 +200,117 @@ public class PimlrMenuNavigator : MonoBehaviour
 
     // ---------- input ----------
 
-    static int ReadDirection()
+    static Vector2Int ReadDirection()
     {
         var pad = Gamepad.current;
-        if (pad == null) return 0;
+        if (pad == null) return Vector2Int.zero;
 
         Vector2 v = pad.dpad.ReadValue();
         if (v.sqrMagnitude < 0.25f)
         {
             v = pad.leftStick.ReadValue();
-            if (v.magnitude < 0.6f) return 0;
+            if (v.magnitude < 0.6f) return Vector2Int.zero;
         }
 
-        // Down / Right = next, Up / Left = previous.
-        if (Mathf.Abs(v.y) >= Mathf.Abs(v.x)) return v.y < -0.5f ? 1 : (v.y > 0.5f ? -1 : 0);
-        return v.x > 0.5f ? 1 : (v.x < -0.5f ? -1 : 0);
+        if (Mathf.Abs(v.y) >= Mathf.Abs(v.x)) return v.y > 0.5f ? Vector2Int.up : (v.y < -0.5f ? Vector2Int.down : Vector2Int.zero);
+        return v.x > 0.5f ? Vector2Int.right : (v.x < -0.5f ? Vector2Int.left : Vector2Int.zero);
     }
 
-    void Step(EventSystem es, int index, int dir)
+    // ---------- defaults / cancel ----------
+
+    bool HasPreferredDefault(out Selectable best)
     {
-        int next = (index + dir + items.Count) % items.Count;
-        es.SetSelectedGameObject(items[next].gameObject);
+        best = null; int bestPriority = int.MinValue;
+        foreach (var s in items)
+            if (s.TryGetComponent(out PimlrNavHint h) && h.defaultPriority > 0 && h.defaultPriority > bestPriority)
+            { best = s; bestPriority = h.defaultPriority; }
+        if (best == null)
+            foreach (var s in items)
+                if (s.name.IndexOf("Story Mode", System.StringComparison.OrdinalIgnoreCase) >= 0) { best = s; break; }
+        return best != null;
+    }
+
+    Selectable PickDefault() => HasPreferredDefault(out var best) ? best : items[0];
+
+    static readonly string[] CancelNames = { "Close", "Back", "Cancel" };
+
+    bool TryCancel()
+    {
+        Selectable target = null;
+        foreach (var s in items)
+            if (s.TryGetComponent(out PimlrNavHint h) && h.isCancel) { target = s; break; }
+        if (target == null)
+            foreach (var s in items)
+            {
+                foreach (var n in CancelNames)
+                    if (s.name.IndexOf(n, System.StringComparison.OrdinalIgnoreCase) >= 0) { target = s; break; }
+                if (target != null) break;
+            }
+        if (target == null) return false;
+
+        if (target is Button b) b.onClick.Invoke();
+        else ExecuteEvents.Execute(target.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+        rescanTimer = 0f;
+        return true;
+    }
+
+    // ---------- spatial movement ----------
+
+    void Step(EventSystem es, int index, Vector2Int dir)
+    {
+        if (index < 0 || index >= items.Count) return;
+        var from = items[index];
+
+        // Explicit links win.
+        if (from.TryGetComponent(out PimlrNavHint hint))
+        {
+            var link = dir == Vector2Int.up ? hint.up : dir == Vector2Int.down ? hint.down : dir == Vector2Int.left ? hint.left : hint.right;
+            if (link != null && items.Contains(link)) { es.SetSelectedGameObject(link.gameObject); return; }
+        }
+
+        var next = FindInDirection(from, dir);
+        if (next != null) es.SetSelectedGameObject(next.gameObject);
+    }
+
+    Selectable FindInDirection(Selectable from, Vector2Int dir)
+    {
+        Vector2 a = ScreenCenter(from);
+        Vector2 d = dir;
+        bool vertical = dir.y != 0;
+        const float RowTolerance = 24f;
+
+        // 1) everything ahead of us in that direction (within a 60 degree-ish cone, generous for grids)
+        var ahead = new List<Selectable>();
+        foreach (var s in items)
+        {
+            if (s == from) continue;
+            Vector2 v = ScreenCenter(s) - a;
+            float along = Vector2.Dot(v, d);
+            if (along <= 4f) continue;
+            float across = Mathf.Abs(vertical ? v.x : v.y);
+            if (!vertical && across > Mathf.Max(along * 1.2f, RowTolerance)) continue; // left/right: stay roughly in the row
+            ahead.Add(s);
+        }
+        if (ahead.Count == 0) return null;
+
+        if (!vertical)
+        {
+            // Nearest, strongly preferring the same row.
+            return ahead.OrderBy(s => { Vector2 v = ScreenCenter(s) - a; return Mathf.Abs(v.x) + 3f * Mathf.Abs(v.y); }).First();
+        }
+
+        // 2) vertical: the nearest row in that direction ...
+        float nearest = ahead.Min(s => Mathf.Abs(ScreenCenter(s).y - a.y));
+        var row = ahead.Where(s => Mathf.Abs(ScreenCenter(s).y - a.y) - nearest <= RowTolerance).ToList();
+
+        // ... same group (same parent: a grid / a column of tabs) -> keep the column;
+        // different group (another panel, the music player) -> its first (left-most) button.
+        var sameGroup = row.Where(s => s.transform.parent == from.transform.parent).ToList();
+        if (sameGroup.Count > 0)
+            return sameGroup.OrderBy(s => Mathf.Abs(ScreenCenter(s).x - a.x)).First();
+
+        // A closer row in our own group further away would be odd UI; prefer it only if nothing else is in the row.
+        return row.OrderBy(s => ScreenCenter(s).x).First();
     }
 
     // The UI module's own spatial navigation would also react to the D-pad; mute it while we navigate.

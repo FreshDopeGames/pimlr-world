@@ -14827,6 +14827,7 @@ MonoBehaviour:
     ParticleFXPrefab: {fileID: 1473089736959414, guid: cb9bf8f7ab7299344a48e3eb96d6a266,
       type: 3}
   trailRenderer: {fileID: 346526967013483734}
+  DropGravity: 12
 --- !u!135 &6703740975196170978
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -19,6 +19,15 @@ public class MusicSystem : MonoBehaviour
     public GameObject idleSystem, activeSystem;
     public GameObject idleSystem2, activeSystem2;
 
+    // PIMLR: one player panel for playing AND paused (the ActiveSystem layout). The Idle panels are kept hidden;
+    // the play/pause button swaps its icon and the disc stops spinning while paused.
+    [Header("PIMLR single-panel player")]
+    [Tooltip("Icon shown on play/pause while paused. Auto-taken from the Idle panel's play/pause button if empty.")]
+    public Sprite playIcon;
+    [Tooltip("Icon shown on play/pause while playing. Auto-taken from the ActiveSystem panel's play/pause button if empty.")]
+    public Sprite pauseIcon;
+    bool panelsPrepared;
+
     public Color selectedRepeatedMode;
     public Image repeatedModelBtn;
     bool isRepetedMusic;
@@ -43,6 +52,8 @@ public class MusicSystem : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        PreparePanels();
+        ApplyPanelState();
         SceneManagerScript.Instance.musicSystem = this;
         MusicData[] musicData = SceneManagerScript.Instance.musicData;
         audioList = new List<AudioClip>();
@@ -110,18 +121,8 @@ public class MusicSystem : MonoBehaviour
             Debug.Log("isStoping" + musicSystem.time);
             musicSystem.Pause();
             currentTime = musicSystem.time;
-            idleSystem.SetActive(true);
-            activeSystem.SetActive(false);
-
-            if (idleSystem2)
-            {
-                idleSystem2.SetActive(true);
-            }
-            if (activeSystem2)
-            {
-                activeSystem2.SetActive(false);
-            }
             music = false;
+            ApplyPanelState(); // PIMLR: same panel, play icon, disc stops
 
             // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null" — scenes like SceneStaticEU have no UI_GoalPanel.
             if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
@@ -142,9 +143,8 @@ public class MusicSystem : MonoBehaviour
             musicSystem.time = Mathf.Clamp(currentTime, 0f, musicSystem.clip.length);
             musicSystem.Play();
             songName = musicSystem.clip.name;
-            idleSystem.SetActive(false);
-            activeSystem.SetActive(true);
             music = true;
+            ApplyPanelState(); // PIMLR: same panel, pause icon, disc spins
 
             // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
             if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
@@ -160,17 +160,61 @@ public class MusicSystem : MonoBehaviour
                     }
                 }
             }
-            if (idleSystem2)
-            {
-                idleSystem2.SetActive(false);
-            }
-            if (activeSystem2)
-            {
-                activeSystem2.SetActive(true);
-            }
         }
 
     }
+
+    // ---------- PIMLR single-panel player ----------
+
+    void PreparePanels()
+    {
+        if (panelsPrepared) return;
+        panelsPrepared = true;
+        if (!playIcon) playIcon = IconOf(idleSystem) ? IconOf(idleSystem) : IconOf(idleSystem2);
+        if (!pauseIcon) pauseIcon = IconOf(activeSystem) ? IconOf(activeSystem) : IconOf(activeSystem2);
+    }
+
+    /// <summary>Shows the one panel per player and sets the play/pause icon + disc spin for the current state.</summary>
+    void ApplyPanelState()
+    {
+        PreparePanels();
+        ApplyPanel(activeSystem, idleSystem);
+        ApplyPanel(activeSystem2, idleSystem2);
+    }
+
+    void ApplyPanel(GameObject panel, GameObject idle)
+    {
+        // No ActiveSystem assigned for this player: fall back to using its Idle panel as the single panel.
+        GameObject shown = panel ? panel : idle;
+        if (!shown) return;
+        if (idle && idle != shown) idle.SetActive(false);
+        shown.SetActive(true);
+
+        var button = FindPlayPauseImage(shown);
+        if (button)
+        {
+            Sprite icon = music ? pauseIcon : playIcon;
+            if (icon) { button.sprite = icon; button.preserveAspect = true; }
+        }
+
+        foreach (var rotator in shown.GetComponentsInChildren<JUTPS.Utilities.JUAutoRotator>(true))
+            rotator.enabled = music;
+    }
+
+    static Sprite IconOf(GameObject panel)
+    {
+        var img = FindPlayPauseImage(panel);
+        return img != null ? img.sprite : null;
+    }
+
+    static Image FindPlayPauseImage(GameObject panel)
+    {
+        if (!panel) return null;
+        foreach (var t in panel.GetComponentsInChildren<Transform>(true))
+            if (t.name == "play/pause" && t.TryGetComponent(out Image img)) return img;
+        return null;
+    }
+
 
     public void OnMusicShopClick()
     {
@@ -197,6 +241,7 @@ public class MusicSystem : MonoBehaviour
         songName = musicSystem.clip.name;
         //Debug.Log("  " + musicSystem.clip.length);
         musicSystem.Play();
+        music = true; ApplyPanelState(); // PIMLR: skipping tracks starts playback - show the pause icon / spin
         // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
         if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
         {
@@ -232,6 +277,7 @@ public class MusicSystem : MonoBehaviour
         songName = musicSystem.clip.name;
         //Debug.Log("  " + musicSystem.clip.length);
         musicSystem.Play();
+        music = true; ApplyPanelState(); // PIMLR: skipping tracks starts playback - show the pause icon / spin
         // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
         if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
         {
@@ -261,6 +307,7 @@ public class MusicSystem : MonoBehaviour
         musicSystem.clip = audioList[currentSoundClipCount];
         songName = musicSystem.clip.name;
         musicSystem.Play();
+        music = true; ApplyPanelState(); // PIMLR: skipping tracks starts playback - show the pause icon / spin
         // PIMLR #14: added "&& SceneManagerScript.Instance.goalPanel != null".
         if (SceneManagerScript.Instance != null && SceneManager.GetActiveScene().name != "00_MainMenu" && SceneManagerScript.Instance.goalPanel != null)
         {

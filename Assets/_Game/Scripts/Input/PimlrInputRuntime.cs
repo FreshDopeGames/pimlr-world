@@ -44,6 +44,7 @@ public class PimlrInputRuntime : MonoBehaviour
         PimlrPlayerFeel.ApplyToPlayers();
         PimlrControlsInfo.InstallAll();
         PimlrVehicleInteractZone.InstallAll();
+        PimlrHomeButtons.InstallAll();
     }
 
     void OnDeviceChange(InputDevice device, InputDeviceChange change)

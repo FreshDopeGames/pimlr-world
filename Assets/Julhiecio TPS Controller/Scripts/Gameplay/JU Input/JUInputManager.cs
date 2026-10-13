@@ -64,7 +64,7 @@ namespace JUTPS.JUInputSystem
 
 		[Header("PIMLR Gamepad Look")]
 		[Tooltip("Right-stick camera speed, as an equivalent mouse delta per frame at full deflection.")]
-		public float GamepadLookSpeed = 14f;
+		public float GamepadLookSpeed = 5f;
 		[Range(0f, 0.5f)] public float GamepadLookDeadzone = 0.15f;
 		[Tooltip("PIMLR: scales up/down camera look (mouse and right stick). 1 = stock JUTPS.")]
 		[Range(0.05f, 1f)] public float VerticalLookScale = 0.3f;

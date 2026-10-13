@@ -57,6 +57,11 @@ public class GrenadeThrower : MonoBehaviour
         animator = GetComponent<Animator>();
         ownColliders = GetComponentsInChildren<Collider>();
         throwTriggerHash = Animator.StringToHash(throwTriggerName);
+
+        // PIMLR: bombers keep their distance (face + back away, random pushes in). Added here so every bomber
+        // prefab/spawn gets it without editing prefabs; add it in the Inspector yourself to tune per prefab.
+        if (GetComponent<PimlrBomberAI>() == null && GetComponent<JUTPS.JUCharacterController>() != null)
+            gameObject.AddComponent<PimlrBomberAI>();
     }
 
     private void OnEnable()

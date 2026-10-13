@@ -62,6 +62,8 @@ namespace JUTPS.Utilities
             {
                 GameObject new_instance = Instantiate(Prefab, transform.position, transform.rotation);
                 if (InstanceLifeTime > 0) { Destroy(new_instance, InstanceLifeTime); }
+                // PIMLR: enemies arrive through a portal down the street instead of popping in here.
+                if (PimlrEnemySpawnDirector.IsEnemy(new_instance)) PimlrEnemySpawnDirector.Arrive(new_instance);
 
                 Spawneds.Add(new_instance);
             }
@@ -82,6 +84,8 @@ namespace JUTPS.Utilities
                         GameObject new_instance = Instantiate(PrefabsToInstantiate[idToInstantiate], randomPosOnArea + PositionOffset, RandomRotation ? Quaternion.Euler(0, Random.Range(-360, 360), 0) : PrefabsToInstantiate[idToInstantiate].transform.rotation);
 
                         if (InstanceLifeTime > 0) { Destroy(new_instance, InstanceLifeTime); }
+                        // PIMLR: enemies arrive through a portal down the street instead of popping in here.
+                        if (PimlrEnemySpawnDirector.IsEnemy(new_instance)) PimlrEnemySpawnDirector.Arrive(new_instance);
 
                         Spawneds.Add(new_instance);
                     }

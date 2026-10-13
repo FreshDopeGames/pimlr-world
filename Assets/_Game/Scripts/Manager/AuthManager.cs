@@ -148,6 +148,7 @@ public class AuthManager : Singleton<AuthManager>
     // PIMLR (playtest): reset local identity and progress, then wait for a name before loading.
     public void NewGame()
     {
+        PimlrSessionFlow.RequestNewGame(); // PIMLR: new players get the Living Room intro
         PlayerSession.Reset();
         SessionState.ResetProgress();
 
@@ -170,6 +171,7 @@ public class AuthManager : Singleton<AuthManager>
             return;
         }
 
+        PimlrSessionFlow.RequestContinue(); // PIMLR: returning players skip the Living Room intro
         BeginLoad("KeepPlaying Button");
     }
 

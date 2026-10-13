@@ -33,6 +33,16 @@ public class DialogueAwakener : MonoBehaviour
         uILevelCompletePopUp = uiManager != null ? uiManager.GetMenu<UILevelCompletePopUp>("Zone Panel") : null;
         if (uILevelCompletePopUp == null)
             Debug.LogWarning("DialogueAwakener: UIManager could not find UILevelCompletePopUp on 'Zone Panel'.", this);
+
+        // PIMLR: continuing players (back from YannicksWorld, or Keep Playing on the main menu) already know the
+        // exposition - skip the intro dialogue and bring the main menu up 1 s after the scene fades in.
+        if (SceneManager.GetActiveScene().name == PimlrSessionFlow.HubScene && PimlrSessionFlow.SkipHubIntro)
+        {
+            isInteracted = true; // the player spawns inside this trigger - don't start the dialogue
+            StartCoroutine(ShowHubMenuAfterFadeIn());
+            return;
+        }
+
         if (SceneManager.GetActiveScene().name != "SceneStaticEU")
         {
             // PIMLR (playtest): compare the typed persisted zone instead of string values.
@@ -194,6 +204,28 @@ public class DialogueAwakener : MonoBehaviour
         GameExecutionManager.Instance.zombieSpawner.gameObject.SetActive(true);
         CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() - 40);
         
+    }
+
+    // PIMLR: same end state as finishing the intro (EndDialogBox), minus the dialogue.
+    private IEnumerator ShowHubMenuAfterFadeIn()
+    {
+        // Wait for the loading screen to close (the loader finishes activating this scene first), then 1 s.
+        yield return null;
+        yield return new WaitForSecondsRealtime(1.0f);
+
+        UIManager ui = SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null
+            ? SceneManagerScript.Instance.uiManager
+            : FindObjectOfType<UIManager>();
+        // Same player state the intro leaves behind (frozen, cursor free) so the menu behaves identically.
+        if (characterController == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) characterController = player.GetComponent<JUCharacterController>();
+        }
+        if (characterController != null) PlayerControllerStop();
+
+        if (ui != null) ui.ShowMenu("PLMRMainMenuPanel");
+        else Debug.LogWarning("DialogueAwakener: no UIManager to show PLMRMainMenuPanel.", this);
     }
 
     private IEnumerator WaitForscreenfadeOut()

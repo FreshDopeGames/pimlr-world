@@ -52,6 +52,15 @@ public class PimlrControlsInfo : MonoBehaviour
 
     RectTransform template;
     Text header;
+    PimlrControlScheme shownScheme;
+    bool hasShown;
+
+    // HUD copy (under "JUTPS Interface") fades out shortly after arriving in a gameplay scene; the pause-menu
+    // copy always stays. The HUD's info toggle button can still bring it back.
+    public const float HudVisibleSeconds = 10f;
+    public const float HudFadeSeconds = 1f;
+    CanvasGroup group;
+    Coroutine fade;
     float startY, spacing, boxLeft, descGap;
     readonly System.Collections.Generic.List<RectTransform> rows = new System.Collections.Generic.List<RectTransform>();
     bool built;
@@ -61,8 +70,51 @@ public class PimlrControlsInfo : MonoBehaviour
         foreach (var rt in FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (rt.name != "Controls Info" || rt.Find("Move Buttons") == null) continue;
-            if (!rt.GetComponent<PimlrControlsInfo>()) rt.gameObject.AddComponent<PimlrControlsInfo>();
+            var info = rt.GetComponent<PimlrControlsInfo>();
+            if (!info) info = rt.gameObject.AddComponent<PimlrControlsInfo>();
+
+            // Only one may own the panel (a duplicate would draw a second, stale set of rows on top).
+            foreach (var extra in rt.GetComponents<PimlrControlsInfo>())
+                if (extra != info) Destroy(extra);
+
+            if (info.IsHud && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "YannicksWorld")
+                info.ShowThenFade();
         }
+    }
+
+    bool IsHud
+    {
+        get
+        {
+            for (Transform t = transform; t != null; t = t.parent)
+                if (t.name == "JUTPS Interface") return true;
+            return false;
+        }
+    }
+
+    /// <summary>Show the HUD controls list, then fade it out after HudVisibleSeconds.</summary>
+    public void ShowThenFade()
+    {
+        if (!group) group = GetComponent<CanvasGroup>();
+        if (!group) group = gameObject.AddComponent<CanvasGroup>();
+        group.alpha = 1f;
+        gameObject.SetActive(true);
+        if (!gameObject.activeInHierarchy) return; // HUD hidden right now - nothing to fade
+        if (fade != null) StopCoroutine(fade);
+        fade = StartCoroutine(FadeAfterDelay());
+    }
+
+    System.Collections.IEnumerator FadeAfterDelay()
+    {
+        yield return new WaitForSeconds(HudVisibleSeconds);
+        for (float t = 0f; t < HudFadeSeconds; t += Time.unscaledDeltaTime)
+        {
+            group.alpha = 1f - t / HudFadeSeconds;
+            yield return null;
+        }
+        group.alpha = 1f;            // full opacity again for when the info button re-opens it
+        fade = null;
+        gameObject.SetActive(false);
     }
 
     void Awake() => Build();
@@ -73,7 +125,18 @@ public class PimlrControlsInfo : MonoBehaviour
         Refresh();
     }
 
-    void OnDisable() => PimlrInput.SchemeChanged -= Refresh;
+    void OnDisable()
+    {
+        PimlrInput.SchemeChanged -= Refresh;
+        fade = null;
+        if (group) group.alpha = 1f;
+    }
+
+    // Belt and braces: never rely on the event alone - if the scheme differs from what's drawn, redraw.
+    void Update()
+    {
+        if (!hasShown || PimlrInput.Scheme != shownScheme) Refresh();
+    }
 
     void Build()
     {
@@ -94,9 +157,12 @@ public class PimlrControlsInfo : MonoBehaviour
         boxLeft = box ? box.anchoredPosition.x - box.sizeDelta.x * 0.5f : -20f;
         descGap = (box && desc) ? desc.anchoredPosition.x - box.sizeDelta.x * 0.5f : 128f;
 
-        // Hide the original hard-coded keyboard rows.
+        // Hide the original hard-coded keyboard rows, and remove rows left by an earlier owner / a cloned panel.
         foreach (Transform child in transform)
+        {
+            if (child.name.StartsWith("PIMLR_Row_")) { child.gameObject.SetActive(false); Destroy(child.gameObject); continue; }
             if (child != headerT && child.Find("Keyboard Control") != null) child.gameObject.SetActive(false);
+        }
 
         built = true;
     }
@@ -107,6 +173,8 @@ public class PimlrControlsInfo : MonoBehaviour
         if (!built) return;
 
         var scheme = PimlrInput.Scheme;
+        shownScheme = scheme;
+        hasShown = true;
         int count = scheme == PimlrControlScheme.KeyboardMouse ? KeyboardRows.Length : GamepadRows.GetLength(0);
 
         if (header)
@@ -134,6 +202,11 @@ public class PimlrControlsInfo : MonoBehaviour
             row.anchoredPosition = new Vector2(row.anchoredPosition.x, startY - i * spacing);
             SetRow(row, key, action);
         }
+
+        // Anything else with a key box that isn't one of our rows is stale - keep it hidden.
+        foreach (Transform child in transform)
+            if (child.gameObject.activeSelf && child.Find("Keyboard Control") != null && !rows.Contains(child as RectTransform))
+                child.gameObject.SetActive(false);
     }
 
     void SetRow(RectTransform row, string key, string action)
