@@ -311,8 +311,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2322,10 +2322,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_NormalColor: {r: 0.3066038, g: 0.35027978, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.042452812, g: 0.101961635, b: 1, a: 1}
+    m_PressedColor: {r: 0.12936097, g: 0.15098621, b: 0.4811321, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2719,7 +2719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showMenuAtStart: Loading Screen
-  createUI: 1
+  createUI: 0
   create_PIMLR_UI: 0
   createPlayerManager: 0
   createEnumManager: 1
@@ -3496,9 +3496,9 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0, g: 0.8207547, b: 0.07345809, a: 1}
-    m_HighlightedColor: {r: 0.18396229, g: 1, b: 0.25814745, a: 1}
-    m_PressedColor: {r: 0, g: 0.5, b: 0.045454502, a: 1}
+    m_NormalColor: {r: 0, g: 0.7075472, b: 0.06355216, a: 1}
+    m_HighlightedColor: {r: 0, g: 0.33962262, b: 0.03183962, a: 1}
+    m_PressedColor: {r: 0.12482201, g: 0.4811321, b: 0.15737827, a: 1}
     m_SelectedColor: {r: 0.015574936, g: 0.6603774, b: 0.074193284, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -3775,8 +3775,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117344054}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1255.1018, y: 704.62305, z: -1528.2007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
