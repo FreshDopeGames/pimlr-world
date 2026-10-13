@@ -12,8 +12,21 @@ public class PlayerNameEntryController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI errorText;  // optional
     [SerializeField] private Button newSessionButton;   // "Not you? New session" in the Leaderboards panel
 
+    private bool wired;
+
     private void Awake()
     {
+        // PIMLR: a stray, unwired copy of this component (e.g. on SceneStaticEU's Living Room UI) must not
+        // subscribe to NameRequested - its Show() would throw and break the real overlay's name flow.
+        wired = root && input && confirmButton;
+        if (!wired)
+        {
+            Debug.LogWarning($"[PlayerNameEntryController] '{name}' is missing root/input/confirmButton - disabled. " +
+                             "Remove this component or wire its references.", this);
+            enabled = false;
+            return;
+        }
+
         PlayerSession.NameRequested += Show;
         confirmButton.onClick.AddListener(Confirm);
         input.onSubmit.AddListener(_ => Confirm());
@@ -41,7 +54,7 @@ public class PlayerNameEntryController : MonoBehaviour
     [ContextMenu("Reset Session")]
     private void TestReset() => PlayerSession.Reset();
 
-    private void OnDestroy() { PlayerSession.NameRequested -= Show; }
+    private void OnDestroy() { if (wired) PlayerSession.NameRequested -= Show; }
 
     private void Show()
     {
