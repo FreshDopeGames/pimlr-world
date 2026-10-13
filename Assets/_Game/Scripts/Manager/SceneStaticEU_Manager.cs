@@ -75,11 +75,27 @@ public class SceneStaticEU_Manager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         Debug.Log("Panel_Execution");
-        // current changes
-        //customizationCanvas.SetActive(true);
-        customizationCamera.SetActive(true);
-        dialogueBox.SetActive(false);
-        characterCameraController.SetActive(false);
+        EnterCustomizationView();
+    }
+
+    // PIMLR: camera swap for the character-create panel. Enter when it opens, Exit when it closes/saves,
+    // so the player gets the behind-the-shoulder camera back.
+    bool customizationViewActive;
+
+    public void EnterCustomizationView()
+    {
+        if (customizationCamera) customizationCamera.SetActive(true);
+        if (dialogueBox) dialogueBox.SetActive(false);
+        if (characterCameraController) characterCameraController.SetActive(false);
+        customizationViewActive = true;
+    }
+
+    public void ExitCustomizationView()
+    {
+        if (!customizationViewActive) return;
+        if (customizationCamera) customizationCamera.SetActive(false);
+        if (characterCameraController) characterCameraController.SetActive(true);
+        customizationViewActive = false;
     }
 
     #endregion

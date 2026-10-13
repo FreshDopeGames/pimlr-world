@@ -37,9 +37,14 @@ public class Customization_Applier : changeColor
         {
             for (int i = 0; i < renderers.Length; i++)
             {
+                if (renderers[i] == null) continue;
                 string rendererName = renderers[i].name;
-                renderers[i].materials[0].color = colors[PlayerPrefs.GetInt(rendererName, 0)];
-                colourableMaterials[i].color = colors[PlayerPrefs.GetInt(rendererName, 0)];
+                // PIMLR: guard against saved indices outside the palette (e.g. from an older/newer build).
+                int index = PlayerPrefs.GetInt(rendererName, 0);
+                if (index < 0 || index >= colors.Length) index = 0;
+                renderers[i].materials[0].color = colors[index];
+                if (colourableMaterials != null && i < colourableMaterials.Length && colourableMaterials[i] != null)
+                    colourableMaterials[i].color = colors[index];
             }
         }
     }

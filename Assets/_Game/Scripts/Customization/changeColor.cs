@@ -15,12 +15,44 @@ public class changeColor : MonoBehaviour
     public Material selectedMaterial;
     #endregion
 
+    // PIMLR: every scene uses the shared 12-color palette, so saved indices mean the same color everywhere
+    // (the per-scene serialized `colors` arrays had drifted and only held 9 entries).
+    protected virtual void Awake()
+    {
+        colors = (Color[])PimlrPalette.Colors.Clone();
+    }
+
     void Start()
     {
         UpdateActiveCar();
+        ApplySavedColors();
+    }
+
+    // PIMLR: re-apply each part's saved color (PlayerPrefs, keyed by renderer name) when the scene loads.
+    // Without this, SceneStaticEU showed the shared white materials until the player picked a color again.
+    // Uses per-renderer material instances, so the shared material assets are left untouched.
+    public void ApplySavedColors()
+    {
+        if (renderers == null || colors == null || colors.Length == 0) return;
+        foreach (var r in renderers)
+        {
+            if (r == null) continue;
+            int index = PlayerPrefs.GetInt(r.name, 0);
+            if (index < 0 || index >= colors.Length) index = 0;
+            r.materials[0].color = colors[index];
+        }
+    }
+
+    /// <summary>Saved palette index for a part (0 Shirt, 1 Hair, 2 Pants, 3 Shoes), or -1 if unknown.</summary>
+    public int GetSavedColorIndex(int clothIndex)
+    {
+        if (renderers == null || clothIndex < 0 || clothIndex >= renderers.Length || renderers[clothIndex] == null) return -1;
+        int index = PlayerPrefs.GetInt(renderers[clothIndex].name, 0);
+        return (colors != null && index >= 0 && index < colors.Length) ? index : 0;
     }
     private void UpdateActiveCar()
     {
+        if (cars == null) return;
         for (int i = 0; i < cars.Length; i++)
         {
             cars[i].SetActive(i == currentCarIndex);
@@ -53,7 +85,9 @@ public class changeColor : MonoBehaviour
         // changes done 
         //renderer[selectedRenderedInt].materials[0].SetColor("Base Color", colors[i]);
 
-        Debug.Log(":::::>>>>" + renderers.Length + "|||||||||||" + selectedRenderedInt);
+        if (colors == null || i < 0 || i >= colors.Length) return;
+        if (renderers == null || selectedRenderedInt < 0 || selectedRenderedInt >= renderers.Length || renderers[selectedRenderedInt] == null) return;
+
         renderers[selectedRenderedInt].materials[0].color = colors[i];
         string rendererName = renderers[selectedRenderedInt].name;
         PlayerPrefs.SetInt(rendererName, i);
