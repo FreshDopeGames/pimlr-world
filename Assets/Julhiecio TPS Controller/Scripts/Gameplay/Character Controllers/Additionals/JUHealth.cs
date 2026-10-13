@@ -213,6 +213,11 @@ namespace JUTPS
         {
             Debug.Log("   video play   " + this.gameObject.name);
             SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.EnemyCarDestroy);
+
+            // PIMLR (leaderboards): "Shut Down Police Cruiser" is the last Story objective. End + submit the run here,
+            // before the final FMV and the load back to the Living Room (which would otherwise end it as Abandoned).
+            if (GameExecutionManager.Instance != null) GameExecutionManager.Instance.CompleteStory();
+
             GameExecutionManager.Instance.playerInventory.gameObject.SetActive(false);
             SceneManagerScript.Instance.StartCoroutine(WaitForscreenfadeOut());
             if (AuthManager.Instance)

@@ -61,6 +61,13 @@ namespace JUTPS.JUInputSystem
 		public CustomInputButton[] CustomButton;
 
 		public static bool IsUsingGamepad;
+
+		[Header("PIMLR Gamepad Look")]
+		[Tooltip("Right-stick camera speed, as an equivalent mouse delta per frame at full deflection.")]
+		public float GamepadLookSpeed = 14f;
+		[Range(0f, 0.5f)] public float GamepadLookDeadzone = 0.15f;
+		[Tooltip("PIMLR: scales up/down camera look (mouse and right stick). 1 = stock JUTPS.")]
+		[Range(0.05f, 1f)] public float VerticalLookScale = 0.3f;
 		private void Update()
 		{
 			if (InputActions == null)
@@ -76,6 +83,18 @@ namespace JUTPS.JUInputSystem
 			UpdateGetButtonDown();
 			UpdateGetButton();
 
+			// PIMLR: while a controller is navigating a menu, A / D-pad / X belong to the menu, not the character.
+			if (PimlrMenuNavigator.IsNavigating)
+			{
+				PressedJump = PressedJumpDown = false;
+				PressedInteract = PressedInteractDown = false;
+				PressedPickup = PressedPickupDown = false;
+				PressedNextItem = PressedNextItemDown = false;
+				PressedPreviousItem = PressedPreviousItemDown = false;
+				PressedReload = PressedReloadDown = false;
+				PressedShooting = PressedShootingDown = false;
+			}
+
 			//In the new input system the "GetUp" method are now events (see the method "AddInputUpListeners" bellow)
 			//UpdateGetButtonUp();
 
@@ -84,7 +103,8 @@ namespace JUTPS.JUInputSystem
 			double gamepad = Gamepad.current != null ? Gamepad.current.lastUpdateTime : 0;
 			//If are mouse and keyboard conected |                  |if mouse last update are lower than keyboard last update   >        value = KeyboardLastUpdate    :else  >  value = MouseLastUpdate
 			double keyboardAndMouseLastUsed = (Keyboard.current != null && Mouse.current != null) ? ((Mouse.current.lastUpdateTime < Keyboard.current.lastUpdateTime) ? Keyboard.current.lastUpdateTime : Mouse.current.lastUpdateTime) : 0;
-			IsUsingGamepad = (gamepad > keyboardAndMouseLastUsed) ? true : false;
+			// PIMLR: scheme comes from PimlrInput (last device actually used; ignores stick noise).
+			IsUsingGamepad = PimlrInput.UsingGamepad;
 		}
 
 		private void AddInputUpListeners(JUTPSInputControlls.PlayerActions input)
@@ -154,8 +174,23 @@ namespace JUTPS.JUInputSystem
 			}
 			else
 			{
-				RotateHorizontal = InputActions.Player.Look.ReadValue<Vector2>().x;
-				RotateVertical = InputActions.Player.Look.ReadValue<Vector2>().y;
+				Vector2 look = InputActions.Player.Look.ReadValue<Vector2>();
+
+				// PIMLR: the camera treats Look as a per-frame mouse delta, so a raw stick (-1..1) barely moves it.
+				// Convert right-stick deflection into an equivalent per-frame delta with a response curve.
+				Vector2 stick = Gamepad.current != null ? Gamepad.current.rightStick.ReadValue() : Vector2.zero;
+				if (stick.magnitude > GamepadLookDeadzone)
+				{
+					float m = Mathf.InverseLerp(GamepadLookDeadzone, 1f, stick.magnitude);
+					look = stick.normalized * (m * m) * GamepadLookSpeed * (Time.deltaTime * 60f);
+				}
+				else if (look == stick)
+				{
+					look = Vector2.zero; // idle stick inside the deadzone
+				}
+
+				RotateHorizontal = look.x;
+				RotateVertical = look.y * VerticalLookScale; // PIMLR: pitch was far too twitchy vs. yaw
 
 				
 				//OLD INPUT SYSTEM
@@ -335,21 +370,21 @@ namespace JUTPS.JUInputSystem
 		}
 		protected virtual void UpdateGetButton()
 		{
-			PressedJump = InputActions.Player.Jump.ReadValue<float>() == 1;
-			PressedRun = InputActions.Player.Run.ReadValue<float>() == 1;
-			PressedPunch = InputActions.Player.Punch.ReadValue<float>() == 1;
-			PressedRoll = InputActions.Player.Roll.ReadValue<float>() == 1;
-			PressedProne = InputActions.Player.Prone.ReadValue<float>() == 1;
-			PressedCrouch = InputActions.Player.Crouch.ReadValue<float>() == 1;
+			PressedJump = InputActions.Player.Jump.IsPressed();
+			PressedRun = InputActions.Player.Run.IsPressed();
+			PressedPunch = InputActions.Player.Punch.IsPressed();
+			PressedRoll = InputActions.Player.Roll.IsPressed();
+			PressedProne = InputActions.Player.Prone.IsPressed();
+			PressedCrouch = InputActions.Player.Crouch.IsPressed();
 
-			PressedShooting = InputActions.Player.Fire.ReadValue<float>() == 1;
-			PressedAiming = InputActions.Player.Aim.ReadValue<float>() == 1;
-			PressedReload = InputActions.Player.Reload.ReadValue<float>() == 1;
+			PressedShooting = InputActions.Player.Fire.IsPressed();
+			PressedAiming = InputActions.Player.Aim.IsPressed();
+			PressedReload = InputActions.Player.Reload.IsPressed();
 
-			PressedPickup = InputActions.Player.Pickup.ReadValue<float>() == 1;
-			PressedInteract = InputActions.Player.Interact.ReadValue<float>() == 1;
-			PressedNextItem = InputActions.Player.Next.ReadValue<float>() == 1;
-			PressedPreviousItem = InputActions.Player.Previous.ReadValue<float>() == 1;
+			PressedPickup = InputActions.Player.Pickup.IsPressed();
+			PressedInteract = InputActions.Player.Interact.IsPressed();
+			PressedNextItem = InputActions.Player.Next.IsPressed();
+			PressedPreviousItem = InputActions.Player.Previous.IsPressed();
 
 			//if(PressedProneDown) Debug.Log("hold to prone");
 

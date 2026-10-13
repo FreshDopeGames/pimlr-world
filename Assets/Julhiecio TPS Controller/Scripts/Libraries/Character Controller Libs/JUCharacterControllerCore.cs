@@ -164,6 +164,10 @@ namespace JUTPS.CharacterBrain
         protected float ArmsWeightIK = 0;
         public float LeftHandWeightIK = 0;
         public float RightHandWeightIK = 0;
+
+        [Tooltip("PIMLR: if >= 0, a held weapon may fire this many seconds after a reload/switch even while hand IK is still blending in. -1 = JUTPS default (wait for IK > 0.5).")]
+        public float MaxWeaponReadyDelay = -1f;
+        private float _pimlrWeaponReadySince = -1f;
         //FIRE MODE Timer
         [HideInInspector] public float CurrentTimeToDisableFireMode;
 
@@ -1709,8 +1713,11 @@ namespace JUTPS.CharacterBrain
                 UseLeftHandItem(ShotInput, ShotInputDown);
                 UseRightHandItem(ShotInput, ShotInputDown);
 
-                if (RightHandWeightIK > 0.5f) UseWeaponLeftHand(ShotInput, ShotInputDown, AimInput, AimInputDown);
-                if (RightHandWeightIK > 0.5f) UseWeaponRightHand(ShotInput, ShotInputDown, AimInput, AimInputDown);
+                // PIMLR: cap the post-reload / post-switch wait (see MaxWeaponReadyDelay).
+                bool readyByTime = PimlrWeaponReadyByTime();
+                bool weaponReady = RightHandWeightIK > 0.5f || readyByTime;
+                if (weaponReady) UseWeaponLeftHand(ShotInput, ShotInputDown, AimInput, AimInputDown);
+                if (weaponReady) UseWeaponRightHand(ShotInput, ShotInputDown, AimInput, AimInputDown);
 
                 UseMeleeWeapons(MeleeAttackInput);
 
@@ -1722,6 +1729,23 @@ namespace JUTPS.CharacterBrain
                 if (MeleeAttackInput) _DoPunch();
             }
         }
+        protected bool PimlrWeaponReadyByTime()
+        {
+            if (MaxWeaponReadyDelay < 0f) return false;
+
+            if (IsReloading || IsWeaponSwitching || IsRolling)
+            {
+                _pimlrWeaponReadySince = -1f;
+                return false;
+            }
+
+            if (_pimlrWeaponReadySince < 0f) _pimlrWeaponReadySince = Time.time;
+            if (Time.time - _pimlrWeaponReadySince < MaxWeaponReadyDelay) return false;
+
+            if (FiringMode) FiringModeIK = true; // bring the aim pose in if it hasn't started yet
+            return true;
+        }
+
         public virtual void _AimScope()
         {
             IsAiming = !IsAiming;

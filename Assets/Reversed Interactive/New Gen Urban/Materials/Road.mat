@@ -290,7 +290,7 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Color_A85B7692: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 0}
+    - Color_A85B7692: {r: 0.8113207, g: 0.8113207, b: 0.8113207, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

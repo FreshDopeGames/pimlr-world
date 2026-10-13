@@ -67,10 +67,15 @@ namespace JUTPS.VehicleSystem
             //Set default inputs
             if (UseDefaultInputs)
             {
+                // PIMLR: on gamepad, RT accelerates and LT brakes / reverses (left stick only steers; B exits).
+                float verticalInput = JUInput.GetAxis(JUInput.Axis.MoveVertical);
+                bool brakeInput = JUInput.GetButton(JUInput.Buttons.JumpButton);
+                if (PimlrInput.UsingGamepad) PimlrInput.GamepadVehicleInputs(rb, transform, out verticalInput, out brakeInput);
+
                 SetEngineInputs(
                 JUInput.GetAxis(JUInput.Axis.MoveHorizontal),   //Left/Right Input Value
-                JUInput.GetAxis(JUInput.Axis.MoveVertical),     //Forward/Backward Input Value
-                JUInput.GetButton(JUInput.Buttons.JumpButton)); //Brake Vehicle Input Value
+                verticalInput,                                  //Forward/Backward Input Value
+                brakeInput);                                    //Brake Vehicle Input Value
             }
 
             //Anti Overturn

@@ -529,18 +529,14 @@ namespace JUTPS.WeaponSystem
 		public void Reload()
 		{
 			//Reload
-			if (BulletsAmounts < BulletsPerMagazine)
+			// PIMLR: top up only the rounds that are missing. The stock code took a whole magazine from the
+			// reserve (or set the mag to the reserve count) and threw away whatever was still in the magazine.
+			if (BulletsAmounts < BulletsPerMagazine && TotalBullets > 0)
 			{
-				if (TotalBullets >= BulletsPerMagazine)
-				{
-					BulletsAmounts = BulletsPerMagazine;
-					TotalBullets -= BulletsPerMagazine;
-				}
-				else
-				{
-					BulletsAmounts = TotalBullets;
-					TotalBullets = 0;
-				}
+				int needed = BulletsPerMagazine - Mathf.Max(0, BulletsAmounts);
+				int taken = Mathf.Min(needed, TotalBullets);
+				BulletsAmounts = Mathf.Max(0, BulletsAmounts) + taken;
+				TotalBullets -= taken;
 			}
 			//Play reloading audio
 			mAudioSource.PlayOneShot(ReloadAudio);

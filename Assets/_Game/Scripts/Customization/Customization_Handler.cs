@@ -21,16 +21,8 @@ public class Customization_Handler : MonoBehaviour
         
     }
 
-    private void OnDisable()
-    {
-        if (customizationApplier != null)
-        {
-            for (int i = 0; i < customizationApplier.colourableMaterials.Length; i++)
-            {
-                customizationApplier.colourableMaterials[i].color = Color.white;
-            }
-        }
-    }
+    // PIMLR: removed the OnDisable reset that painted the shared Wolf3D_*.mat assets white (it rewrote the
+    // material files every play session and made the player load all-white).
     #endregion
 
 
@@ -69,9 +61,6 @@ public class Customization_Handler : MonoBehaviour
 
     public void SelectCloth(int i)
     {
-        //for render texture model
-        customizationApplier.selectedMaterial = customizationApplier.colourableMaterials[i];
-
         //for player
         selectedRenderedInt = i;
     }
@@ -124,8 +113,7 @@ public class Customization_Handler : MonoBehaviour
 
     void SetColor(int i)
     {
-        //for render texture model
-        customizationApplier.selectedMaterial.color = customizationApplier. colors[i];
+        // PIMLR: no longer writes customizationApplier.selectedMaterial (a shared .mat asset).
 
         //changes done//for player
         customizationApplier.renderers[selectedRenderedInt].materials[0].color = customizationApplier.colors[i];

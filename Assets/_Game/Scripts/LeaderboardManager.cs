@@ -96,8 +96,12 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
         LeaderboardManager manager = Instance;
         if (manager == null)
         {
-            Debug.LogWarning("LeaderboardManager: cannot submit run because no manager instance is available.");
-            return false;
+            // PIMLR: e.g. pressing Play directly in YannicksWorld (the persistent manager lives in SceneStaticEU).
+            // Create one so the run isn't lost; it loads/saves the same PlayerPrefs data.
+            var go = new GameObject("LeaderboardManager (auto)");
+            DontDestroyOnLoad(go);
+            manager = go.AddComponent<LeaderboardManager>();
+            Debug.Log("LeaderboardManager: no instance found; created one to record this run.");
         }
 
         switch (s.mode)
@@ -110,8 +114,12 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
 
             case RunMode.Story:
                 if (s.endReason != RunEndReason.Completed || s.startZone != Zone.ChatWilly)
+                {
+                    Debug.Log($"LeaderboardManager: Story run not recorded (ended {s.endReason}, started at {s.startZone}; needs Completed from ChatWilly).");
                     return false;
+                }
                 manager.SubmitStoryModeRun(s);
+                Debug.Log($"LeaderboardManager: Story run recorded for {GetPlayerName()} - {s.elapsed:0.0}s, {s.kills} kills.");
                 return true;
 
             default:

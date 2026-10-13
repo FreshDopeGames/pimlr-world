@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum RunMode
 {
@@ -131,6 +132,27 @@ public static class RunStats
 
         Ended?.Invoke(finalSnapshot);
         return finalSnapshot;
+    }
+
+    // PIMLR (leaderboards): Story runs end only by completing (GameExecutionManager.CompleteStory) or quitting.
+    // Dying / restarting a stage reloads YannicksWorld and the run carries on. Leaving YannicksWorld for any other
+    // scene (hub, main menu) while a Story run is active = quit.
+    public const string StorySceneName = "YannicksWorld";
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void InstallStoryRunQuitGuard()
+    {
+        SceneManager.activeSceneChanged -= StoryRunQuitGuard;
+        SceneManager.activeSceneChanged += StoryRunQuitGuard;
+    }
+
+    private static void StoryRunQuitGuard(Scene previous, Scene next)
+    {
+        if (!Active || Mode != RunMode.Story || next.name == StorySceneName)
+            return;
+
+        Debug.Log($"RunStats: Story run cancelled - left {StorySceneName} for {next.name} before completing.");
+        End(RunEndReason.Quit);
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

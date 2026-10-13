@@ -15131,7 +15131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 137, y: -84.99997}
+  m_AnchoredPosition: {x: 137, y: -84.99984}
   m_SizeDelta: {x: 260, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &150690262
@@ -170898,6 +170898,11 @@ PrefabInstance:
       propertyPath: m_Carve
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 748799427347351050, guid: 236a58847e0ddd1499666a7562d5245a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 884364021327013337, guid: 236a58847e0ddd1499666a7562d5245a,
         type: 3}
       propertyPath: m_Carve
@@ -170961,6 +170966,11 @@ PrefabInstance:
     - target: {fileID: 3131334631418371705, guid: 236a58847e0ddd1499666a7562d5245a,
         type: 3}
       propertyPath: m_Carve
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3266549236833533354, guid: 236a58847e0ddd1499666a7562d5245a,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3558533554928310560, guid: 236a58847e0ddd1499666a7562d5245a,
@@ -171137,6 +171147,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Street_WideCrossing (21)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7023240977064960920, guid: 236a58847e0ddd1499666a7562d5245a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7330722146828506624, guid: 236a58847e0ddd1499666a7562d5245a,
         type: 3}
@@ -236919,7 +236934,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1115845438}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99905854
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -363429,6 +363444,8 @@ MonoBehaviour:
   CustomTouchfield: []
   CustomJoystickVirtual: []
   CustomButton: []
+  GamepadLookSpeed: 14
+  GamepadLookDeadzone: 0.15
 --- !u!4 &1986947121
 Transform:
   m_ObjectHideFlags: 0
@@ -393246,10 +393263,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b8a9fcabde8ee108ae5c
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 1
-    SkinTone: '#a15538'
 --- !u!1 &1590179114165529614
 GameObject:
   m_ObjectHideFlags: 0
@@ -400698,6 +400711,7 @@ MonoBehaviour:
   HumanoidSpine: {fileID: 4250635048403930261}
   LeftHandWeightIK: 0
   RightHandWeightIK: 0
+  MaxWeaponReadyDelay: -1
   CurrentTimeToDisableFireMode: 0
   VehicleInArea: {fileID: 0}
   VehicleInShootingArea: {fileID: 0}
@@ -400734,6 +400748,8 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 0
+  HandIKTransitionSpeed: 2
+  WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
   AutoRun: 1
   WalkOnRunButton: 0
@@ -403242,6 +403258,7 @@ MonoBehaviour:
   HumanoidSpine: {fileID: 8001215262428266930}
   LeftHandWeightIK: 0
   RightHandWeightIK: 0
+  MaxWeaponReadyDelay: -1
   CurrentTimeToDisableFireMode: 0
   VehicleInArea: {fileID: 0}
   VehicleInShootingArea: {fileID: 0}
@@ -403278,6 +403295,8 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 1
+  HandIKTransitionSpeed: 2
+  WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
   AutoRun: 0
   WalkOnRunButton: 0
@@ -434839,10 +434858,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b915fcabde8ee108af0b
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 2
-    SkinTone: '#c58766'
 --- !u!1 &6173924504033628357
 GameObject:
   m_ObjectHideFlags: 0
@@ -436194,6 +436209,17 @@ MonoBehaviour:
     AntiOverturnSpeed: 1
     IsOverturned: 0
   UseDefaultInputs: 1
+  TruckHandling: 1
+  TruckMaxSteerAngle: 34
+  HighSpeedSteerFactor: 0.35
+  FullSteerFalloffSpeed: 22
+  SteerInRate: 1.6
+  SteerOutRate: 3.2
+  ThrottleRiseRate: 1.2
+  CoastBrakeTorque: 250
+  TruckBrakeTorque: 1500
+  TruckAngularDrag: 0.6
+  GamepadRateMultiplier: 1.75
 --- !u!65 &6453658015716259166
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -438437,10 +438463,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 64ee30514a8548d9bc11ec3a
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 2
-    SkinTone: '#ae6a43'
 --- !u!4 &7301183810229457008
 Transform:
   m_ObjectHideFlags: 0
@@ -439161,10 +439183,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b737fcabde8ee108ac20
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 1
-    SkinTone: '#b37554'
 --- !u!1 &7665196056746063235
 GameObject:
   m_ObjectHideFlags: 0

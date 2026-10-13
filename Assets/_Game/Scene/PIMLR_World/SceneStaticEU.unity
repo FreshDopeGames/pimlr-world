@@ -36586,22 +36586,22 @@ PrefabInstance:
     - target: {fileID: 430538995279285811, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 430538995279285811, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 430538995279285811, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 158.8852
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 430538995279285811, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -179.1022
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 437093879982311971, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
@@ -36864,7 +36864,7 @@ PrefabInstance:
     - target: {fileID: 1448678952191840793, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -344.45923
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1508944562026256193, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
@@ -37274,7 +37274,7 @@ PrefabInstance:
     - target: {fileID: 2789212203283777982, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2816391864562991292, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
@@ -37814,22 +37814,22 @@ PrefabInstance:
     - target: {fileID: 4247610601711174999, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4247610601711174999, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4247610601711174999, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 496.65558
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4247610601711174999, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -179.1022
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4337957898826829582, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
@@ -37931,7 +37931,7 @@ PrefabInstance:
     - target: {fileID: 4685301324128239584, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4710636398526835470, guid: 8ad8e46a761eb8d428e24ae3380e47a0,
         type: 3}
@@ -40310,6 +40310,7 @@ MonoBehaviour:
   HumanoidSpine: {fileID: 5998158433463094537}
   LeftHandWeightIK: 0
   RightHandWeightIK: 0
+  MaxWeaponReadyDelay: -1
   CurrentTimeToDisableFireMode: 0
   VehicleInArea: {fileID: 0}
   VehicleInShootingArea: {fileID: 0}
@@ -40346,6 +40347,8 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 0
+  HandIKTransitionSpeed: 2
+  WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
   AutoRun: 1
   WalkOnRunButton: 0

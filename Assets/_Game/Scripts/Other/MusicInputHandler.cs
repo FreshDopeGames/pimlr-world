@@ -58,7 +58,8 @@ public class MusicInputHandler : MonoBehaviour
         {
             if (pad.rightShoulder.wasPressedThisFrame) next = true;
             if (pad.leftShoulder.wasPressedThisFrame) previous = true;
-            if (pad.startButton.wasPressedThisFrame) playPause = true;
+            // PIMLR: play/pause moved from Start to Y / Triangle; Start / Options is the menu/pause button.
+            if (pad.buttonNorth.wasPressedThisFrame) playPause = true;
         }
 
         // --- Keyboard fallback for desktop testing (mirrors existing map Q=Previous, E=Next) ---

@@ -81,7 +81,18 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
             startZone == Zone.Zone2 ||
             startZone == Zone.ZoneBoss2)
         {
-            RunStats.Begin(RunMode.Story, startZone);
+            // PIMLR (leaderboards): a Story run survives deaths / stage restarts (YannicksWorld reloading).
+            // Keep the original run, start zone and timer; only quitting out of YannicksWorld cancels it
+            // (see RunStats.StoryRunQuitGuard).
+            if (RunStats.Active && RunStats.Mode == RunMode.Story)
+            {
+                RunStats.SetZone(startZone);
+                Debug.Log($"PIMLR Leaderboards: Story run continues after stage restart (started at {RunStats.Snapshot.startZone}, now {startZone}).");
+            }
+            else
+            {
+                RunStats.Begin(RunMode.Story, startZone);
+            }
         }
 
         Debug.Log(":::::>>>>>>>>>>" + currentZoneMode);
@@ -141,6 +152,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     }
 
     // Update is called once per frame
+    float gamepadFreeCursorTime; // PIMLR: see controller cursor re-lock in Update
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -159,6 +172,24 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
                 //Debug.Log("unlock");
             }
         }
+        // PIMLR: controller equivalent of "click to re-lock the cursor". If a controller is in use, the cursor is free
+        // and no menu buttons have been on screen for 0.4s (PimlrMenuNavigator idle - the grace period lets it pick
+        // up a popup that just opened), lock it so the camera and A/jump work again.
+        if (PimlrInput.UsingGamepad && Cursor.lockState == CursorLockMode.None && !PimlrMenuNavigator.IsNavigating)
+        {
+            gamepadFreeCursorTime += Time.unscaledDeltaTime;
+            if (gamepadFreeCursorTime > 0.4f)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                gamepadFreeCursorTime = 0f;
+            }
+        }
+        else
+        {
+            gamepadFreeCursorTime = 0f;
+        }
+
         if (Input.GetMouseButtonDown(0) && Cursor.lockState == CursorLockMode.None && SceneManagerScript.Instance && !SceneManagerScript.Instance.IsPointerOverUIObject())
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -308,21 +339,22 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         }
     }
 
+    // PIMLR (leaderboards): ends the Story run as Completed and submits it. Called from JUHealth.OnVideoPlay when the
+    // final objective ("Shut Down Police Cruiser") is met, just before the ending FMV and the return to the Living Room.
+    // Previously nothing called this, so finished runs were only ever ended as Abandoned and never reached the board.
     public void CompleteStory()
     {
         if (!RunStats.Active || RunStats.Mode != RunMode.Story)
             return;
+
 
         RunSnapshot final = RunStats.End(RunEndReason.Completed);
         LeaderboardManager.TrySubmit(final);
         ZoneProgress.Current = Zone.ChatWilly;
     }
 
-    private void OnDestroy()
-    {
-        if (RunStats.Active && RunStats.Mode == RunMode.Story)
-            RunStats.End(RunEndReason.Abandoned);
-    }
+    // PIMLR (leaderboards): no longer ends the Story run here - this also ran when YannicksWorld reloaded after a
+    // death, which cancelled the run. Quitting is handled by RunStats.StoryRunQuitGuard.
 
     public void BossDead()
     {

@@ -187,7 +187,9 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
     void HandleToggleTarget()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        // PIMLR: Start / Options toggles the menu on controllers (Tab on keyboard). While the menu is open the
+        // cursor is unlocked, which is what freezes the JUTPS camera, so controllers need a way to close it.
+        if (Input.GetKeyDown(KeyCode.Tab) || PimlrInput.MenuButtonDown)
         {
             ToggleTarget();
         }

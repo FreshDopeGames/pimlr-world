@@ -12,6 +12,12 @@ namespace JUTPS
     [RequireComponent(typeof(Rigidbody), typeof(AudioSource), typeof(CapsuleCollider))]
     public class JUCharacterController : JUCharacterBrain
     {
+        [Header("PIMLR Weapon Timing")]
+        [Tooltip("Hand IK blend speed toward the held weapon. JUTPS default 2. The player gets PimlrPlayerFeel values at runtime.")]
+        public float HandIKTransitionSpeed = 2f;
+        [Tooltip("Seconds the weapon-switch state lasts before the new weapon can aim. JUTPS default 0.5.")]
+        public float WeaponSwitchDuration = 0.5f;
+
         [Header("Controller Options")]
         public bool UseDefaultControllerInput = true;
         public bool AutoRun = true;
@@ -148,8 +154,23 @@ namespace JUTPS
                 _GetUp();
             }
 
+            // PIMLR: gamepad B cycles Stand -> Crouch -> Prone -> Stand (not while driving; B brakes there)
+            if (PimlrInput.StanceCycleDown && !IsDriving && !PimlrInput.VehicleExitedRecently && !PimlrMenuNavigator.IsNavigating)
+            {
+                if (IsRunning && AutoRun == true)
+                {
+                    IsRunning = false; MaxSprintSpeed = false; CanSprint = true; SprintSpeedDecrease = 0;
+                }
+
+                if (!IsCrouched && !IsProne) _Crouch();
+                else if (IsCrouched && !IsProne) _Prone();
+                else { _GetUp(); _GetUp(); }
+            }
+
             //Jump
-            if (JUInput.GetButton(JUInput.Buttons.JumpButton) && IsJumping == false)
+            // PIMLR: on gamepad, A is also Interact; don't jump while a vehicle "to Ride" prompt is showing.
+            bool jumpBlockedByInteract = PimlrInput.UsingGamepad && PimlrInput.InteractPromptVisible;
+            if (JUInput.GetButton(JUInput.Buttons.JumpButton) && IsJumping == false && !jumpBlockedByInteract)
             {
                 _Jump();
             }
@@ -555,7 +576,7 @@ namespace JUTPS
             if (WeaponSwitchingCurrentTime <= 1 && IsWeaponSwitching)
             {
                 WeaponSwitchingCurrentTime += Time.deltaTime;
-                if (WeaponSwitchingCurrentTime >= 0.5f)
+                if (WeaponSwitchingCurrentTime >= WeaponSwitchDuration)
                 {
                     if (FiringMode) { FiringModeIK = true; }
 
@@ -703,7 +724,7 @@ namespace JUTPS
             }
             else
             {
-                float IKTransitionSpeed = 2;
+                float IKTransitionSpeed = HandIKTransitionSpeed;
                 if (IsRolling == false && IsReloading == false)
                 {
                     // >>> Left Hand IK Weight 

@@ -9,10 +9,35 @@ public class AiChatInteraction : MonoBehaviour
 
     public GameObject ai_BOT_Canvas;
     [SerializeField] internal JUCharacterController characterController; //AUTO ASSIGN
+
+    [Tooltip("PIMLR: world-space 'Talk to Sirihanna' prompt. Hidden while the chat is open. Auto-found by name if empty.")]
+    public GameObject chatPrompt;
+    private const string ChatPromptName = "Chat CTA Text";
+
     private void Start()
     {
         if (ai_BOT_Canvas != null)
             ai_BOT_Canvas.SetActive(false);
+
+        if (chatPrompt == null)
+            chatPrompt = FindChatPrompt();
+    }
+
+    // Looks through this interaction's whole hierarchy (the prompt sits under a sibling object).
+    private GameObject FindChatPrompt()
+    {
+        foreach (Transform t in transform.root.GetComponentsInChildren<Transform>(true))
+        {
+            if (t.name == ChatPromptName)
+                return t.gameObject;
+        }
+        return null;
+    }
+
+    private void SetChatPromptVisible(bool visible)
+    {
+        if (chatPrompt != null)
+            chatPrompt.SetActive(visible);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -20,6 +45,8 @@ public class AiChatInteraction : MonoBehaviour
         {
             if (ai_BOT_Canvas != null)
                 ai_BOT_Canvas.SetActive(true);
+
+            SetChatPromptVisible(false); // PIMLR: no floating CTA while you're already talking to her
 
             characterController = other.GetComponentInParent<JUCharacterController>();
 
@@ -59,6 +86,8 @@ public class AiChatInteraction : MonoBehaviour
 
         if (ai_BOT_Canvas != null)
             ai_BOT_Canvas.SetActive(false);
+
+        SetChatPromptVisible(true); // PIMLR: dialog cancelled -> bring the CTA back
 
         PlayerControllerStart();
 

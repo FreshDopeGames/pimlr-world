@@ -558,33 +558,11 @@ namespace JUTPS.JUInputSystem
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9314414d-1863-4870-a58f-c88f145ff9ac"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Roll"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""b004e5a1-8718-488a-ac2c-ecb4869bb379"",
                     ""path"": ""<Keyboard>/z"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Prone"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3bc6585a-8a4f-4148-95ff-48e23442f5a9"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": ""Hold"",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
                     ""action"": ""Prone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -683,19 +661,8 @@ namespace JUTPS.JUInputSystem
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": ""ScaleVector2(y=0.6)"",
-                    ""groups"": ""Joystick"",
-                    ""action"": ""Look"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e12f5761-ce34-4374-9f36-50a073244524"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Crouch"",
+                    ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -713,7 +680,7 @@ namespace JUTPS.JUInputSystem
                 {
                     ""name"": """",
                     ""id"": ""bb2e1b62-f2da-4e99-ae9d-dce1c14fb686"",
-                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -768,7 +735,7 @@ namespace JUTPS.JUInputSystem
                 {
                     ""name"": """",
                     ""id"": ""7c54eaf6-da0a-4a1c-a211-d062cf51a94d"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -790,7 +757,7 @@ namespace JUTPS.JUInputSystem
                 {
                     ""name"": """",
                     ""id"": ""bc75d438-efd5-4482-98bc-93bd833eae42"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -833,28 +800,6 @@ namespace JUTPS.JUInputSystem
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a2c4e6f8-1b3d-4e5f-8a9b-0c1d2e3f4a51"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Previous"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b3d5f7a9-2c4e-4f6a-9b0c-1d2e3f4a5b62"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Next"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""c4e6f8b0-3d5f-4a7b-0c1d-2e3f4a5b6c73"",
                     ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
@@ -871,17 +816,6 @@ namespace JUTPS.JUInputSystem
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Punch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6f40e7f8-5aeb-49ab-8ccf-d4f5a6317a40"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
                     ""action"": ""Punch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

@@ -73,7 +73,16 @@ namespace JUTPS.ActionScripts
 
             if (UseDefaultInputsOnVehicleInteraction == false) return;
 
-            if (JUInput.GetButtonDown(JUInput.Buttons.EnterVehicleButton))
+            // PIMLR: on gamepad, A gets in and B / Circle gets out (A while driving does nothing).
+            bool interactDown = JUInput.GetButtonDown(JUInput.Buttons.EnterVehicleButton);
+            if (PimlrInput.UsingGamepad)
+            {
+                bool inVehicle = IsDriving || IsDrivingByShoot;
+                interactDown = inVehicle ? PimlrInput.VehicleExitDown : interactDown;
+                if (inVehicle && interactDown) PimlrInput.MarkVehicleExit();
+            }
+
+            if (interactDown)
             {
                 if (IsDriving)
                 {
