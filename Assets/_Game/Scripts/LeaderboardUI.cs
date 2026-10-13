@@ -132,7 +132,7 @@ public class LeaderboardUI : MonoBehaviour
                 ? GetInfiniteValue(entry)
                 : FormatTime(entry.completionTime);
             string detail = isInfiniteMode
-                ? $"{entry.kills} washes, {entry.bossKills} bosses, {entry.coinsEarned} coins"
+                ? $"{entry.kills} washes, {entry.coinsEarned} coins"
                 : $"{entry.kills} washes, {entry.coinsEarned} coins";
 
             row.Set(i + 1, entry.playerName, value,

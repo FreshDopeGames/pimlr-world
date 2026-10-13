@@ -61,9 +61,13 @@ public class PimlrMenuNavigator : MonoBehaviour
             }
         }
 
-        bool active = menuUp && items.Count > 0;
+        // Only a real menu (pause, music library, purchase popup, dialogs...) turns navigation on. The always-on
+        // HUD buttons (music widget, coin/home bar, controls toggle) never do on their own - otherwise the cursor
+        // would never re-lock in gameplay - but they ARE reachable while a menu is open.
+        bool active = menuUp && items.Count > 0 && hasMenuButton;
         IsNavigating = active;
         SetModuleMove(es, !active);
+        SetNavigationEvents(es, !active);
 
         if (!active)
         {
@@ -77,7 +81,7 @@ public class PimlrMenuNavigator : MonoBehaviour
         if (index < 0 || !wasActive)
         {
             // A menu just opened (or the focused button went away): go to its default button.
-            if (index < 0 || HasPreferredDefault(out _)) es.SetSelectedGameObject(PickDefault().gameObject);
+            if (index < 0) { var d = PickDefault(); es.SetSelectedGameObject(d.gameObject); ScrollIntoView(d); }
             index = IndexOf(es.currentSelectedGameObject);
             heldDir = ReadDirection(); // don't treat a still-held D-pad as a fresh press
         }
@@ -85,6 +89,15 @@ public class PimlrMenuNavigator : MonoBehaviour
 
         if (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame && TryCancel())
             return;
+
+        // A / Cross: we own submit while navigating (the EventSystem's navigation events are off - see
+        // SetNavigationEvents - so nothing else can move the focus behind our back).
+        if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame && es.currentSelectedGameObject != null
+            && CanSubmit(es, es.currentSelectedGameObject))
+        {
+            ExecuteEvents.Execute(es.currentSelectedGameObject, new BaseEventData(es), ExecuteEvents.submitHandler);
+            rescanTimer = 0f;
+        }
 
         Vector2Int dir = ReadDirection();
         if (dir != Vector2Int.zero)
@@ -113,14 +126,18 @@ public class PimlrMenuNavigator : MonoBehaviour
     {
         IsNavigating = false;
         SetModuleMove(EventSystem.current, true);
+        SetNavigationEvents(EventSystem.current, true);
         HideRing();
     }
 
     // ---------- candidates ----------
 
+    bool hasMenuButton;
+
     void Collect(EventSystem es)
     {
         items.Clear();
+        hasMenuButton = false;
         if (pointer == null || pointerOwner != es) { pointer = new PointerEventData(es); pointerOwner = es; } // (eventSystem isn't public in UGUI 1.0)
 
         foreach (var s in Selectable.allSelectablesArray)
@@ -128,16 +145,18 @@ public class PimlrMenuNavigator : MonoBehaviour
             if (!(s is Button || s is Toggle || s is Dropdown || s is TMP_Dropdown || s is InputField || s is TMP_InputField))
                 continue;
             if (!s.isActiveAndEnabled || !s.IsInteractable()) continue;
-            if (IsGameplayHud(s)) continue;
             if (s.TryGetComponent(out PimlrNavHint skipHint) && skipHint.skip) continue;
 
             var canvas = s.GetComponentInParent<Canvas>();
             if (canvas == null || !canvas.isActiveAndEnabled) continue;
             var root = canvas.rootCanvas;
-            if (root.renderMode == RenderMode.WorldSpace) continue;
+            // World-space canvases (Sirihanna's Dialogue_Canvas floats in the street) count too, as long as a camera
+            // renders them; IsReachable below still requires the button to be on screen and not covered.
+            if (root.renderMode == RenderMode.WorldSpace && CanvasCamera(root) == null) continue;
 
             if (!IsReachable(es, s, root)) continue;
             items.Add(s);
+            if (!IsGameplayHud(s)) hasMenuButton = true;
         }
 
         // Reading order: rows top-to-bottom (24px tolerance), then left-to-right.
@@ -152,21 +171,32 @@ public class PimlrMenuNavigator : MonoBehaviour
     // The always-on gameplay HUD isn't a menu: the JUTPS Interface (Controls Info toggle etc.) everywhere, and the
     // music widget in YannicksWorld (music is on Y / LB / RB there). Otherwise its buttons would keep the
     // navigator active during gameplay and swallow A / D-pad.
+    // Overlays that live inside HUD hierarchies but are real menus. Add a name here if a new popup is ever built
+    // inside the JUTPS Interface or the music player.
+    static readonly string[] OverlayRoots = { "Pause Screen", "Pause BG", "BlurrBG", "MusicLibrary", "Loot Items" };
+
     static bool IsGameplayHud(Selectable s)
     {
+        if (s.TryGetComponent(out PimlrNavHint hint) && hint.isMenu) return false;
         for (Transform t = s.transform; t != null; t = t.parent)
-            if (t.name == "JUTPS Interface") return true;
-
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "YannicksWorld"
-            && s.GetComponentInParent<MusicSystem>(true) != null)
-            return true;
-
+        {
+            if (System.Array.IndexOf(OverlayRoots, t.name) >= 0) return false;  // a menu inside the HUD
+            if (t.name == "JUTPS Interface") return true;                       // gameplay HUD
+            if (t.GetComponent<MusicSystem>() != null) return true;             // the music widget
+        }
         return false;
     }
 
     // On screen and not covered by an overlay: a UI raycast at its centre must hit the button (or its children).
     bool IsReachable(EventSystem es, Selectable s, Canvas root)
     {
+        // Rows in a scroll list (songs in the music library) may be scrolled out of view: they count if the list
+        // itself is reachable, and get scrolled into view when selected (see ScrollIntoView).
+        var scroll = s.GetComponentInParent<ScrollRect>();
+        if (scroll != null && scroll.content != null && s.transform.IsChildOf(scroll.content)
+            && !IsInsideViewport(s, scroll))
+            return IsRectReachable(es, scroll.viewport ? scroll.viewport : (RectTransform)scroll.transform, root, scroll.transform);
+
         Vector2 p = ScreenCenter(s);
         if (p.x < 0 || p.y < 0 || p.x > Screen.width || p.y > Screen.height) return false;
 
@@ -182,12 +212,87 @@ public class PimlrMenuNavigator : MonoBehaviour
         return false;
     }
 
+    // Last check before A presses a button: it must really be clickable right now (not under a "locked" cover,
+    // not scrolled out of view).
+    bool CanSubmit(EventSystem es, GameObject go)
+    {
+        var sel = go.GetComponent<Selectable>();
+        if (sel == null) return true;
+        if (!sel.IsInteractable()) return false;
+        var canvas = sel.GetComponentInParent<Canvas>();
+        if (canvas == null) return true;
+        if (pointer == null || pointerOwner != es) { pointer = new PointerEventData(es); pointerOwner = es; }
+        Vector2 p = ScreenCenter(sel);
+        pointer.position = p;
+        hits.Clear();
+        es.RaycastAll(pointer, hits);
+        foreach (var h in hits)
+        {
+            if (h.gameObject == null) continue;
+            if (ring != null && h.gameObject.transform.IsChildOf(ring)) continue;
+            return h.gameObject.transform.IsChildOf(sel.transform);
+        }
+        return false;
+    }
+
+    bool IsRectReachable(EventSystem es, RectTransform rt, Canvas root, Transform owner)
+    {
+        Camera cam = root.renderMode == RenderMode.ScreenSpaceOverlay ? null : CanvasCamera(root);
+        Vector2 p = RectTransformUtility.WorldToScreenPoint(cam, rt.TransformPoint(rt.rect.center));
+        if (p.x < 0 || p.y < 0 || p.x > Screen.width || p.y > Screen.height) return false;
+        pointer.position = p;
+        hits.Clear();
+        es.RaycastAll(pointer, hits);
+        foreach (var h in hits)
+        {
+            if (h.gameObject == null) continue;
+            if (ring != null && h.gameObject.transform.IsChildOf(ring)) continue;
+            return h.gameObject.transform.IsChildOf(owner);
+        }
+        return false;
+    }
+
+    static bool IsInsideViewport(Selectable s, ScrollRect scroll)
+    {
+        var viewport = scroll.viewport ? scroll.viewport : (RectTransform)scroll.transform;
+        Vector3 c = viewport.InverseTransformPoint(((RectTransform)s.transform).TransformPoint(((RectTransform)s.transform).rect.center));
+        return viewport.rect.Contains(new Vector2(c.x, c.y));
+    }
+
+    // Keep the selected row of a scroll list visible.
+    static void ScrollIntoView(Selectable s)
+    {
+        var scroll = s.GetComponentInParent<ScrollRect>();
+        if (scroll == null || scroll.content == null || !s.transform.IsChildOf(scroll.content)) return;
+        var viewport = scroll.viewport ? scroll.viewport : (RectTransform)scroll.transform;
+        var item = (RectTransform)s.transform;
+
+        Canvas.ForceUpdateCanvases();
+        Bounds vb = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, item);
+        Rect vr = viewport.rect;
+        float dy = 0f;
+        if (vb.max.y > vr.yMax) dy = vb.max.y - vr.yMax;          // above the window -> move content down
+        else if (vb.min.y < vr.yMin) dy = vb.min.y - vr.yMin;     // below the window -> move content up
+        if (Mathf.Abs(dy) > 0.01f)
+        {
+            scroll.content.anchoredPosition -= new Vector2(0f, dy);
+            scroll.velocity = Vector2.zero;
+        }
+    }
+
     static Vector2 ScreenCenter(Selectable s)
     {
         var rt = (RectTransform)s.transform;
-        var root = s.GetComponentInParent<Canvas>()?.rootCanvas;
-        Camera cam = (root == null || root.renderMode == RenderMode.ScreenSpaceOverlay) ? null : root.worldCamera;
+        var canvas = s.GetComponentInParent<Canvas>();
+        var root = canvas != null ? canvas.rootCanvas : null;
+        Camera cam = (root == null || root.renderMode == RenderMode.ScreenSpaceOverlay) ? null : CanvasCamera(root);
         return RectTransformUtility.WorldToScreenPoint(cam, rt.TransformPoint(rt.rect.center));
+    }
+
+    static Camera CanvasCamera(Canvas root)
+    {
+        if (root.worldCamera != null && root.worldCamera.isActiveAndEnabled) return root.worldCamera;
+        return root.renderMode == RenderMode.WorldSpace ? Camera.main : root.worldCamera;
     }
 
     int IndexOf(GameObject go)
@@ -224,34 +329,76 @@ public class PimlrMenuNavigator : MonoBehaviour
         foreach (var s in items)
             if (s.TryGetComponent(out PimlrNavHint h) && h.defaultPriority > 0 && h.defaultPriority > bestPriority)
             { best = s; bestPriority = h.defaultPriority; }
-        if (best == null)
-            foreach (var s in items)
-                if (s.name.IndexOf("Story Mode", System.StringComparison.OrdinalIgnoreCase) >= 0) { best = s; break; }
+
         return best != null;
     }
 
-    Selectable PickDefault() => HasPreferredDefault(out var best) ? best : items[0];
+    static readonly string[] DefaultNames = { "Story Mode", "Confirm", "Buy", "Purchase", "Yes", "OK" };
+
+    Selectable PickDefault()
+    {
+        if (HasPreferredDefault(out var best)) return best;
+        // A popup's confirm button first, otherwise the first menu button in reading order (never the HUD).
+        foreach (var n in DefaultNames)
+            foreach (var s in items)
+                if (!IsGameplayHud(s) && s.name.IndexOf(n, System.StringComparison.OrdinalIgnoreCase) >= 0) return s;
+        foreach (var s in items)
+            if (!IsGameplayHud(s)) return s;
+        return items[0];
+    }
 
     static readonly string[] CancelNames = { "Close", "Back", "Cancel" };
+    // OnClick methods that close something (the music shop's close button is just called "Button", the pause
+    // menu closes via its overlay's ExitInventory, Sirihanna via OnClosePanel...).
+    static readonly string[] CancelMethods = { "OnCloseBtnClick", "OnClosePanel", "ExitInventory", "CloseMenu", "OnBackButton", "Close" };
 
     bool TryCancel()
     {
-        Selectable target = null;
-        foreach (var s in items)
-            if (s.TryGetComponent(out PimlrNavHint h) && h.isCancel) { target = s; break; }
+        Selectable target = FindCancelTarget(items);
         if (target == null)
-            foreach (var s in items)
-            {
-                foreach (var n in CancelNames)
-                    if (s.name.IndexOf(n, System.StringComparison.OrdinalIgnoreCase) >= 0) { target = s; break; }
-                if (target != null) break;
-            }
+        {
+            // Not necessarily a focusable item (e.g. a full-screen overlay button behind the pause panel).
+            var all = new List<Selectable>();
+            foreach (var sel in Selectable.allSelectablesArray)
+                if (sel is Button && sel.isActiveAndEnabled && sel.IsInteractable()) all.Add(sel);
+            target = FindCancelTarget(all);
+        }
         if (target == null) return false;
 
         if (target is Button b) b.onClick.Invoke();
         else ExecuteEvents.Execute(target.gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
         rescanTimer = 0f;
         return true;
+    }
+
+    // Best close/back button: explicit hint first, then menu (non-HUD) buttons by OnClick method or name.
+    static Selectable FindCancelTarget(List<Selectable> pool)
+    {
+        foreach (var s in pool)
+            if (s.TryGetComponent(out PimlrNavHint h) && h.isCancel) return s;
+
+        for (int pass = 0; pass < 2; pass++)          // pass 0: menus only, pass 1: allow HUD
+            foreach (var s in pool)
+            {
+                if (pass == 0 && IsGameplayHud(s)) continue;
+                if (IsCancelButton(s)) return s;
+            }
+        return null;
+    }
+
+    static bool IsCancelButton(Selectable s)
+    {
+        foreach (var n in CancelNames)
+            if (s.name.IndexOf(n, System.StringComparison.OrdinalIgnoreCase) >= 0) return true;
+        if (s is Button b)
+            for (int i = 0; i < b.onClick.GetPersistentEventCount(); i++)
+            {
+                string m = b.onClick.GetPersistentMethodName(i);
+                if (b.onClick.GetPersistentTarget(i) == null || string.IsNullOrEmpty(m)) continue;
+                foreach (var cm in CancelMethods)
+                    if (m == cm) return true;
+            }
+        return false;
     }
 
     // ---------- spatial movement ----------
@@ -265,11 +412,11 @@ public class PimlrMenuNavigator : MonoBehaviour
         if (from.TryGetComponent(out PimlrNavHint hint))
         {
             var link = dir == Vector2Int.up ? hint.up : dir == Vector2Int.down ? hint.down : dir == Vector2Int.left ? hint.left : hint.right;
-            if (link != null && items.Contains(link)) { es.SetSelectedGameObject(link.gameObject); return; }
+            if (link != null && items.Contains(link)) { es.SetSelectedGameObject(link.gameObject); ScrollIntoView(link); return; }
         }
 
         var next = FindInDirection(from, dir);
-        if (next != null) es.SetSelectedGameObject(next.gameObject);
+        if (next != null) { es.SetSelectedGameObject(next.gameObject); ScrollIntoView(next); }
     }
 
     Selectable FindInDirection(Selectable from, Vector2Int dir)
@@ -313,6 +460,24 @@ public class PimlrMenuNavigator : MonoBehaviour
         return row.OrderBy(s => ScreenCenter(s).x).First();
     }
 
+    // Any input module (or a second EventSystem's) would also move the focus with the D-pad / stick - that's
+    // what kept dragging the main menu's focus from New Game back down to Continue. While we navigate, the
+    // EventSystem sends no move/submit/cancel events at all; we do those ourselves.
+    EventSystem navEventsOwner;
+    void SetNavigationEvents(EventSystem es, bool restore)
+    {
+        if (restore)
+        {
+            if (navEventsOwner != null) navEventsOwner.sendNavigationEvents = true;
+            navEventsOwner = null;
+            return;
+        }
+        if (es == null || es == navEventsOwner) return;
+        if (navEventsOwner != null) navEventsOwner.sendNavigationEvents = true;
+        navEventsOwner = es;
+        es.sendNavigationEvents = false;
+    }
+
     // The UI module's own spatial navigation would also react to the D-pad; mute it while we navigate.
     void SetModuleMove(EventSystem es, bool restore)
     {
@@ -346,8 +511,13 @@ public class PimlrMenuNavigator : MonoBehaviour
             ring.anchorMin = Vector2.zero;
             ring.anchorMax = Vector2.one;
             ring.pivot = new Vector2(0.5f, 0.5f);
-            ring.offsetMin = new Vector2(-RingPadding, -RingPadding);
-            ring.offsetMax = new Vector2(RingPadding, RingPadding);
+            // Scale the ring to the button: small world-space buttons (Sirihanna's Next / x) get a thinner ring.
+            var srt = (RectTransform)selected.transform;
+            float h = Mathf.Max(1f, Mathf.Min(srt.rect.width, srt.rect.height));
+            float pad = Mathf.Min(RingPadding, h * 0.25f);
+            ringImage.pixelsPerUnitMultiplier = Mathf.Max(1f, 40f / h);
+            ring.offsetMin = new Vector2(-pad, -pad);
+            ring.offsetMax = new Vector2(pad, pad);
             ring.localScale = Vector3.one;
             ring.localRotation = Quaternion.identity;
         }

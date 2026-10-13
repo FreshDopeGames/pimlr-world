@@ -15,6 +15,8 @@ public class PimlrNavHint : MonoBehaviour
     public bool isCancel;
     [Tooltip("Never focus this with a controller (e.g. a text field nobody needs to type in).")]
     public bool skip;
+    [Tooltip("Treat as a real menu button even if it sits inside the gameplay HUD (JUTPS Interface / music widget).")]
+    public bool isMenu;
 
     [Header("Explicit links (optional - leave empty for automatic)")]
     public Selectable up;

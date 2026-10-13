@@ -46,6 +46,8 @@ public class PimlrInputRuntime : MonoBehaviour
         PimlrControlsInfo.InstallAll();
         PimlrVehicleInteractZone.InstallAll();
         PimlrHomeButtons.InstallAll();
+        PimlrCoinLabel.InstallAll();
+        PimlrUISpriteFix.ConvertAll();
     }
 
     void OnDeviceChange(InputDevice device, InputDeviceChange change)

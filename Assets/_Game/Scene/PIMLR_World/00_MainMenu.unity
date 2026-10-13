@@ -1281,7 +1281,7 @@ PrefabInstance:
         type: 3}
       propertyPath: idleSystem
       value: 
-      objectReference: {fileID: 569639829}
+      objectReference: {fileID: 0}
     - target: {fileID: 6261755356071999586, guid: 321ba26f9faf55d4a9c78ccf7e8fadc9,
         type: 3}
       propertyPath: infiniteModeDescription
@@ -2393,12 +2393,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 522726390}
   m_CullTransparentMesh: 1
---- !u!1 &569639829 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8850446201407149287, guid: 321ba26f9faf55d4a9c78ccf7e8fadc9,
-    type: 3}
-  m_PrefabInstance: {fileID: 225103968}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &572216726
 GameObject:
   m_ObjectHideFlags: 0
@@ -3489,7 +3483,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0, g: 0.7075472, b: 0.06355216, a: 1}
     m_HighlightedColor: {r: 0, g: 0.33962262, b: 0.03183962, a: 1}
     m_PressedColor: {r: 0.12482201, g: 0.4811321, b: 0.15737827, a: 1}
-    m_SelectedColor: {r: 0.015574936, g: 0.6603774, b: 0.074193284, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

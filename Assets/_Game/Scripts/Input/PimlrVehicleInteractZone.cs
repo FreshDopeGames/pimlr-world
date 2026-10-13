@@ -78,7 +78,7 @@ public class PimlrVehiclePrompt : MonoBehaviour
         if (vehicle != lastVehicle) { lastVehicle = vehicle; heightAboveRoot = MeasureHeight(vehicle.transform); }
 
         PimlrInput.MarkInteractPromptVisible();
-        string text = $"{PimlrInput.Label(PimlrButton.Interact)} to {verb}";
+        string text = $"Press {PimlrInput.Label(PimlrButton.Interact)} to {verb}";
         if (text != lastText) { label.text = text; lastText = text; }
 
         if (!cam || !cam.isActiveAndEnabled) cam = FindGameplayCamera();
@@ -118,6 +118,7 @@ public class PimlrVehiclePrompt : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 255);
         label.rectTransform.sizeDelta = new Vector2(10f, 2f);
+        label.isOverlay = true; // draw over geometry so the vehicle itself can never hide the prompt
         go.SetActive(false);
     }
 
@@ -127,10 +128,13 @@ public class PimlrVehiclePrompt : MonoBehaviour
         foreach (var r in root.GetComponentsInChildren<Renderer>())
         {
             if (r is ParticleSystemRenderer || r is TrailRenderer || r is LineRenderer || !r.enabled) continue;
+            if (r.bounds.size.magnitude > 30f) continue; // not part of the vehicle body
             if (!any) { b = r.bounds; any = true; } else b.Encapsulate(r.bounds);
         }
-        float h = any ? b.max.y - root.position.y + PadAboveRoof : 2f;
-        return Mathf.Clamp(h, 1.2f, 4f);
+        // Only the vehicle body counts (skip huge child props / lights that would throw it off), and allow tall
+        // vehicles - a 4 m cap put the prompt INSIDE the truck's cab, which is why only the bike showed it.
+        float h = any ? b.max.y - root.position.y + PadAboveRoof : 2.5f;
+        return Mathf.Clamp(h, 1.2f, 9f);
     }
 
     static Camera FindGameplayCamera()

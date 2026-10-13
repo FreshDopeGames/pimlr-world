@@ -64,15 +64,7 @@ public static class PimlrCityBoundaryBuilder
             return;
         }
 
-        // Wall length along its local Z (from the collider, else the renderer bounds).
-        float wallLength = 15.57f;
-        var col = walls[0].t.GetComponent<BoxCollider>();
-        if (col) wallLength = col.size.z * Mathf.Abs(walls[0].t.lossyScale.z);
-        else
-        {
-            var mf = walls[0].t.GetComponentInChildren<MeshFilter>();
-            if (mf && mf.sharedMesh) wallLength = mf.sharedMesh.bounds.size.z * Mathf.Abs(mf.transform.lossyScale.z);
-        }
+        float wallLength = MeasureWallLength(prefabAsset);
 
         // ---- relocate the prefab + deps out of ARC (keeps GUIDs, so nothing breaks) ----
         string prefabPath = AssetDatabase.GetAssetPath(prefabAsset);
@@ -227,6 +219,75 @@ public static class PimlrCityBoundaryBuilder
         Vector3 end = centre + dir * (newSpan * 0.5f); end.y = y;
 
         return new Run { start = start, end = end, dir = dir, count = count };
+    }
+
+    /// <summary>
+    /// Length of one wall along its forward (Z) axis, measured from what it actually renders. (The first build
+    /// read 0 from the collider - SplineInstantiate then clamped spacing to 0.1 m and stacked thousands of
+    /// walls on top of each other, which is the z-fighting / crawling texture.)
+    /// </summary>
+    public static float MeasureWallLength(GameObject prefab)
+    {
+        var temp = (GameObject)Object.Instantiate(prefab);
+        temp.hideFlags = HideFlags.HideAndDontSave;
+        temp.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        try
+        {
+            bool any = false; Bounds b = default;
+            foreach (var r in temp.GetComponentsInChildren<Renderer>(true))
+            {
+                if (!any) { b = r.bounds; any = true; } else b.Encapsulate(r.bounds);
+            }
+            float len = any ? b.size.z : 0f;
+            if (len < 1f)
+            {
+                var box = temp.GetComponentInChildren<BoxCollider>(true);
+                if (box) len = Mathf.Abs(box.size.z * box.transform.lossyScale.z);
+            }
+            return len >= 1f ? len : 15.57f;
+        }
+        finally { Object.DestroyImmediate(temp); }
+    }
+
+    [MenuItem("PIMLR/Level/Fix City Wall Spacing")]
+    public static void FixSpacing()
+    {
+        int fixedRuns = 0;
+        foreach (var inst in Object.FindObjectsByType<SplineInstantiate>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            var items = inst.itemsToInstantiate;
+            if (items == null || items.Length == 0 || items[0].Prefab == null) continue;
+            float len = MeasureWallLength(items[0].Prefab);
+            // Snap a straight 2-knot run to a whole number of walls so the last wall lands on the end knot.
+            var container = inst.Container;
+            if (container != null && container.Spline != null && container.Spline.Count == 2)
+            {
+                var spline = container.Spline;
+                Vector3 a = (Vector3)spline[0].Position, b = (Vector3)spline[1].Position;
+                float span = Vector3.Distance(a, b);
+                int count = Mathf.Max(1, Mathf.RoundToInt(span / len));
+                Vector3 dir = span > 0.01f ? (b - a) / span : Vector3.forward;
+                Vector3 mid = (a + b) * 0.5f;
+                float half = (count * len) * 0.5f - len * 0.5f;      // centres of the first / last wall
+                Undo.RecordObject(container, "Fix wall spacing");
+                spline.SetKnot(0, new BezierKnot((float3)(mid - dir * half)));
+                spline.SetKnot(1, new BezierKnot((float3)(mid + dir * (half + 0.01f))));
+            }
+
+            Undo.RecordObject(inst, "Fix wall spacing");
+            inst.MaxSpacing = len;
+            inst.MinSpacing = len;
+            inst.UpdateInstances();
+            EditorUtility.SetDirty(inst);
+            var cols = inst.GetComponent<PimlrSplineWallColliders>();
+            if (cols) { cols.openEndExtension = len * 0.5f + cols.endOverlap; cols.Rebuild(); }
+            fixedRuns++;
+            Debug.Log($"PIMLR City Boundary: '{inst.name}' spacing set to {len:0.##} m.", inst);
+        }
+        if (fixedRuns > 0) EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorUtility.DisplayDialog("City Wall Spacing", fixedRuns > 0
+            ? $"Fixed {fixedRuns} wall run(s). Save the scene."
+            : "No SplineInstantiate wall runs found in the open scene.", "OK");
     }
 
     static void RelocateOutOfArc(string prefabPath)

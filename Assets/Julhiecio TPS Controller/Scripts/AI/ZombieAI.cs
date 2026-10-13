@@ -131,7 +131,11 @@ namespace JUTPS.AI
         public void CheckTargets()
         {
             //Check targets
-            Vector3 fieldViewPosition = transform.position + transform.up * (AimUpOffset + 0.2f);
+            // PIMLR: was a local 'Vector3 fieldViewPosition', which hid the field of the same name - so the
+            // visibility check further down looked from the WORLD ORIGIN, not the zombie's eyes. Zombies near the
+            // map origin got lucky; anywhere else they 'saw' the player but never counted them as visible, so they
+            // walked up and stood there without attacking.
+            fieldViewPosition = transform.position + transform.up * (AimUpOffset + 0.2f);
             Collider[] targets = FieldOfView.CheckViewCollider(fieldViewPosition, transform.forward, SensorLayerMask, viewerToIgnore: this.gameObject);
 
             //Target Selection

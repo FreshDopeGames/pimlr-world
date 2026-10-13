@@ -1006,8 +1006,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
-  m_sharedMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69,
+  m_fontAsset: {fileID: 11400000, guid: 747b9e0badc1c614692265951d1863da, type: 2}
+  m_sharedMaterial: {fileID: 4141627482209803995, guid: 747b9e0badc1c614692265951d1863da,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1032,13 +1032,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 17.5
   m_fontSizeMax: 70
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -9121,7 +9121,7 @@ MonoBehaviour:
   Icon: {fileID: 2789866538235250503}
   ItemName: {fileID: 8587662128942137372}
   ItemQuantity: {fileID: 371115708774865651}
-  BulletLabel: {fileID: 5867545586086034744}
+  BulletLabel: {fileID: 0}
   BulletQuantity: {fileID: 1678098866810764623}
   ItemHealth: {fileID: 7205893734807007093}
 --- !u!1 &680998964667725767
@@ -46062,7 +46062,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7780017002220968154}
   m_HandleRect: {fileID: 6163287001525637331}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -58446,7 +58446,7 @@ MonoBehaviour:
   minimapBlipController: {fileID: 5937299535019191391}
   musicPurchasePanel: {fileID: 585002429904624066}
   musicData:
-  - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
+  - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
     songDescription: <B>Boom Bye Bye</B><br>+200% AMMO SIZE
     audioClip: {fileID: 8300000, guid: 7c7ede190ba8dcf46a793b3ccdaa3516, type: 3}
     isPurchased: 0
@@ -58458,7 +58458,7 @@ MonoBehaviour:
     achievementType: 0
     achievementReward: 2
     lockedBtnMsg: 
-  - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
+  - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
     songDescription: <B>Trust His Shoes</B><br>+200% Movement Speed
     audioClip: {fileID: 8300000, guid: 090a5a23b41666d4f8be7c4966c7b86f, type: 3}
     isPurchased: 0
@@ -58470,7 +58470,7 @@ MonoBehaviour:
     achievementType: 0
     achievementReward: 1
     lockedBtnMsg: 5 Washes
-  - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
+  - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
     songDescription: <B>Cold Shoulders</B><br>Freeze Ray
     audioClip: {fileID: 8300000, guid: 867d46abda07ef24aafe54b219a4ba97, type: 3}
     isPurchased: 0
@@ -58482,7 +58482,7 @@ MonoBehaviour:
     achievementType: 1
     achievementReward: 6
     lockedBtnMsg: 1 Boss Wash
-  - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
+  - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
     songDescription: <B>Take A Ride</B><br>200% Vehicle Speed
     audioClip: {fileID: 8300000, guid: 32ab0206da8bdb54cb586b656ab3a53b, type: 3}
     isPurchased: 0
@@ -58494,7 +58494,7 @@ MonoBehaviour:
     achievementType: 0
     achievementReward: 3
     lockedBtnMsg: 20 Washes
-  - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
+  - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
     songDescription: <B>I Don't Mind</B><br>+200% Defense
     audioClip: {fileID: 8300000, guid: 5afaab6d03703754c8d3c69df2821556, type: 3}
     isPurchased: 0
@@ -58506,7 +58506,7 @@ MonoBehaviour:
     achievementType: 0
     achievementReward: 4
     lockedBtnMsg: 50 Washes
-  - albumIcon: {fileID: 21300000, guid: 89d5b8478729ca34d8cfceb0f87187c6, type: 3}
+  - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
     songDescription: <B>Ya Like Life</B><br>150% Max HP
     audioClip: {fileID: 8300000, guid: cde29a07565180947906dbb77c8a8ec8, type: 3}
     isPurchased: 0
@@ -78662,7 +78662,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7156691533926956277}
-  - {fileID: 6464451148295378523}
   - {fileID: 2906857931216078482}
   - {fileID: 297281142710611732}
   m_Father: {fileID: 6430324013897197682}
@@ -85148,97 +85147,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &5867545586086034744
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6464451148295378523}
-  - component: {fileID: 467967309771769923}
-  - component: {fileID: 1940119795374476388}
-  - component: {fileID: 5340440638256522343}
-  m_Layer: 5
-  m_Name: BulletIcon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &6464451148295378523
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5867545586086034744}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.61224, y: 0.61224, z: 0.61224}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4614152244518694929}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 45, y: 45}
-  m_Pivot: {x: 0, y: 0.5}
---- !u!222 &467967309771769923
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5867545586086034744}
-  m_CullTransparentMesh: 0
---- !u!114 &1940119795374476388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5867545586086034744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 88070cc7f0a23024183cddc175acad48, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &5340440638256522343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5867545586086034744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
 --- !u!1 &5871131613272859497
 GameObject:
   m_ObjectHideFlags: 0
@@ -124243,6 +124151,7 @@ GameObject:
   - component: {fileID: 165250486555676829}
   - component: {fileID: 4193483711511451479}
   - component: {fileID: 7936652305187621401}
+  - component: {fileID: 3958918703880340813}
   m_Layer: 5
   m_Name: Heath_bar_Fill
   m_TagString: Untagged
@@ -124307,6 +124216,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3958918703880340813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429922596104031603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &8431708552360931851
 GameObject:
   m_ObjectHideFlags: 0

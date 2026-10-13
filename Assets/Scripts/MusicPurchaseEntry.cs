@@ -19,7 +19,9 @@ public class MusicPurchaseEntry : MonoBehaviour
     {
         storeMusicData = musicData;
         coinValue = musicData.musicValue;
-        albumIcon.sprite = musicData.albumIcon;
+        // PIMLR: the song's Album Icon (SceneManagerScript > Music Data) overrides the prefab's Icon image.
+        // Leave it empty to keep whatever art the MusicPurchaseEntry prefab shows.
+        if (musicData.albumIcon != null) albumIcon.sprite = musicData.albumIcon;
         songTitle.text = musicData.audioClip.name;
         songDescription.text = musicData.songDescription;
         purchaseBtn.SetActive(!musicData.isPurchased);

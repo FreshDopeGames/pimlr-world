@@ -48,8 +48,8 @@ public class RunSummaryPanel : MonoBehaviour
             titleText.text = $"Wave {snapshot.wave}";
         if (killsText != null)
             killsText.text = snapshot.kills.ToString();
-        if (bossText != null)
-            bossText.text = snapshot.bossKills.ToString();
+        // PIMLR: Infinite Mode doesn't track bosses - hide the stat and its "Bosses" label.
+        HideBossStat();
         if (coinsText != null)
             coinsText.text = snapshot.coinsEarned.ToString();
         if (timeText != null)
@@ -60,6 +60,17 @@ public class RunSummaryPanel : MonoBehaviour
 
         if (root != null)
             root.SetActive(true);
+    }
+
+    private void HideBossStat()
+    {
+        if (bossText == null) return;
+        bossText.gameObject.SetActive(false);
+        Transform row = bossText.transform.parent;
+        if (row == null) return;
+        foreach (TextMeshProUGUI label in row.GetComponentsInChildren<TextMeshProUGUI>(true))
+            if (label != bossText && label.text.IndexOf("boss", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                label.gameObject.SetActive(false);
     }
 
     private void OnHubButtonClicked()

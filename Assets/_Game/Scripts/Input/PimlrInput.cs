@@ -83,8 +83,8 @@ public static class PimlrInput
             case PimlrControlScheme.PlayStation:
                 switch (b)
                 {
-                    case PimlrButton.Interact: return "Cross";
-                    case PimlrButton.Jump: return "Cross";
+                    case PimlrButton.Interact: return "X"; // the Cross (✕) button - players call it X
+                    case PimlrButton.Jump: return "X"; // the Cross (✕) button - players call it X
                     case PimlrButton.Reload: return "Square";
                     case PimlrButton.Stance: return "Circle";
                     case PimlrButton.PlayTrack: return "Triangle";

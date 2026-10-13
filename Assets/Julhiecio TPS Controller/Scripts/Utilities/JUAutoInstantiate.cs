@@ -30,6 +30,13 @@ namespace JUTPS.Utilities
         public UnityEvent OnInstantiate;
 
         public List<GameObject> Spawneds = new List<GameObject>();
+
+        // PIMLR: optional cap on the TOTAL number spawned (not just alive at once). 0 = unlimited.
+        [Tooltip("PIMLR: stop spawning after this many in total. 0 = unlimited.")]
+        public int TotalSpawnCap = 0;
+        [HideInInspector] public int TotalSpawned = 0;
+        public void ResetTotalSpawnCap(int cap) { TotalSpawnCap = cap; TotalSpawned = 0; }
+        bool CapReached => TotalSpawnCap > 0 && TotalSpawned >= TotalSpawnCap;
         private void Start()
         {
             if (StartInstantiateOnAwake == false) return;
@@ -48,6 +55,7 @@ namespace JUTPS.Utilities
             ClearEmpty();
 
             if (EmptyInstantiatePorcentage == 100) return;
+            if (CapReached) return;
 
             if (EmptyInstantiatePorcentage > 0)
             {
@@ -61,6 +69,7 @@ namespace JUTPS.Utilities
             if (SwitchToRandomInstantiate == false)
             {
                 GameObject new_instance = Instantiate(Prefab, transform.position, transform.rotation);
+                TotalSpawned++;
                 if (InstanceLifeTime > 0) { Destroy(new_instance, InstanceLifeTime); }
                 // PIMLR: enemies arrive through a portal down the street instead of popping in here.
                 if (PimlrEnemySpawnDirector.IsEnemy(new_instance)) PimlrEnemySpawnDirector.Arrive(new_instance);
@@ -79,8 +88,10 @@ namespace JUTPS.Utilities
 
                     int idToInstantiate = Random.Range(0, PrefabsToInstantiate.Length - 1);
 
+                    if (CapReached) break;
                     if (Spawneds.Count < InstancesLimit && InstancesLimit > 0)
                     {
+                        TotalSpawned++;
                         GameObject new_instance = Instantiate(PrefabsToInstantiate[idToInstantiate], randomPosOnArea + PositionOffset, RandomRotation ? Quaternion.Euler(0, Random.Range(-360, 360), 0) : PrefabsToInstantiate[idToInstantiate].transform.rotation);
 
                         if (InstanceLifeTime > 0) { Destroy(new_instance, InstanceLifeTime); }

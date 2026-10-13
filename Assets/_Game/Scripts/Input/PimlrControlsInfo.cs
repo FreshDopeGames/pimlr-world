@@ -39,7 +39,7 @@ public class PimlrControlsInfo : MonoBehaviour
         { "R Stick", "R Stick", "Camera" },
         { "RT", "R2", "Fire  |  Drive: Accelerate" },
         { "LT", "L2", "Aim  |  Drive: Brake / Reverse" },
-        { "A", "Cross", "Jump / Interact" },
+        { "A", "X", "Jump / Interact" },
         { "X", "Square", "Reload" },
         { "B", "Circle", "Crouch / Prone / Stand  |  Exit Vehicle" },
         { "Y", "Triangle", "Play / Pause Track" },

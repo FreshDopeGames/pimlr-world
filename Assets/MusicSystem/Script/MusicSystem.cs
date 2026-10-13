@@ -91,11 +91,24 @@ public class MusicSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        songNameTXT.text = songName;
+        // PIMLR: every UI reference is optional - the player panels get reworked, and one missing text/slider
+        // used to throw here every frame.
+        if (musicSystem == null || musicSystem.clip == null) return;
+        if (songNameTXT) songNameTXT.text = songName;
         if (songNameTXT_2)
             songNameTXT_2.text = songName;
-        musicSlider.maxValue = musicSystem.clip.length;
-        musicSlider.value = musicSystem.time;
+        if (musicSlider)
+        {
+            musicSlider.maxValue = musicSystem.clip.length;
+            musicSlider.value = musicSystem.time;
+        }
+
+        // Keep the icon / disc honest if something else (Y button, track end) changed playback.
+        if (musicSystem.isPlaying != music && startMusic && Time.frameCount % 10 == 0)
+        {
+            music = musicSystem.isPlaying;
+            ApplyPanelState();
+        }
 
         if (musicSlider2)
         {
@@ -116,6 +129,8 @@ public class MusicSystem : MonoBehaviour
     public void PlayMusic()
     {
         Debug.Log("PlayMusic::::>" + music);
+        // PIMLR: toggle from what the speaker is actually doing, not a flag that can drift out of sync.
+        if (musicSystem != null) music = musicSystem.isPlaying;
         if (music)
         {
             Debug.Log("isStoping" + musicSystem.time);
@@ -170,6 +185,7 @@ public class MusicSystem : MonoBehaviour
     {
         if (panelsPrepared) return;
         panelsPrepared = true;
+        AutoBindReferences();
         foreach (var panel in new[] { activeSystem, idleSystem, activeSystem2, idleSystem2 }) WireButtons(panel);
         if (!playIcon) playIcon = IconOf(idleSystem) ? IconOf(idleSystem) : IconOf(idleSystem2);
         if (!pauseIcon) pauseIcon = IconOf(activeSystem) ? IconOf(activeSystem) : IconOf(activeSystem2);
@@ -200,6 +216,38 @@ public class MusicSystem : MonoBehaviour
 
         foreach (var rotator in shown.GetComponentsInChildren<JUTPS.Utilities.JUAutoRotator>(true))
             rotator.enabled = music;
+    }
+
+    // The panels were reworked in the editor and several Inspector slots ended up empty (ActiveSystem, SongName,
+    // Slider, replay). Find them by name under this player so the single ActiveSystem panel is fully live.
+    void AutoBindReferences()
+    {
+        if (!activeSystem) activeSystem = FindChild(transform, "ActiveSystem");
+        GameObject panel = activeSystem ? activeSystem : idleSystem;
+        if (!panel) return;
+
+        if (!songNameTXT)
+        {
+            var t = FindChild(panel.transform, "SongName");
+            if (t) songNameTXT = t.GetComponent<TextMeshProUGUI>();
+        }
+        if (!musicSlider)
+        {
+            var t = FindChild(panel.transform, "Slider");
+            if (t) musicSlider = t.GetComponent<Slider>();
+        }
+        if (!repeatedModelBtn)
+        {
+            var t = FindChild(panel.transform, "replay");
+            if (t) repeatedModelBtn = t.GetComponent<Image>();
+        }
+    }
+
+    static GameObject FindChild(Transform root, string name)
+    {
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
+            if (t != root && t.name == name) return t.gameObject;
+        return null;
     }
 
     // Some player buttons lost their OnClick target (MusicSystem = None) when the panels were reworked, so clicks
@@ -383,12 +431,12 @@ public class MusicSystem : MonoBehaviour
         if (isRepetedMusic)
         {
             musicSystem.loop = true;
-            repeatedModelBtn.color = selectedRepeatedMode;
+            if (repeatedModelBtn) repeatedModelBtn.color = selectedRepeatedMode;
         }
         else
         {
             musicSystem.loop = false;
-            repeatedModelBtn.color = Color.white;
+            if (repeatedModelBtn) repeatedModelBtn.color = Color.white;
         }
     }
     #endregion

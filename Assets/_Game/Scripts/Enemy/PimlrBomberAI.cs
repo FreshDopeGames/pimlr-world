@@ -35,7 +35,7 @@ public class PimlrBomberAI : MonoBehaviour
     [Header("Movement")]
     public float retreatStep = 7f;
     public float strafeStep = 5f;
-    public float repathInterval = 0.4f;
+    public float repathInterval = 0.8f;
     public string playerTag = "Player";
 
     enum State { Patrol, Advance, Hold, Retreat, Push }
@@ -50,6 +50,9 @@ public class PimlrBomberAI : MonoBehaviour
     bool hasMoveTarget;
     float nextRepath, nextPushRoll, pushEndTime;
     int strafeSign = 1;
+    float stateLockedUntil, strafeFlipAt;
+    [Tooltip("Commit to a state (back off / hold / close in) for at least this long.")]
+    public float minStateSeconds = 1.2f;
 
     void Awake()
     {
@@ -95,17 +98,23 @@ public class PimlrBomberAI : MonoBehaviour
                     pushEndTime = Time.time + pushMaxDuration;
                 }
             }
-            if (state != State.Push)
+            // Hysteresis + a minimum time per state, so it commits to backing off / closing in instead of
+            // flip-flopping at the range boundary (that flip-flop was the twitchy walk).
+            if (state != State.Push && Time.time >= stateLockedUntil)
             {
-                if (dist < tooClose) SwitchTo(State.Retreat);
-                else if (dist > preferredMax) SwitchTo(State.Advance);
+                if (state == State.Retreat) { if (dist > tooClose + 3f) SwitchTo(State.Hold); }
+                else if (state == State.Advance) { if (dist < preferredMax - 3f) SwitchTo(State.Hold); }
+                else if (dist < tooClose) SwitchTo(State.Retreat);
+                else if (dist > preferredMax + 3f) SwitchTo(State.Advance);
                 else if (state != State.Hold) SwitchTo(State.Hold);
             }
         }
 
         // ---- act ----
-        bool faceWhileMoving = state == State.Retreat || state == State.Hold;
-        character.FiringMode = faceWhileMoving;      // firing-mode rotation = keep looking at LookAtPosition
+        // Keep the player in its sights the whole fight: firing-mode locomotion faces LookAtPosition and plays the
+        // strafe / back-pedal animations. Only a long run-in from far away faces the way it's running.
+        bool faceWhileMoving = !(state == State.Advance && dist > preferredMax + 10f);
+        character.FiringMode = faceWhileMoving;
         character.FiringModeIK = false;              // no gun-aim arm pose for an empty-handed thrower
         character.LookAtPosition = player.position + Vector3.up * 1.2f;
 
@@ -117,16 +126,29 @@ public class PimlrBomberAI : MonoBehaviour
 
         if (!hasMoveTarget) { brain.IdleState(); return; }
 
-        bool run = state == State.Advance || state == State.Push;
+        bool run = state == State.Advance && dist > preferredMax + 10f;
         float stop = state == State.Hold ? 1.2f : 1.5f;
-        if ((moveTarget - transform.position).sqrMagnitude < stop * stop) { brain.IdleState(); return; }
-        brain.GoToPosition(moveTarget, stop, run);
+        Vector3 to = moveTarget - transform.position; to.y = 0f;
+        if (to.sqrMagnitude < stop * stop) { brain.IdleState(); return; }
+
+        // Short, unobstructed moves (backing off, side-stepping) go straight there - steady, deliberate steps.
+        // Longer or blocked moves use the NavMesh path.
+        if (to.magnitude < 12f && !NavMesh.Raycast(transform.position, moveTarget, out _, NavMesh.AllAreas))
+        {
+            Vector3 d = to.normalized * (state == State.Hold ? 0.6f : 1f); // side-steps at a walk, not a jog
+            character._Move(d.x, d.z, run);
+        }
+        else
+        {
+            brain.GoToPosition(moveTarget, stop, run);
+        }
     }
 
     void SwitchTo(State next)
     {
         if (state == next) return;
         state = next;
+        stateLockedUntil = Time.time + minStateSeconds;
         hasMoveTarget = false;
         if (next == State.Hold) strafeSign = Random.value < 0.5f ? -1 : 1;
         SetEngaged(next != State.Patrol);
@@ -166,7 +188,8 @@ public class PimlrBomberAI : MonoBehaviour
                 return OnNavMesh(transform.position + Vector3.Cross(Vector3.up, dirToPlayer) * strafeSign * strafeStep, out target);
 
             case State.Hold:
-                if (Random.value < 0.15f) strafeSign = -strafeSign;
+                // Drift to one side for a few seconds, then the other - circling, not jittering.
+                if (Time.time >= strafeFlipAt) { strafeSign = -strafeSign; strafeFlipAt = Time.time + Random.Range(2.5f, 4.5f); }
                 return OnNavMesh(transform.position + side * strafeStep * 0.6f, out target);
         }
         target = transform.position;

@@ -96,8 +96,13 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         if (enemy.TryGetComponent(out NavMeshAgent agent) && agent.enabled) agent.Warp(spot);
         enemy.SetActive(true);
 
-        // Spawned away from the action: head for the intersection if the player hasn't been found in 10 s.
-        if (relocate && TryGetIntersection(out Vector3 hub) && (Flat(spot) - Flat(hub)).sqrMagnitude > 20f * 20f)
+        // Infinite Mode: every arrival comes for the player.
+        // Story: spawned away from the action -> head for the intersection if the player isn't found in 10 s.
+        bool infinite = (InfiniteMode.Instance != null && InfiniteMode.Instance.isActiveAndEnabled)
+                        || (RunStats.Active && RunStats.Mode == RunMode.Infinite);
+        if (infinite)
+            PimlrHuntPlayer.Attach(enemy);
+        else if (relocate && TryGetIntersection(out Vector3 hub) && (Flat(spot) - Flat(hub)).sqrMagnitude > 20f * 20f)
             PimlrSeekIntersection.Attach(enemy, hub);
 
         // The burst prefab may carry its own sound; only add ours if it doesn't.

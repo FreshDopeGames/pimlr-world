@@ -190,8 +190,8 @@ public class InfiniteMode : Singleton<InfiniteMode>
     {
         currentEnemyCount++;
 
-        // PIMLR (playtest): record kills and classify kills on even waves as boss kills.
-        RunStats.RegisterKill(isBoss: currentWave % 2 == 0);
+        // PIMLR: record kills (Infinite Mode no longer tracks a separate boss count).
+        RunStats.RegisterKill();
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(currentEnemyCount.ToString() + "/" + (currentWave % 2 == 1 ? normalEnemyCount : bossCount));
         if (currentWave % 2 == 1)
         {

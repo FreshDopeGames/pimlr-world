@@ -408,6 +408,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         yield return new WaitForSeconds(1f);
         zombieSpawner.PrefabsToInstantiate[0] = waterBallonzombie;
         zombieSpawner.EmptyInstantiatePorcentage = 0;
+        // PIMLR: Level 3 needs 10 washes - spawn exactly 10 bombers in total, not an endless stream.
+        zombieSpawner.ResetTotalSpawnCap(10);
         zombieSpawner.gameObject.SetActive(true);
         zone2Start = true;
     }
