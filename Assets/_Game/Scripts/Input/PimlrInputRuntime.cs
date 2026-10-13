@@ -20,6 +20,7 @@ public class PimlrInputRuntime : MonoBehaviour
         DontDestroyOnLoad(go);
         instance = go.AddComponent<PimlrInputRuntime>();
         go.AddComponent<PimlrMenuNavigator>();
+        go.AddComponent<PimlrVehiclePrompt>(); // floating "F to Drive" / "A to Ride"
     }
 
     void Awake()

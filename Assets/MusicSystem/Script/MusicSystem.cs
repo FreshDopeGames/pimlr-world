@@ -170,6 +170,7 @@ public class MusicSystem : MonoBehaviour
     {
         if (panelsPrepared) return;
         panelsPrepared = true;
+        foreach (var panel in new[] { activeSystem, idleSystem, activeSystem2, idleSystem2 }) WireButtons(panel);
         if (!playIcon) playIcon = IconOf(idleSystem) ? IconOf(idleSystem) : IconOf(idleSystem2);
         if (!pauseIcon) pauseIcon = IconOf(activeSystem) ? IconOf(activeSystem) : IconOf(activeSystem2);
     }
@@ -199,6 +200,37 @@ public class MusicSystem : MonoBehaviour
 
         foreach (var rotator in shown.GetComponentsInChildren<JUTPS.Utilities.JUAutoRotator>(true))
             rotator.enabled = music;
+    }
+
+    // Some player buttons lost their OnClick target (MusicSystem = None) when the panels were reworked, so clicks
+    // did nothing. Give each control a working action unless it already has a valid one.
+    void WireButtons(GameObject panel)
+    {
+        if (!panel) return;
+        foreach (var b in panel.GetComponentsInChildren<Button>(true))
+        {
+            UnityEngine.Events.UnityAction action = null;
+            switch (b.name)
+            {
+                case "play/pause": action = PlayMusic; break;
+                case "forward": action = ChangeMusicForward; break;
+                case "backward": action = ChangeMusicBackward; break;
+                case "shuffle": action = OnShuffleBtnClick; break;
+                case "replay": action = OnRepeateBtnClick; break;
+                case "Shop": action = OnMusicShopClick; break;
+            }
+            if (action == null || HasValidPersistentCall(b)) continue;
+            b.onClick.RemoveListener(action);
+            b.onClick.AddListener(action);
+        }
+    }
+
+    static bool HasValidPersistentCall(Button b)
+    {
+        for (int i = 0; i < b.onClick.GetPersistentEventCount(); i++)
+            if (b.onClick.GetPersistentTarget(i) != null && !string.IsNullOrEmpty(b.onClick.GetPersistentMethodName(i)))
+                return true;
+        return false;
     }
 
     static Sprite IconOf(GameObject panel)

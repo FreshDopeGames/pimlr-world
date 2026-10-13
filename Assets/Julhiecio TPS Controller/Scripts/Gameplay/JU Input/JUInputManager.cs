@@ -95,6 +95,13 @@ namespace JUTPS.JUInputSystem
 				PressedShooting = PressedShootingDown = false;
 			}
 
+			// PIMLR: on a controller RT accelerates and LT brakes while in a vehicle - they must not also fire / aim.
+			if (PimlrInput.UsingGamepad && PimlrInput.PlayerInVehicle)
+			{
+				PressedShooting = PressedShootingDown = false;
+				PressedAiming = PressedAimingDown = false;
+			}
+
 			//In the new input system the "GetUp" method are now events (see the method "AddInputUpListeners" bellow)
 			//UpdateGetButtonUp();
 

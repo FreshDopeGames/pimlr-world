@@ -91404,6 +91404,8 @@ MonoBehaviour:
   activeSystem: {fileID: 0}
   idleSystem2: {fileID: 7852973921458716021}
   activeSystem2: {fileID: 3952141659245200250}
+  playIcon: {fileID: 0}
+  pauseIcon: {fileID: 0}
   selectedRepeatedMode: {r: 0.30980393, g: 1, b: 0, a: 1}
   repeatedModelBtn: {fileID: 0}
   currentClipTime: {fileID: 6028769512235307264}
@@ -114487,7 +114489,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7791992251732159358
 RectTransform:
   m_ObjectHideFlags: 0
@@ -118615,7 +118617,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1685101232369373996
 RectTransform:
   m_ObjectHideFlags: 0

@@ -42,6 +42,11 @@ public static class PimlrInput
     public static bool StanceCycleDown => Pad != null && Pad.buttonEast.wasPressedThisFrame;     // B / Circle
     public static bool MenuButtonDown => Pad != null && Pad.startButton.wasPressedThisFrame;      // Start / Options
     // Music (Y play/pause, LB/RB tracks) is handled by MusicInputHandler in the gameplay scenes.
+    // Set every frame by the player's DriveVehicles: true while in a vehicle (driving or drive-by seat).
+    static int inVehicleFrame = -10;
+    public static void MarkPlayerInVehicle() => inVehicleFrame = Time.frameCount;
+    public static bool PlayerInVehicle => Time.frameCount - inVehicleFrame <= 1;
+
     public static bool VehicleExitDown => Pad != null && Pad.buttonEast.wasPressedThisFrame;     // B / Circle leaves the vehicle
 
     // The B press that exits a vehicle must not also crouch the character on the same frame.
