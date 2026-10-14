@@ -234,7 +234,8 @@ MonoBehaviour:
   autoReset: 1
   contactParticles: {fileID: 193332, guid: 863b5201aede3aa438ac7d962625d663, type: 3}
   scratchParticles: {fileID: 193332, guid: 2ff0e422d9bf66249b14d124d7a2b3b0, type: 3}
-  wheelDeflateParticles: {fileID: 5240681609208784007, guid: de4704e3426ad794c9166d4f75ab33c4, type: 3}
+  wheelDeflateParticles: {fileID: 5240681609208784007, guid: de4704e3426ad794c9166d4f75ab33c4,
+    type: 3}
   units: 0
   uiType: 0
   useTelemetry: 0
@@ -245,7 +246,7 @@ MonoBehaviour:
   gyroSensitivity: 2
   useLightsAsVertexLights: 1
   useLightProjectorForLightingEffect: 0
-  setTagsAndLayers: 1
+  setTagsAndLayers: 0
   RCCTag: Player
   RCCLayer: RCC
   WheelColliderLayer: RCC_WheelCollider
@@ -253,7 +254,8 @@ MonoBehaviour:
   tagAllChildrenGameobjects: 0
   chassisJoint: {fileID: 116354, guid: a7e7b1406cded0e4cb52224eb5dc2d80, type: 3}
   exhaustGas: {fileID: 104134, guid: 46992adcb9d56714eb84164c8a965492, type: 3}
-  skidmarksManager: {fileID: 114786316056322602, guid: a107dc7aa77e84f4d8cf9888def4fe64, type: 3}
+  skidmarksManager: {fileID: 114786316056322602, guid: a107dc7aa77e84f4d8cf9888def4fe64,
+    type: 3}
   projector: {fileID: 102982, guid: 7f7b6e33e52b82e43a57b7cc85ed5cf9, type: 3}
   projectorIgnoreLayer:
     serializedVersion: 2
@@ -266,9 +268,11 @@ MonoBehaviour:
   mirrors: {fileID: 132014, guid: 42ab1ab32651fc74dad3e9cedf0b5270, type: 3}
   RCCMainCamera: {fileID: 11400656, guid: 9f32ea4a11500b344ae05427bdc21e05, type: 3}
   hoodCamera: {fileID: 171864, guid: a28e2d33ee4eec642be5568debd291ab, type: 3}
-  cinematicCamera: {fileID: 1000014008404042, guid: 330409232e97fd84c9b2e696d6de0bd5, type: 3}
+  cinematicCamera: {fileID: 1000014008404042, guid: 330409232e97fd84c9b2e696d6de0bd5,
+    type: 3}
   RCCCanvas: {fileID: 102148, guid: 3c49455ff7757444fa4b466c3250f423, type: 3}
-  RCCTelemetry: {fileID: 6059275310813240883, guid: 65802e5058ade584d99e0fba314f4a68, type: 3}
+  RCCTelemetry: {fileID: 6059275310813240883, guid: 65802e5058ade584d99e0fba314f4a68,
+    type: 3}
   dontUseAnyParticleEffects: 0
   dontUseSkidmarks: 0
   audioMixer: {fileID: 24300002, guid: a97addf01f8029040bb6ea53d3c8e62d, type: 2}

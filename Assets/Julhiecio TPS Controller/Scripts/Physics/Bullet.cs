@@ -192,6 +192,12 @@ namespace JUTPS.WeaponSystem
                             //Take Damage
                             col.gameObject.GetComponentInParent<JUTPS.CharacterBrain.JUCharacterBrain>().TakeDamage(BulletDamage);
                         }
+                        // PIMLR: vehicles (e.g. the police cruiser) can end up on the RCC layer (9), which this branch treats as
+                        // a character layer. They have no brain or body parts, so fall back to their JUHealth.
+                        else if (col.gameObject.TryGetComponent(out JUHealth vehicleHealth))
+                        {
+                            vehicleHealth.DoDamage(BulletDamage);
+                        }
                     }
                 }
                 else
