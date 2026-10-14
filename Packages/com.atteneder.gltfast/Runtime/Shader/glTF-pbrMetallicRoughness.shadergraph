@@ -1818,7 +1818,7 @@
     ],
     "synonyms": [],
     "m_Precision": 0,
-    "m_PreviewExpanded": false,
+    "m_PreviewExpanded": true,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
@@ -2219,7 +2219,7 @@
     "isMainTexture": true,
     "useTilingAndOffset": false,
     "m_Modifiable": true,
-    "m_DefaultType": 5
+    "m_DefaultType": 0
 }
 
 {
@@ -2315,9 +2315,9 @@
     "hlslDeclarationOverride": 2,
     "m_Hidden": false,
     "m_Value": {
-        "r": 0.19811320304870606,
-        "g": 0.0,
-        "b": 0.0,
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
         "a": 1.0
     },
     "isMainColor": true,
