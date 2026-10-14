@@ -70,7 +70,8 @@ public class MusicPurchaseEntry : MonoBehaviour
             PlayerPrefs.SetInt(audioClip.name, 1);
             purchaseBtn.SetActive(false);
             alreadyPurhcaseBtn.SetActive(true);
-            SceneManagerScript.Instance.musicSystem.audioList.Add(audioClip);
+            var ms = SceneManagerScript.Instance.musicSystem;
+            if (ms != null) ms.audioList.Add(audioClip);
             SceneManagerScript.Instance.FetchMusicData();
         }
         else

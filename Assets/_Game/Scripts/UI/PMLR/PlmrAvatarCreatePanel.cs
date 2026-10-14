@@ -44,9 +44,10 @@ public class PlmrAvatarCreatePanel : MonoBehaviour
     }
 
     public void OnCoinValueChange(int value)
-    {
-        coinText.text = value.ToString();
+    { 
+        if (coinText != null) coinText.text = value.ToString();
     }
+
     public void OnAvaterDoneClick()
     {
         var manager = Manager;

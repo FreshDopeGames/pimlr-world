@@ -2636,7 +2636,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ba5173a85368a4f4eb45fbc497be292c, type: 2}
   m_Controller: {fileID: 9100000, guid: 315d9f785ea6bb74e9f2ab8642ca78c9, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -2659,10 +2659,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b8a9fcabde8ee108ae5c
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 1
-    SkinTone: '#a15538'
 --- !u!136 &3788170392703780378
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2943,6 +2939,7 @@ MonoBehaviour:
   HumanoidSpine: {fileID: 5579733123161542586}
   LeftHandWeightIK: 0
   RightHandWeightIK: 0
+  MaxWeaponReadyDelay: -1
   CurrentTimeToDisableFireMode: 0
   VehicleInArea: {fileID: 0}
   VehicleInShootingArea: {fileID: 0}
@@ -2979,6 +2976,8 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 1
+  HandIKTransitionSpeed: 2
+  WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
   AutoRun: 1
   WalkOnRunButton: 0

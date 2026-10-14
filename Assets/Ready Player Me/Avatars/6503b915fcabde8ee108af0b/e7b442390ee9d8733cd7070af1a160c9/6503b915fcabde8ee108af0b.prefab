@@ -3384,7 +3384,7 @@ Animator:
   m_GameObject: {fileID: 8859249930741081034}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2959e7c83a4719e49be9d20621fa24ca, type: 2}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 315d9f785ea6bb74e9f2ab8642ca78c9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -3408,10 +3408,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b915fcabde8ee108af0b
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 2
-    SkinTone: '#c58766'
 --- !u!1 &8943782563124095818
 GameObject:
   m_ObjectHideFlags: 0

@@ -218,6 +218,17 @@ namespace JUTPS
 
         public void OnVideoPlay()
         {
+            // PIMLR: police defeat - keep the cruiser in the scene while its siren winds down and "HATER FREE!" plays,
+            // then come back here to hide the cars and start the ending FMV. The run is ended now so the cinematic
+            // doesn't count toward the leaderboard time (CompleteStory is a no-op on the second pass).
+            PoliceSirenController policeDefeat = GetComponent<PoliceSirenController>();
+            if (policeDefeat != null && policeDefeat.enabled && !policeDefeat.DefeatHandled)
+            {
+                if (GameExecutionManager.Instance != null) GameExecutionManager.Instance.CompleteStory();
+                policeDefeat.PlayDefeat(OnVideoPlay);
+                return;
+            }
+            
             Debug.Log("   video play   " + this.gameObject.name);
             SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.EnemyCarDestroy);
 

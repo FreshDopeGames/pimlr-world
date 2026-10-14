@@ -4116,7 +4116,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ba5173a85368a4f4eb45fbc497be292c, type: 2}
   m_Controller: {fileID: 9100000, guid: 315d9f785ea6bb74e9f2ab8642ca78c9, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -4773,7 +4773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa2549d042f8b6d41bb6289069865f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 300
+  Health: 201.81819
   MaxHealth: 300
   BloodScreenEffect: 0
   BloodHitParticle: {fileID: 6079834135112903994, guid: 62ac816a3081b684092e03f0ec31a51c,
@@ -4978,7 +4978,7 @@ MonoBehaviour:
   arcHorizontalSpeed: 15
   minFlightTime: 0.45
   maxFlightTime: 1.6
-  leadFactor: 0.5
+  leadFactor: 0.25
   releaseAtSwingPeak: 1
   aimHeightOffset: 1
   maxThrowDistance: 40
@@ -5019,7 +5019,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Spawneds: []
-  TotalSpawnCap: 0
+  TotalSpawnCap: 5
   TotalSpawned: 0
 --- !u!114 &3530323462299458732
 MonoBehaviour:

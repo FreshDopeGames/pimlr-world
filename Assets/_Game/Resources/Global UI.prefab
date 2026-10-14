@@ -26147,8 +26147,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 155, y: 0}
-  m_SizeDelta: {x: 310, y: 670}
+  m_AnchoredPosition: {x: 172.68945, y: 0}
+  m_SizeDelta: {x: 367.7733, y: 670}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7866286691322578850
 CanvasRenderer:
@@ -44202,22 +44202,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadingBarDatas:
   - _Titel: <color=green>Level 1 Begins</color>
-    _Description: Sirihanna has located an angry mob of your haters downtown, following
-      your latest drop. You need to head down there and clear them out by washing
-      them off the streets. Sirihanna will have your equipment when you get there.
+    _Description: Sirihanna located a mob of Big Music hater bot henchmen downtown,
+      terrorizing the crowd gathered for your next show. Head down there and wash
+      them off the streets. Go see Sirihanna when you get there.
   - _Titel: <color=green>Level 2 Begins</color>
-    _Description: 'Just before getting completely washed, the final hater henchman
-      radios back to headquarters to warn the big boss that you''re loaded with their
-      worst enemy: soapy water...'
+    _Description: 'Just before getting completely washed, the final hater bot beams
+      a message back to Big Music HQ to warn the big boss that you''re loaded with
+      their worst enemy: soapy water...'
   - _Titel: <color=green>Level 3 Begins</color>
-    _Description: Even though you made light work of their low-level shooter, the
-      hate runs deep for the big boss. Now they've pulled out the big OGs to get
-      you outta here. Will you survive?
+    _Description: That low-level shooter was light work, but Big Music is trying
+      to wash you out before the cops show up. Clear out the bombers and get outta
+      there!
   titelText: {fileID: 2093227810241462918}
   descriptionText: {fileID: 6401032183630677991}
-  infiniteModeDescription: The big boss can't get you with local haters only, so
-    out-of-towners have been recruited to wear you down before they can finally take
-    you out. How long can you survive?
+  infiniteModeDescription: Big Music HQ can't seem to wash you with local haters
+    only, so out-of-towners have been recruited to take you out for good. How long
+    can you survive?
 --- !u!1 &3050531558049567216
 GameObject:
   m_ObjectHideFlags: 0
@@ -113658,6 +113658,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   img: {fileID: 2415998228395097089}
+  startCovered: 0
+  useUnscaledTime: 1
 --- !u!1 &7813555722547248297
 GameObject:
   m_ObjectHideFlags: 0

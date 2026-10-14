@@ -64,10 +64,9 @@ public class SceneStaticEU_Manager : MonoBehaviour
     }
 
     public void OnCoinValueChange(int value)
-    {
-        coins.text = value.ToString();
+    { 
+        if (coins != null) coins.text = value.ToString();
     }
-
 
     #region Coroutine
     public IEnumerator Panel_Execution()

@@ -13,6 +13,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using JUTPS;
 
 /// <summary>
 /// AI Controller of RCC. It's not professional, but it does the job. Follows all waypoints, or follows/chases the target gameobject.
@@ -70,6 +71,8 @@ public class RCC_AICarController : MonoBehaviour
     public int startFollowDistance = 300;
     public int stopFollowDistance = 30;
 
+    [SerializeField] PoliceSirenController siren;
+
 
     // Unity's Navigator.
     private NavMeshAgent navigator;
@@ -89,6 +92,8 @@ public class RCC_AICarController : MonoBehaviour
     // Firing an event when each RCC AI vehicle disabled / destroyed.
     public delegate void onRCCAIDestroyed(RCC_AICarController RCCAI);
     public static event onRCCAIDestroyed OnRCCAIDestroyed;
+
+    private JUHealth JUHealth;
 
     void Awake()
     {
@@ -125,6 +130,7 @@ public class RCC_AICarController : MonoBehaviour
     void OnEnable()
     {
         carController.externalController = true;
+        siren.BeginPursuit();               // where it flips into chase state
 
         // Calling this event when AI vehicle spawned.
         if (OnRCCAISpawned != null)

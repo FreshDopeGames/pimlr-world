@@ -41,8 +41,9 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
     public void OnCoinValueChange(int value)
     {
-        coinText.text = value.ToString();
+        if (coinText != null) coinText.text = value.ToString();
     }
+
     public void LoadScene(string sceneName)
     {
         if (SceneManagerScript.Instance.uiManager && SceneManagerScript.Instance.uiManager.UI_fader != null)

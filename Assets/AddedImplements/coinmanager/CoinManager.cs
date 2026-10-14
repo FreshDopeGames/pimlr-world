@@ -25,7 +25,15 @@ public class CoinManager : Singleton<CoinManager>
         PlayerPrefs.SetInt(SessionState.CoinsKey, coinValue);
         PlayerPrefs.Save();
 
-        coinValueChanged?.Invoke(coinValue);
+        if (coinValueChanged != null)
+        {
+            foreach (Delegate d in coinValueChanged.GetInvocationList())
+            {
+                Debug.Log("[PIMLR] coin listener -> " + (d.Target != null ? d.Target.GetType().Name : "static") + "." + d.Method.Name);
+                ((Action<int>)d)(coinValue);
+            }
+        }
+
         if (coinText != null)
             coinText.text = coinValue.ToString();
 
