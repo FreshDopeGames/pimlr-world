@@ -61,6 +61,10 @@ public class PimlrMenuNavigator : MonoBehaviour
             }
         }
 
+        // Right stick up/down scrolls the list on screen (leaderboards, music library...) - works whether or not
+        // a button is focused, since leaderboard rows aren't buttons.
+        if (menuUp) RightStickScroll(es);
+
         // Only a real menu (pause, music library, purchase popup, dialogs...) turns navigation on. The always-on
         // HUD buttons (music widget, coin/home bar, controls toggle) never do on their own - otherwise the cursor
         // would never re-lock in gameplay - but they ARE reachable while a menu is open.
@@ -120,6 +124,91 @@ public class PimlrMenuNavigator : MonoBehaviour
         heldDir = dir;
 
         ShowRing(es.currentSelectedGameObject);
+    }
+
+    // ---------- right-stick scrolling ----------
+
+    const float StickDeadzone = 0.2f;
+    const float ScrollPixelsPerSecond = 1400f;   // at full stick (canvas units)
+    readonly List<ScrollRect> scrollCandidates = new List<ScrollRect>();
+    float scrollRescanTimer;
+
+    void RightStickScroll(EventSystem es)
+    {
+        var pad = Gamepad.current;
+        if (pad == null) return;
+        float y = pad.rightStick.ReadValue().y;
+        if (Mathf.Abs(y) < StickDeadzone) return;
+
+        scrollRescanTimer -= Time.unscaledDeltaTime;
+        if (scrollRescanTimer <= 0f)
+        {
+            scrollCandidates.Clear();
+            scrollCandidates.AddRange(FindObjectsOfType<ScrollRect>());
+            scrollRescanTimer = 0.5f;
+        }
+
+        ScrollRect target = PickScrollTarget(es);
+        if (target == null) return;
+
+        var viewport = target.viewport ? target.viewport : (RectTransform)target.transform;
+        float overflow = target.content.rect.height - viewport.rect.height;
+        if (overflow <= 1f) return;
+
+        // Ease in from the deadzone so small tilts scroll slowly and a full push scrolls fast.
+        float amount = Mathf.Sign(y) * Mathf.InverseLerp(StickDeadzone, 1f, Mathf.Abs(y));
+        amount *= amount * Mathf.Sign(amount);
+        target.velocity = Vector2.zero;
+        target.verticalNormalizedPosition = Mathf.Clamp01(
+            target.verticalNormalizedPosition + amount * ScrollPixelsPerSecond * Time.unscaledDeltaTime / overflow);
+    }
+
+    /// <summary>The list the player is looking at: the one holding the focused button if any, otherwise the
+    /// visible, scrollable list on the top-most canvas (largest one if there are several).</summary>
+    ScrollRect PickScrollTarget(EventSystem es)
+    {
+        var selected = es != null ? es.currentSelectedGameObject : null;
+        if (selected != null)
+        {
+            var own = selected.GetComponentInParent<ScrollRect>();
+            if (Scrollable(own)) return own;
+        }
+
+        ScrollRect best = null;
+        int bestOrder = int.MinValue;
+        float bestArea = 0f;
+        foreach (var sr in scrollCandidates)
+        {
+            if (!Scrollable(sr) || !OnScreen(sr)) continue;
+            var canvas = sr.GetComponentInParent<Canvas>();
+            int order = canvas ? canvas.rootCanvas.sortingOrder : 0;
+            var vp = sr.viewport ? sr.viewport : (RectTransform)sr.transform;
+            float area = vp.rect.width * vp.rect.height;
+            if (order > bestOrder || (order == bestOrder && area > bestArea)) { best = sr; bestOrder = order; bestArea = area; }
+        }
+        return best;
+    }
+
+    static bool Scrollable(ScrollRect sr)
+    {
+        if (sr == null || !sr.isActiveAndEnabled || !sr.vertical || sr.content == null) return false;
+        var vp = sr.viewport ? sr.viewport : (RectTransform)sr.transform;
+        if (sr.content.rect.height - vp.rect.height <= 1f) return false;
+        var group = sr.GetComponentInParent<CanvasGroup>();
+        return group == null || group.alpha > 0.01f;
+    }
+
+    static readonly Vector3[] corners = new Vector3[4];
+    static bool OnScreen(ScrollRect sr)
+    {
+        var vp = sr.viewport ? sr.viewport : (RectTransform)sr.transform;
+        var canvas = sr.GetComponentInParent<Canvas>();
+        Camera cam = canvas && canvas.rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.rootCanvas.worldCamera : null;
+        vp.GetWorldCorners(corners);
+        Vector2 a = RectTransformUtility.WorldToScreenPoint(cam, corners[0]);
+        Vector2 b = RectTransformUtility.WorldToScreenPoint(cam, corners[2]);
+        Vector2 c = (a + b) * 0.5f;
+        return c.x >= 0f && c.x <= Screen.width && c.y >= 0f && c.y <= Screen.height && (b - a).sqrMagnitude > 100f;
     }
 
     void OnDisable()

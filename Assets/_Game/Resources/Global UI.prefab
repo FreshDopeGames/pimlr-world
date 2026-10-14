@@ -9121,7 +9121,7 @@ MonoBehaviour:
   Icon: {fileID: 2789866538235250503}
   ItemName: {fileID: 8587662128942137372}
   ItemQuantity: {fileID: 371115708774865651}
-  BulletLabel: {fileID: 0}
+  BulletLabel: {fileID: 7943486218948080862}
   BulletQuantity: {fileID: 1678098866810764623}
   ItemHealth: {fileID: 7205893734807007093}
 --- !u!1 &680998964667725767
@@ -58447,13 +58447,13 @@ MonoBehaviour:
   musicPurchasePanel: {fileID: 585002429904624066}
   musicData:
   - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
-    songDescription: <B>Boom Bye Bye</B><br>+200% AMMO SIZE
+    songDescription: <B>Boom Bye Bye</B><br>3x AMMO SIZE
     audioClip: {fileID: 8300000, guid: 7c7ede190ba8dcf46a793b3ccdaa3516, type: 3}
     isPurchased: 0
     isFree: 1
     musicValue: 50
     boostname: Boom Bye Bye
-    boostInfo: +200% Ammo Size
+    boostInfo: 3x Ammo Size
     totalTargetAmount: 0
     achievementType: 0
     achievementReward: 2
@@ -58465,43 +58465,43 @@ MonoBehaviour:
     isFree: 0
     musicValue: 50
     boostname: Trust His Shoes
-    boostInfo: 200% Movement Speed
+    boostInfo: 2x Speed
     totalTargetAmount: 5
     achievementType: 0
     achievementReward: 1
     lockedBtnMsg: 5 Washes
   - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
-    songDescription: <B>Cold Shoulders</B><br>Freeze Ray
+    songDescription: <B>Cold Shoulders</B><br>Freeze Ammo
     audioClip: {fileID: 8300000, guid: 867d46abda07ef24aafe54b219a4ba97, type: 3}
     isPurchased: 0
     isFree: 0
     musicValue: 100
     boostname: Cold Shoulders
-    boostInfo: Freeze Ray
+    boostInfo: Freeze Ammo
     totalTargetAmount: 1
     achievementType: 1
     achievementReward: 6
-    lockedBtnMsg: 1 Boss Wash
+    lockedBtnMsg: 1 Gunner Wash
   - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
-    songDescription: <B>Take A Ride</B><br>200% Vehicle Speed
+    songDescription: <B>Take A Ride</B><br>2x Vehicle Speed
     audioClip: {fileID: 8300000, guid: 32ab0206da8bdb54cb586b656ab3a53b, type: 3}
     isPurchased: 0
     isFree: 0
     musicValue: 150
     boostname: <B>Take A Ride</B>
-    boostInfo: <B>200% Vehicle Speed</B>
+    boostInfo: <B>2x Vehicle Speed</B>
     totalTargetAmount: 20
     achievementType: 0
     achievementReward: 3
     lockedBtnMsg: 20 Washes
   - albumIcon: {fileID: 21300000, guid: 916620f96058b8540b82de881b381588, type: 3}
-    songDescription: <B>I Don't Mind</B><br>+200% Defense
+    songDescription: <B>I Don't Mind</B><br>2x Defense
     audioClip: {fileID: 8300000, guid: 5afaab6d03703754c8d3c69df2821556, type: 3}
     isPurchased: 0
     isFree: 0
     musicValue: 200
     boostname: I Don't Mind
-    boostInfo: +200% Defense
+    boostInfo: 2x Defense
     totalTargetAmount: 50
     achievementType: 0
     achievementReward: 4
@@ -58513,7 +58513,7 @@ MonoBehaviour:
     isFree: 0
     musicValue: 150
     boostname: Ya Like Life
-    boostInfo: 150% Max HP
+    boostInfo: 1.5x Max HP
     totalTargetAmount: 100
     achievementType: 0
     achievementReward: 5

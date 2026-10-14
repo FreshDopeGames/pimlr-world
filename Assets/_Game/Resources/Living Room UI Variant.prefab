@@ -12013,6 +12013,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 957684457624353683, guid: 321ba26f9faf55d4a9c78ccf7e8fadc9,
         type: 3}
+      propertyPath: m_Name
+      value: BG Shade
+      objectReference: {fileID: 0}
+    - target: {fileID: 957684457624353683, guid: 321ba26f9faf55d4a9c78ccf7e8fadc9,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}

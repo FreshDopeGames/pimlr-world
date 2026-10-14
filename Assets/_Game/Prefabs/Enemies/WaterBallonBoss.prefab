@@ -2571,7 +2571,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1016875900976486646, guid: 1329713c317c2cc4091508f10276333f, type: 3}
+  - {fileID: 2100000, guid: 2fafa8ff9c35ff24c8fed158a69dce6a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2596,7 +2596,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 6238772448965099435, guid: 1329713c317c2cc4091508f10276333f, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 0bf97caeaa4c3d64db09fb815a132a05, type: 2}
   m_Bones:
   - {fileID: 6384175437151964095}
   - {fileID: 7250922167692260883}
@@ -4975,6 +4975,11 @@ MonoBehaviour:
   playerTag: Player
   throwSpeed: 28
   upwardFactor: 0.5
+  arcHorizontalSpeed: 15
+  minFlightTime: 0.45
+  maxFlightTime: 1.6
+  leadFactor: 0.5
+  releaseAtSwingPeak: 1
   aimHeightOffset: 1
   maxThrowDistance: 40
   firstThrowDelay: 3
@@ -5014,6 +5019,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Spawneds: []
+  TotalSpawnCap: 0
+  TotalSpawned: 0
 --- !u!114 &3530323462299458732
 MonoBehaviour:
   m_ObjectHideFlags: 0

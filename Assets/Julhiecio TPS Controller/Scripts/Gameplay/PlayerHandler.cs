@@ -1,4 +1,4 @@
-using JUTPS;
+﻿using JUTPS;
 using JUTPS.InventorySystem;
 using JUTPS.ItemSystem;
 using System.Collections;
@@ -39,6 +39,15 @@ public class PlayerHandler : MonoBehaviour
 
     public void OnLoadScene(string sceneName)
     {
+        // PIMLR: the player's JUHealth.OnDeath calls this to restart the level. Play the slow-motion
+        // "WASHED" sequence first; it reloads the scene (or shows the Infinite run summary) when it's done.
+        JUHealth health = jUCharacterController != null && jUCharacterController.CharacterHealth != null
+            ? jUCharacterController.CharacterHealth : GetComponent<JUHealth>();
+        if (health != null && health.IsDead)
+        {
+            PimlrDeathSequence.Play(sceneName);
+            return;
+        }
         SceneManagerScript.Instance.LoadScene(sceneName);
     }
 

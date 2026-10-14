@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,6 +19,7 @@ namespace JUTPS
         public UnityEvent OnPause;
         public UnityEvent OnUnpause;
         private FX.JUSlowmotion SlowmotionInstance;
+        private static bool slowmotionWasEnabled;
         void Start()
         {
             instance = this;
@@ -38,7 +39,14 @@ namespace JUTPS
             if (Paused) { instance.OnPause.Invoke(); } else { instance.OnUnpause.Invoke(); }
 
             //Disable / Enable Slowmotion
-            instance.SlowmotionInstance.EnableSlowmotion = !Paused;
+            // PIMLR: restore the slow-motion helper to how the scene had it, instead of force-enabling it on every
+            // unpause. YannicksWorld ships it disabled; force-enabling it made it reset timeScale to 1 every frame
+            // (breaking the death slow-mo) and log to the console every frame.
+            if (instance.SlowmotionInstance != null)
+            {
+                if (Paused) { slowmotionWasEnabled = instance.SlowmotionInstance.EnableSlowmotion; instance.SlowmotionInstance.EnableSlowmotion = false; }
+                else instance.SlowmotionInstance.EnableSlowmotion = slowmotionWasEnabled;
+            }
         }
     }
 }

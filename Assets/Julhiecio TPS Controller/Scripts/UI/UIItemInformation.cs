@@ -26,6 +26,9 @@ namespace JUTPS.InventorySystem.UI
         }
 
         // Update is called once per frame
+        // PIMLR: every UI slot is optional. The gameplay HUD's "Weapons" panel has no Bullet Label any more
+        // (the old ammo icon was deleted), and the first unassigned slot used to throw here every frame - which
+        // stopped the ammo count below it from ever updating.
         void Update()
         {
             if (Player == null)
@@ -40,44 +43,44 @@ namespace JUTPS.InventorySystem.UI
 
             if (CurrentItem == null)
             {
-                Icon.sprite = EmptySprite;
-                BulletLabel.SetActive(false);
-                ItemName.text = "Hand";
-                ItemQuantity.text = "";
-                ItemHealth.fillAmount = 1;
+                if (Icon) Icon.sprite = EmptySprite;
+                if (BulletLabel) BulletLabel.SetActive(false);
+                if (ItemName) ItemName.text = "Hand";
+                if (ItemQuantity) ItemQuantity.text = "";
+                if (ItemHealth) ItemHealth.fillAmount = 1;
             }
             else
             {
                 if (CurrentItem is Weapon)
                 {
-                    Icon.sprite = CurrentItem.ItemIcon;
-                    ItemName.text = CurrentItem.ItemName;
-                    ItemQuantity.text = CurrentItem.ItemQuantity + "/" + CurrentItem.MaxItemQuantity;
+                    if (Icon) Icon.sprite = CurrentItem.ItemIcon;
+                    if (ItemName) ItemName.text = CurrentItem.ItemName;
+                    if (ItemQuantity) ItemQuantity.text = CurrentItem.ItemQuantity + "/" + CurrentItem.MaxItemQuantity;
 
-                    BulletLabel.SetActive(true);
-                    BulletQuantity.text = ((Weapon)CurrentItem).BulletsAmounts + "/" + ((Weapon)CurrentItem).TotalBullets;
-                    ItemHealth.fillAmount = (float)((Weapon)CurrentItem).BulletsAmounts / (float)((Weapon)CurrentItem).BulletsPerMagazine;
+                    if (BulletLabel) BulletLabel.SetActive(true);
+                    if (BulletQuantity) BulletQuantity.text = ((Weapon)CurrentItem).BulletsAmounts + "/" + ((Weapon)CurrentItem).TotalBullets;
+                    if (ItemHealth) ItemHealth.fillAmount = (float)((Weapon)CurrentItem).BulletsAmounts / (float)((Weapon)CurrentItem).BulletsPerMagazine;
                     return;
                 }
 
                 if (CurrentItem is HoldableItem || CurrentItem is ThrowableItem)
                 {
-                    Icon.sprite = CurrentItem.ItemIcon;
-                    ItemName.text = CurrentItem.ItemName;
-                    ItemQuantity.text = CurrentItem.ItemQuantity + "/" + CurrentItem.MaxItemQuantity;
+                    if (Icon) Icon.sprite = CurrentItem.ItemIcon;
+                    if (ItemName) ItemName.text = CurrentItem.ItemName;
+                    if (ItemQuantity) ItemQuantity.text = CurrentItem.ItemQuantity + "/" + CurrentItem.MaxItemQuantity;
 
-                    BulletLabel.SetActive(false);
-                    ItemHealth.fillAmount = (float)CurrentItem.ItemQuantity / (float)CurrentItem.MaxItemQuantity;
+                    if (BulletLabel) BulletLabel.SetActive(false);
+                    if (ItemHealth) ItemHealth.fillAmount = (float)CurrentItem.ItemQuantity / (float)CurrentItem.MaxItemQuantity;
                 }
 
                 if (CurrentItem is MeleeWeapon)
                 {
-                    Icon.sprite = CurrentItem.ItemIcon;
-                    ItemName.text = CurrentItem.ItemName;
-                    ItemQuantity.text = CurrentItem.ItemQuantity + "/" + CurrentItem.MaxItemQuantity;
+                    if (Icon) Icon.sprite = CurrentItem.ItemIcon;
+                    if (ItemName) ItemName.text = CurrentItem.ItemName;
+                    if (ItemQuantity) ItemQuantity.text = CurrentItem.ItemQuantity + "/" + CurrentItem.MaxItemQuantity;
 
-                    BulletLabel.SetActive(false);
-                    ItemHealth.fillAmount = (float)((MeleeWeapon)CurrentItem).MeleeWeaponHealth / 100;
+                    if (BulletLabel) BulletLabel.SetActive(false);
+                    if (ItemHealth) ItemHealth.fillAmount = (float)((MeleeWeapon)CurrentItem).MeleeWeaponHealth / 100;
 
                 }
             }

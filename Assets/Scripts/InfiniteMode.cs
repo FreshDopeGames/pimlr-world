@@ -1,4 +1,4 @@
-using JUTPS;
+﻿using JUTPS;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -72,6 +72,9 @@ public class InfiniteMode : Singleton<InfiniteMode>
     private IEnumerator EndRunAfterDeath()
     {
         yield return new WaitForSecondsRealtime(2f);
+        // PIMLR: let the "WASHED" death sequence finish before the run summary opens on top of it.
+        while (PimlrDeathSequence.IsPlaying)
+            yield return null;
         EndRun(RunEndReason.Died);
     }
 

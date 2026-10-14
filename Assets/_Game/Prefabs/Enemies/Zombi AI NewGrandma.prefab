@@ -2157,10 +2157,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 64ee30514a8548d9bc11ec3a
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 2
-    SkinTone: '#ae6a43'
 --- !u!54 &5879374063841660739
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2395,7 +2391,7 @@ MonoBehaviour:
   SetRigidbodyVelocity: 1
   FireModeMaxTime: 1
   Speed: 3
-  RotationSpeed: 3
+  RotationSpeed: 5.9
   JumpForce: 3
   StoppingSpeed: 2
   AirInfluenceControll: 0.5
@@ -2482,6 +2478,7 @@ MonoBehaviour:
   HumanoidSpine: {fileID: 0}
   LeftHandWeightIK: 0
   RightHandWeightIK: 0
+  MaxWeaponReadyDelay: -1
   CurrentTimeToDisableFireMode: 0
   VehicleInArea: {fileID: 0}
   VehicleInShootingArea: {fileID: 0}
@@ -2518,6 +2515,8 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 1
+  HandIKTransitionSpeed: 2
+  WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
   AutoRun: 1
   WalkOnRunButton: 1
@@ -2532,7 +2531,7 @@ MonoBehaviour:
   EnableRoll: 1
   PhysicalDamage: 1
   DoRagdollPhysicalDamage: 1
-  PhysicalDamageStartAt: 25
+  PhysicalDamageStartAt: 10
   PhysicalDamageMultiplier: 0.8
   RagdollStartAtDamage: 10
   PhysicalDamageIgnoreTags:
@@ -2765,6 +2764,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Spawneds: []
+  TotalSpawnCap: 0
+  TotalSpawned: 0
 --- !u!114 &2600005680899196244
 MonoBehaviour:
   m_ObjectHideFlags: 0

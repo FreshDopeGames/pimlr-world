@@ -224,7 +224,8 @@ namespace JUTPS.AI
             //distanceFromDestination = (currentTarget != null) ? Vector3.Distance(transform.position, currentTarget.position) : Vector3.Distance(transform.position, PathToDestination[CurrentWayPointToFollow]);
             //distanceFromDestination = (currentTarget != null) ? Vector3.Distance(transform.position, currentTarget.position) : Vector3.Distance(transform.position, Destination);
 
-            if (CurrentWayPointToFollow > PathToDestination.Length)
+            // PIMLR: >= (was >). With an empty path, or the index at the end, the old check read past the array.
+            if (CurrentWayPointToFollow >= PathToDestination.Length)
             {
                 distanceFromDestination = (currentTarget != null) ? Vector3.Distance(transform.position, currentTarget.position) : Vector3.Distance(transform.position, Destination);
             }
@@ -343,7 +344,9 @@ namespace JUTPS.AI
             if (isAttacking && currentAttackDuration < AttackDuration)
             {
                 //Do attack
-                if (Vector3.Dot(smoothedTargetPosition - transform.position, currentTarget.position - transform.position) > 0.8f)
+                // PIMLR: compare DIRECTIONS (normalized). The raw-vector dot product scaled with distance squared, so
+                // under ~1 m it never passed and the gunner held its fire at point-blank range.
+                if (Vector3.Dot((smoothedTargetPosition - transform.position).normalized, (currentTarget.position - transform.position).normalized) > 0.8f)
                 {
                     character.DefaultUseOfAllItems(true, true, false, false, false, true);
                 }

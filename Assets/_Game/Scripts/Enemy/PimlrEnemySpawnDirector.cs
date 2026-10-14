@@ -100,7 +100,14 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         // Story: spawned away from the action -> head for the intersection if the player isn't found in 10 s.
         bool infinite = (InfiniteMode.Instance != null && InfiniteMode.Instance.isActiveAndEnabled)
                         || (RunStats.Active && RunStats.Mode == RunMode.Infinite);
-        if (infinite)
+        if (PimlrGunnerAI.Qualifies(enemy))
+        {
+            // Gunners (Big Boss): keep ~2.5 m when fighting, patrol the area otherwise. Story: patrol around the
+            // intersection where the action is (or where it arrived). Infinite: patrol around the player's area.
+            Vector3 center = TryGetIntersection(out Vector3 gHub) ? gHub : spot;
+            PimlrGunnerAI.Attach(enemy, center, infinite);
+        }
+        else if (infinite)
             PimlrHuntPlayer.Attach(enemy);
         else if (relocate && TryGetIntersection(out Vector3 hub) && (Flat(spot) - Flat(hub)).sqrMagnitude > 20f * 20f)
             PimlrSeekIntersection.Attach(enemy, hub);

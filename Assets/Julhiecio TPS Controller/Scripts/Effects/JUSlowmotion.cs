@@ -24,7 +24,7 @@ namespace JUTPS.FX
 		{
 
 			if (!EnableSlowmotion) { return; }
-			Debug.Log("JUSlowmotion::>>>");
+			// PIMLR: removed per-frame Debug.Log (it ran every frame while enabled).
 
 			Time.timeScale += (1f / SlowDownLenght) * Time.unscaledDeltaTime;
 			Time.timeScale = Mathf.Clamp(Time.timeScale, 0f, 1f);

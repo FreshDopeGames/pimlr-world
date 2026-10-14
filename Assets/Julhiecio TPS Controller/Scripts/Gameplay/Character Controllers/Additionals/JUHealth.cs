@@ -71,6 +71,13 @@ namespace JUTPS
         }
         public void DoDamage(float damage, Vector3 hitPosition = default(Vector3))
         {
+            // PIMLR: grace window + damage-per-second budget on the player, so a swarm can't kill in under a second.
+            if (damage > 0f)
+            {
+                damage = PimlrPlayerDamageGuard.Filter(this, damage);
+                if (damage <= 0f) return;
+            }
+
             if (AuthManager.Instance)
             {
                 if (AuthManager.Instance.achievementReward == AchievementReward.Defense && this.transform.name == "My Player")

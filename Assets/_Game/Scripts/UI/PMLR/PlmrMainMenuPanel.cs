@@ -22,9 +22,10 @@ public class PlmrMainMenuPanel : MonoBehaviour
 
     private void Start()
     {
+        // PIMLR: null-safe - the splash scene (00_MainMenu) carries this panel too but has no player.
         var player = GameObject.FindWithTag("Player");
-        characterController = player.GetComponent<JUCharacterController>();
-        coinText.text = CoinManager.Instance.GetCoins().ToString();
+        if (player != null) characterController = player.GetComponent<JUCharacterController>();
+        if (coinText != null && CoinManager.Instance) coinText.text = CoinManager.Instance.GetCoins().ToString();
     }
 
     private void OnEnable()

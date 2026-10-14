@@ -13,7 +13,34 @@ public enum PimlrControlScheme { KeyboardMouse, Xbox, PlayStation }
 public static class PimlrInput
 {
     public static bool UsingGamepad { get; private set; }
-    public static bool IsPlayStation => Gamepad.current is DualShockGamepad;
+    public static bool IsPlayStation
+    {
+        get
+        {
+            var pad = Gamepad.current;
+            if (pad == null) return false;
+            if (pad is DualShockGamepad) return true;           // native (Editor / standalone)
+
+            if (pad.deviceId != cachedPadId)                     // WebGL: identify by name, cached per device
+            {
+                cachedPadId = pad.deviceId;
+                cachedIsPs = LooksLikePlayStation(pad);
+            }
+            return cachedIsPs;
+        }
+    }
+
+    static int cachedPadId = -1;
+    static bool cachedIsPs;
+
+    static bool LooksLikePlayStation(Gamepad pad)
+    {
+        var d = pad.description;
+        string s = string.Join(" ", pad.displayName, pad.name, pad.layout, d.product, d.manufacturer, d.interfaceName)
+                        .ToLowerInvariant();
+        return s.Contains("dualsense") || s.Contains("dualshock") || s.Contains("playstation") ||
+            s.Contains("wireless controller") || s.Contains("054c") || s.Contains("sony");
+    }
 
     public static PimlrControlScheme Scheme =>
         !UsingGamepad ? PimlrControlScheme.KeyboardMouse : (IsPlayStation ? PimlrControlScheme.PlayStation : PimlrControlScheme.Xbox);

@@ -43,7 +43,12 @@ namespace JUTPS.AI
             NavMeshPath navmesh_path = new NavMeshPath();
             //NavMesh.CalculatePath(SourcePosition, hitNv.position, NavmeshArea, navmesh_path);
 
-            if (NavMesh.FindClosestEdge(TargetPosition, out NavMeshHit hitt, NavmeshArea))
+            // PIMLR: aim at the closest WALKABLE POINT to the target, not the closest navmesh EDGE. FindClosestEdge
+            // returns the nearest boundary (a curb, a car's carve hole, a wall), which is often metres beside or
+            // behind the player - so every chaser converged on the same 'arbitrary' spot instead of on the player.
+            // The edge lookup is kept only as a fallback when the target is far off the navmesh.
+            if (NavMesh.SamplePosition(TargetPosition, out NavMeshHit hitt, 3f, NavmeshArea) ||
+                NavMesh.FindClosestEdge(TargetPosition, out hitt, NavmeshArea))
             {
                 NavMesh.CalculatePath(SourcePosition, hitt.position, NavmeshArea, navmesh_path);
                 //return navmesh_path.corners;
@@ -140,8 +145,15 @@ namespace JUTPS.AI
         {
             Vector3 position = Vector3.zero;
 
+            // PIMLR: the result of SamplePosition was never checked. When the target stood more than 2 m from the
+            // navmesh (sidewalk, steps, a car roof) the 'closest point' was garbage, and chasers walked to it.
+            // Widen the search step by step, and fall back to the raw target position if nothing is found.
             NavMeshHit hit;
-            NavMesh.SamplePosition(targetPosition, out hit, 2, NavMesh.AllAreas);
+            if (!NavMesh.SamplePosition(targetPosition, out hit, 2, NavMesh.AllAreas) &&
+                !NavMesh.SamplePosition(targetPosition, out hit, 6, NavMesh.AllAreas))
+            {
+                return targetPosition;
+            }
 
             Vector3 dir = (targetPosition - hit.position).normalized;
             position = hit.position - dir * offsetDirection;

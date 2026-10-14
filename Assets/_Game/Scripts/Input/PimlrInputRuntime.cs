@@ -46,8 +46,11 @@ public class PimlrInputRuntime : MonoBehaviour
         PimlrControlsInfo.InstallAll();
         PimlrVehicleInteractZone.InstallAll();
         PimlrHomeButtons.InstallAll();
+        PimlrMainMenuReturn.InstallAll();         // Living Room menu Exit -> 00_MainMenu splash
         PimlrCoinLabel.InstallAll();
         PimlrUISpriteFix.ConvertAll();
+        PimlrVehicleNavObstacles.InstallAll();   // AI paths around cars instead of into them
+        PimlrGunnerAI.InstallAll();              // scene-placed gunners keep ~2.5 m and patrol
     }
 
     void OnDeviceChange(InputDevice device, InputDeviceChange change)

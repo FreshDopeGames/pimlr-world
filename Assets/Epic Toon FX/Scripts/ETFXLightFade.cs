@@ -24,15 +24,21 @@ namespace EpicToonFX
                 print("No light object found on " + gameObject.name);
         }
 
-        // Update is called once per frame
+        // PIMLR: the original removed the Light component when the fade finished. Under URP every Light carries a
+        // UniversalAdditionalLightData that depends on it, so the removal failed and logged
+        // "Can't remove Light because UniversalAdditionalLightData (Script) depends on it" EVERY FRAME for the rest of
+        // the effect's life (hundreds of errors per enemy-portal wave, which made the Editor stutter). Now the light is
+        // just switched off and this script stops running. It also no longer calls GetComponent twice a frame.
         void Update()
         {
-            if (gameObject.GetComponent<Light>())
+            if (li == null) { enabled = false; return; }
+
+            li.intensity -= initIntensity * (Time.deltaTime / life);
+            if (li.intensity <= 0f)
             {
-                li.intensity -= initIntensity * (Time.deltaTime / life);
-                if (killAfterLife && li.intensity <= 0)
-                    //Destroy(gameObject);
-					Destroy(gameObject.GetComponent<Light>());
+                li.intensity = 0f;
+                if (killAfterLife) li.enabled = false;
+                enabled = false;
             }
         }
     }

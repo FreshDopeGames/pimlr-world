@@ -38,11 +38,26 @@ namespace JUTPS
         private bool CanHit = true;
 
         public GameObject Owner;
+        private CharacterBrain.JUCharacterBrain ownerBrain;
         private void Awake()
         {
             startedLocalPosition = transform.localPosition;
             CharacterBrain.JUCharacterBrain tpsCharacter = GetComponentInParent<CharacterBrain.JUCharacterBrain>();
             Owner = tpsCharacter == null ? null : tpsCharacter.gameObject;
+            ownerBrain = tpsCharacter;
+        }
+
+        /// <summary>
+        /// PIMLR: no friendly fire between AI characters. The shared HitBox damager is set to hit Enemy/Skin/Player
+        /// tags (the player's own melee needs Enemy/Skin), so a grandma's swing also hurt the grandma next to her.
+        /// A hit is ignored when BOTH the attacker and the victim are AI-controlled characters. Ignored hits don't
+        /// use up the swing's hit cooldown, so it can still connect with the player.
+        /// </summary>
+        private bool IsFriendlyFire(Component victim)
+        {
+            if (victim == null || ownerBrain == null || !ownerBrain.IsArtificialIntelligence) return false;
+            CharacterBrain.JUCharacterBrain victimBrain = victim.GetComponentInParent<CharacterBrain.JUCharacterBrain>();
+            return victimBrain != null && victimBrain != ownerBrain && victimBrain.IsArtificialIntelligence;
         }
         private void Start()
         {
@@ -85,7 +100,7 @@ namespace JUTPS
             if (Physics.Raycast(transform.position, transform.forward, out hit, RaycastDistance, RaycastCollideWith))
             {
                 //Debug.Log("raycasting somethings");
-                if (hit.collider.gameObject != oldHitedCollider)
+                if (hit.collider.gameObject != oldHitedCollider && !IsFriendlyFire(hit.collider))
                 {
                     for (int i = 0; i < TagsToDamage.Length; i++)
                     {
@@ -125,6 +140,7 @@ namespace JUTPS
 
         private void OnCollisionEnter(Collision collision)
         {
+            if (IsFriendlyFire(collision.collider)) return;
             for (int i = 0; i < TagsToDamage.Length; i++)
             {
                 if (collision.transform.tag == TagsToDamage[i] && CanHit)
@@ -143,6 +159,7 @@ namespace JUTPS
         }
         private void OnTriggerEnter(Collider other)
         {
+            if (IsFriendlyFire(other)) return;
             
             for (int i = 0; i < TagsToDamage.Length; i++)
             {

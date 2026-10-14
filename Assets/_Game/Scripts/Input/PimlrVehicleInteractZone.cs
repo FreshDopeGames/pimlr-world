@@ -78,7 +78,7 @@ public class PimlrVehiclePrompt : MonoBehaviour
         if (vehicle != lastVehicle) { lastVehicle = vehicle; heightAboveRoot = MeasureHeight(vehicle.transform); }
 
         PimlrInput.MarkInteractPromptVisible();
-        string text = $"Press {PimlrInput.Label(PimlrButton.Interact)} to {verb}";
+        string text = $"Press {PimlrInput.Label(PimlrButton.Interact)} To Ride";
         if (text != lastText) { label.text = text; lastText = text; }
 
         if (!cam || !cam.isActiveAndEnabled) cam = FindGameplayCamera();

@@ -50,7 +50,22 @@ public class PimlrBomberAI : MonoBehaviour
     bool hasMoveTarget;
     float nextRepath, nextPushRoll, pushEndTime;
     int strafeSign = 1;
-    float stateLockedUntil, strafeFlipAt;
+    Vector3 steer;            // smoothed world-space move input for back-pedal / circling
+    [Header("Speed / facing")]
+    [Tooltip("Bomber move speed as a share of the player's normal (non-sprint) on-foot speed, measured live.")]
+    [Range(0.3f, 1.2f)] public float speedVsPlayer = 0.9f;
+    [Tooltip("How fast it turns to keep facing the player (degrees per second).")]
+    public float faceTurnSpeed = 540f;
+    [Tooltip("While just circling at throwing range it moves slower than this (share of the speed above).")]
+    [Range(0.3f, 1f)] public float circlingPaceShare = 0.65f;
+    float baseSpeed = -1f;
+    bool facePlayerThisFrame;
+    [Header("Steering (back-pedal / circling)")]
+    [Tooltip("How quickly the move direction may change (per second). Lower = smoother, less twitchy.")]
+    public float steerResponsiveness = 3f;
+    [Tooltip("How far ahead (metres) to check the walkable area before stepping that way.")]
+    public float probeDistance = 2.5f;
+    float stateLockedUntil, strafeFlipAt, blockedFlipUntil;
     [Tooltip("Commit to a state (back off / hold / close in) for at least this long.")]
     public float minStateSeconds = 1.2f;
 
@@ -60,6 +75,12 @@ public class PimlrBomberAI : MonoBehaviour
         brain = GetComponent<JUCharacterArtificialInteligenceBrain>();
         patrol = brain as PatrolAI;
         randomDestination = GetComponent<AIRandomDestination>();
+        // The bomber prefab ships with LocomotionMode = JuTpsClassic, where JUTPS forces FiringMode = "is holding an
+        // item" every physics step. Bombers hold nothing, so facing-the-player mode was switched off constantly:
+        // they turned their backs to walk away, and (with root motion walking the body forward) any attempt to
+        // face the player made them walk INTO the player. Free mode lets this script own FiringMode.
+        if (character.LocomotionMode == JUCharacterController.MovementMode.JuTpsClassic)
+            character.LocomotionMode = JUCharacterController.MovementMode.Free;
         strafeSign = Random.value < 0.5f ? -1 : 1;
         nextPushRoll = Time.time + Random.Range(pushIntervalMin, pushIntervalMax);
     }
@@ -117,7 +138,23 @@ public class PimlrBomberAI : MonoBehaviour
         character.FiringMode = faceWhileMoving;
         character.FiringModeIK = false;              // no gun-aim arm pose for an empty-handed thrower
         character.LookAtPosition = player.position + Vector3.up * 1.2f;
+        facePlayerThisFrame = faceWhileMoving;
+        ApplySpeed();
 
+        // Back-pedalling and circling are steered continuously (no waypoints, no stop-start): the character
+        // faces the player while walking, so the Legs layer plays the walk-backwards / strafe clips smoothly.
+        if (state == State.Retreat || state == State.Hold)
+        {
+            hasMoveTarget = false;
+            Vector3 desired = SteerDirection(dist, toPlayer);
+            steer = Vector3.MoveTowards(steer, desired, steerResponsiveness * Time.deltaTime);
+            if (steer.sqrMagnitude < 0.0025f) brain.IdleState();
+            else character._Move(steer.x, steer.z, character.IsRunning);
+            return;
+        }
+        steer = Vector3.zero;
+
+        // Closing in (advance / push) uses NavMesh paths, since it may need to go around buildings.
         if (Time.time >= nextRepath || !hasMoveTarget)
         {
             nextRepath = Time.time + repathInterval;
@@ -126,22 +163,98 @@ public class PimlrBomberAI : MonoBehaviour
 
         if (!hasMoveTarget) { brain.IdleState(); return; }
 
-        bool run = state == State.Advance && dist > preferredMax + 10f;
-        float stop = state == State.Hold ? 1.2f : 1.5f;
+        bool run = (state == State.Advance && dist > preferredMax + 10f) || character.IsRunning;
+        const float stop = 1.5f;
         Vector3 to = moveTarget - transform.position; to.y = 0f;
-        if (to.sqrMagnitude < stop * stop) { brain.IdleState(); return; }
+        if (to.sqrMagnitude < stop * stop) { hasMoveTarget = false; return; } // pick the next point right away, no pause
 
-        // Short, unobstructed moves (backing off, side-stepping) go straight there - steady, deliberate steps.
-        // Longer or blocked moves use the NavMesh path.
         if (to.magnitude < 12f && !NavMesh.Raycast(transform.position, moveTarget, out _, NavMesh.AllAreas))
         {
-            Vector3 d = to.normalized * (state == State.Hold ? 0.6f : 1f); // side-steps at a walk, not a jog
+            Vector3 d = to.normalized;
             character._Move(d.x, d.z, run);
         }
         else
         {
             brain.GoToPosition(moveTarget, stop, run);
         }
+    }
+
+    /// <summary>
+    /// World-space walking direction while backing off (Retreat) or circling (Hold), with a short look-ahead on
+    /// the NavMesh so it slides along walls and kerbs instead of walking into them and jittering.
+    /// </summary>
+    Vector3 SteerDirection(float dist, Vector3 toPlayer)
+    {
+        Vector3 away = dist > 0.01f ? -toPlayer / dist : -transform.forward;
+        Vector3 side = Vector3.Cross(Vector3.up, -away) * strafeSign;
+
+        Vector3 desired;
+        if (state == State.Retreat)
+        {
+            desired = (away + side * 0.35f).normalized;          // mostly straight back, slightly angled
+        }
+        else
+        {
+            if (Time.time >= strafeFlipAt) { strafeSign = -strafeSign; strafeFlipAt = Time.time + Random.Range(2.5f, 4.5f); side = -side; }
+            float mid = (tooClose + preferredMax) * 0.5f;
+            float radial = Mathf.Clamp((mid - dist) / (preferredMax - tooClose), -0.6f, 0.6f); // drift toward the middle of the band
+            desired = (side + away * radial).normalized;
+        }
+
+        if (Clear(desired)) return desired;
+
+        // Blocked: try sliding along the obstacle, then the other way, then plain sideways.
+        Vector3 slideA = (side + away * 0.3f).normalized;
+        if (Clear(slideA)) return slideA;
+        Vector3 slideB = (-side + away * 0.3f).normalized;
+        if (Clear(slideB))
+        {
+            // Commit to the new side for a moment so it doesn't flip back and forth every frame along a wall.
+            if (Time.time >= blockedFlipUntil) { strafeSign = -strafeSign; blockedFlipUntil = Time.time + 1.5f; }
+            return slideB;
+        }
+        if (Clear(-side)) return -side;
+        return Vector3.zero;                                     // cornered: stand and throw
+    }
+
+    bool Clear(Vector3 dir)
+    {
+        if (dir.sqrMagnitude < 0.01f) return false;
+        Vector3 from = transform.position;
+        return !NavMesh.Raycast(from, from + dir * probeDistance, out _, NavMesh.AllAreas);
+    }
+
+    /// <summary>
+    /// Keep facing the player while engaged. Runs after animation and every other script, so nothing that
+    /// briefly drops firing mode (a hit reaction, the throw clip, a stumble) can swing its back to you.
+    /// </summary>
+    void LateUpdate()
+    {
+        if (!facePlayerThisFrame || !player || character.IsDead || character.IsRagdolled) return;
+        character.FiringMode = true;
+        Vector3 flat = player.position - transform.position; flat.y = 0f;
+        if (flat.sqrMagnitude < 0.01f) return;
+        Quaternion want = Quaternion.LookRotation(flat.normalized, Vector3.up);
+        // The movement-direction helper is a child of the character: keep its world rotation, so turning the body
+        // to face the player never bends the direction it's walking.
+        Transform dir = character.DirectionTransform;
+        Quaternion keep = dir ? dir.rotation : Quaternion.identity;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, want, faceTurnSpeed * Time.deltaTime);
+        if (dir) dir.rotation = keep;
+    }
+
+    /// <summary>
+    /// Move at speedVsPlayer x the player's measured on-foot speed. In firing-mode locomotion JUTPS moves at
+    /// Speed x 0.5 (walk) or Speed x 1.3 (run), so pick the gait whose animation suits the pace and scale Speed.
+    /// </summary>
+    void ApplySpeed()
+    {
+        if (baseSpeed < 0f) baseSpeed = character.Speed;
+        PimlrPlayerPace.Sample();
+        float target = PimlrPlayerPace.OnFootSpeed * speedVsPlayer * (state == State.Hold ? circlingPaceShare : 1f);
+        bool jog = target > 2.2f;                       // above a brisk walk, use the running back-pedal clips
+        character.IsRunning = jog;
+        character.Speed = target / (jog ? 1.3f : 0.5f);
     }
 
     void SwitchTo(State next)
@@ -162,6 +275,8 @@ public class PimlrBomberAI : MonoBehaviour
         {
             character.FiringMode = false;
             character.FiringModeIK = false;
+            facePlayerThisFrame = false;
+            if (baseSpeed > 0f) character.Speed = baseSpeed;
         }
     }
 

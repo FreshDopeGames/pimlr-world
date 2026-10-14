@@ -62,13 +62,61 @@ public class AuthManager : Singleton<AuthManager>
     private void Start()
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "00_MainMenu")
+            SetUpSplash();
+    }
+
+    // PIMLR: this manager survives scene loads (DontDestroyOnLoad), so Start() only ran on the FIRST visit to
+    // 00_MainMenu. Coming back later (Living Room menu > Exit) left the fresh splash buttons unwired and the
+    // splash menu not shown. Set the splash up again every time 00_MainMenu loads.
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoadedPimlr;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoadedPimlr;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoadedPimlr;
+    }
+
+    private bool splashSetUpOnce;
+
+    private void OnSceneLoadedPimlr(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance != this || !splashSetUpOnce || scene.name != "00_MainMenu") return;
+        StartCoroutine(SetUpSplashNextFrame());
+    }
+
+    private IEnumerator SetUpSplashNextFrame()
+    {
+        yield return null; // let the menu scene's own UI (Global UI, SceneManagerScript) finish Awake/Start
+        SetUpSplash();
+    }
+
+    private void SetUpSplash()
+    {
+        splashSetUpOnce = true;
+        WirePimlrStartButtons();
+        RestorePimlrStartButtons();       // both choices visible again...
+        Button any = FindButton("NewGame Button");
+        if (any == null) any = FindButton("KeepPlaying Button");
+        if (any != null)                  // ...and the loading bar/text from last time hidden
         {
-            WirePimlrStartButtons();
-            if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null)
-                SceneManagerScript.Instance.uiManager.ShowMenu("Loading Screen");
-            else
-                Debug.LogError($"[AuthManager:{GetInstanceID()}] Cannot show Loading Screen: SceneManagerScript or its UIManager reference is NULL.");
+            Transform screen = any.transform;
+            while (screen != null && screen.name != "Loading Screen") screen = screen.parent;
+            if (screen != null)
+            {
+                Transform t = FindDescendant(screen, "loadingText (TMP)");
+                Transform s = FindDescendant(screen, "Slider");
+                if (t != null) t.gameObject.SetActive(false);
+                if (s != null) s.gameObject.SetActive(false);
+            }
         }
+
+        if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null)
+            SceneManagerScript.Instance.uiManager.ShowMenu("Loading Screen");
+        else
+            Debug.LogError($"[AuthManager:{GetInstanceID()}] Cannot show Loading Screen: SceneManagerScript or its UIManager reference is NULL.");
     }
 
     private void WirePimlrStartButtons()
