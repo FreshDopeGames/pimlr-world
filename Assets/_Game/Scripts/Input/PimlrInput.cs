@@ -71,27 +71,112 @@ public static class PimlrInput
     // Music (Y play/pause, LB/RB tracks) is handled by MusicInputHandler in the gameplay scenes.
     // Set every frame by the player's DriveVehicles: true while in a vehicle (driving or drive-by seat).
     static int inVehicleFrame = -10;
-    public static void MarkPlayerInVehicle() => inVehicleFrame = Time.frameCount;
+    static bool inVehicleIsBike;
+    public static void MarkPlayerInVehicle(bool isBike = false) { inVehicleFrame = Time.frameCount; inVehicleIsBike = isBike; }
     public static bool PlayerInVehicle => Time.frameCount - inVehicleFrame <= 1;
+    /// <summary>PIMLR (post-playtest): true while the player rides the bike (not the car).</summary>
+    public static bool PlayerOnBike => PlayerInVehicle && inVehicleIsBike;
 
     public static bool VehicleExitDown => Pad != null && Pad.buttonEast.wasPressedThisFrame;     // B / Circle leaves the vehicle
 
     // The B press that exits a vehicle must not also crouch the character on the same frame.
     static int lastVehicleExitFrame = -10;
-    public static void MarkVehicleExit() => lastVehicleExitFrame = Time.frameCount;
+    public static void MarkVehicleExit()
+    {
+        lastVehicleExitFrame = Time.frameCount;
+        BlockGameplayInputFor(VehicleExitButtonPause, blockMovement: false); // still tapping A to pedal -> no jump on landing
+    }
+
+    // ---- PIMLR (post-playtest): short gameplay input pause ----
+    // After a dialogue closes, buttons AND movement wait this long (real seconds) so the press that confirmed the
+    // last line can't also jump / fire / walk off. Camera look is never blocked. JUInputManager applies it.
+    public static float DialogueInputPause = 0.5f;
+    public static float UnpauseButtonPause = 0.4f;     // Resume pressed with A on the pause menu
+    public static float VehicleExitButtonPause = 0.5f;
+
+    static float buttonsBlockedUntil = -1f, movementBlockedUntil = -1f;
+
+    /// <summary>Ignore gameplay buttons (and movement, if asked) for the next <paramref name="seconds"/> real seconds.</summary>
+    public static void BlockGameplayInputFor(float seconds, bool blockMovement = true)
+    {
+        float until = Time.realtimeSinceStartup + seconds;
+        buttonsBlockedUntil = Mathf.Max(buttonsBlockedUntil, until);
+        if (blockMovement) movementBlockedUntil = Mathf.Max(movementBlockedUntil, until);
+    }
+
+    /// <summary>Call when a dialogue window closes and the player gets control back.</summary>
+    public static void OnDialogueClosed() => BlockGameplayInputFor(DialogueInputPause);
+
+    public static bool GameplayButtonsBlocked => Time.realtimeSinceStartup < buttonsBlockedUntil;
+    public static bool GameplayMovementBlocked => Time.realtimeSinceStartup < movementBlockedUntil;
     public static bool VehicleExitedRecently => Time.frameCount - lastVehicleExitFrame <= 2;
 
     const float TriggerDeadzone = 0.08f;
     const float BrakeBeforeReverseSpeed = 1.0f; // m/s: above this, the opposite trigger brakes instead of reversing
 
+    // ---- PIMLR (post-playtest): bike pedalling on a controller ----
+    // TapToPedal (default): A / Cross pedals - every tap is a pedal stroke, tapping fast = full speed; holding it
+    //   cruises at a lower speed. Left stick steers, pull it back to brake then reverse. RT / LT stay Fire / Aim,
+    //   so players can shoot while riding.
+    // Triggers: the playtest scheme (RT accelerate, LT brake / reverse, no shooting while riding).
+    public static PimlrPedalMode PedalMode = PimlrPedalMode.TapToPedal;
+    /// <summary>True when RT / LT keep their on-foot Fire / Aim roles while the player rides.</summary>
+    // PIMLR (post-playtest): bike only. The car is driving-only: RT accelerates, no shooting.
+    public static bool CanShootWhileRiding => PedalMode == PimlrPedalMode.TapToPedal && PlayerOnBike;
+
+    public static float PedalStroke = 0.3f;       // power added per tap (4 taps/sec holds full speed against decay)
+    public static float PedalDecayPerSec = 0.9f;  // power lost per second when not tapping
+    public static float PedalHoldCruise = 0.5f;   // holding A settles here: accessible, but slower than tapping
+    public static float PedalHoldRampPerSec = 1.0f;   // PIMLR: holding A reaches cruise (0.5) in 0.5 s
+    const float StickBrakeThreshold = -0.5f;      // left stick Y below this = brake / reverse
+
+    /// <summary>0..1 current pedal power (for a cadence meter on the HUD if wanted).</summary>
+    public static float PedalPower { get; private set; }
+    static int pedalFrame = -1;
+
+    static void UpdatePedal()
+    {
+        if (pedalFrame == Time.frameCount) return; // several vehicles may ask in one frame
+        if (Time.frameCount - pedalFrame > 2) PedalPower = 0f; // fresh ride: no leftover power from the last one
+        pedalFrame = Time.frameCount;
+
+        var a = Pad.buttonSouth;
+        float dt = Time.deltaTime;
+        if (a.wasPressedThisFrame) PedalPower = Mathf.Min(1f, PedalPower + PedalStroke);
+
+        if (a.isPressed && PedalPower < PedalHoldCruise)
+            PedalPower = Mathf.MoveTowards(PedalPower, PedalHoldCruise, PedalHoldRampPerSec * dt);
+        else
+            PedalPower = Mathf.Max(a.isPressed ? PedalHoldCruise : 0f, PedalPower - PedalDecayPerSec * dt);
+    }
+
     /// <summary>
-    /// Racing-game trigger driving: RT = accelerate, LT = brake, then reverse once (nearly) stopped.
+    /// Gamepad vehicle input. TapToPedal: A taps pedal, left stick back brakes / reverses.
+    /// Triggers: RT = accelerate, LT = brake, then reverse once (nearly) stopped.
     /// Returns the forward/back engine input and whether the brakes should be on.
     /// </summary>
-    public static void GamepadVehicleInputs(Rigidbody rb, Transform vehicle, out float vertical, out bool brake)
+    public static void GamepadVehicleInputs(Rigidbody rb, Transform vehicle, out float vertical, out bool brake, bool pedalVehicle = true)
     {
         vertical = 0f; brake = false;
         if (Pad == null) return;
+
+        // pedalVehicle = false (the car): always RT accelerate / LT brake-reverse.
+        if (pedalVehicle && PedalMode == PimlrPedalMode.TapToPedal)
+        {
+            UpdatePedal();
+            float speed = rb ? Vector3.Dot(rb.velocity, vehicle.forward) : 0f;
+            float stickY = Pad.leftStick.ReadValue().y;
+
+            if (stickY < StickBrakeThreshold)
+            {
+                PedalPower = 0f;
+                if (speed > BrakeBeforeReverseSpeed) brake = true;   // still rolling forward: brake first
+                else vertical = stickY;                             // stopped: back up
+            }
+            else if (PedalPower > 0f && speed < -BrakeBeforeReverseSpeed) brake = true; // pedalling while rolling back
+            else vertical = PedalPower;
+            return;
+        }
 
         float rt = Pad.rightTrigger.ReadValue(); if (rt < TriggerDeadzone) rt = 0f;
         float lt = Pad.leftTrigger.ReadValue();  if (lt < TriggerDeadzone) lt = 0f;
@@ -158,3 +243,5 @@ public static class PimlrInput
 }
 
 public enum PimlrButton { Interact, Jump, Reload, Stance, PlayTrack, PrevTrack, NextTrack, Fire, Aim, Run }
+
+public enum PimlrPedalMode { TapToPedal, Triggers }

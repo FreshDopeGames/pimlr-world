@@ -44,6 +44,8 @@ namespace JUTPS.WeaponSystem
         private string CollidedGameObjectTag;
 
         public SurfaceFX[] ImpactFX;
+        [Tooltip("PIMLR: give the impact FX gravity, a landing on the ground and a squash wobble (water gun soap suds). See PimlrSudsFX.")]
+        public bool PimlrSudsPhysics = false;
 
         public TrailRenderer trailRenderer;
 
@@ -230,7 +232,8 @@ namespace JUTPS.WeaponSystem
                 CollidedGameObjectTag = col.gameObject.tag;
 
                 //Instantiate hitted Surface Impact Particle
-                SurfaceFX.InstantiateParticleFX(ImpactFX, col.gameObject.tag, FinalPoint, Quaternion.FromToRotation(transform.forward, FinalPointNormal) * transform.rotation, col.gameObject.transform);
+                GameObject impactFx = SurfaceFX.InstantiateParticleFX(ImpactFX, col.gameObject.tag, FinalPoint, Quaternion.FromToRotation(transform.forward, FinalPointNormal) * transform.rotation, col.gameObject.transform);
+                if (PimlrSudsPhysics && impactFx != null) impactFx.AddComponent<PimlrSudsFX>();
 
                 //Hit Marker
                 if (GetOwner() != null)

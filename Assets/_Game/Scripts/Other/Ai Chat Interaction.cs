@@ -90,6 +90,7 @@ public class AiChatInteraction : MonoBehaviour
         SetChatPromptVisible(true); // PIMLR: dialog cancelled -> bring the CTA back
 
         PlayerControllerStart();
+        PimlrInput.OnDialogueClosed(); // PIMLR (post-playtest): the A that pressed Next/Close must not also jump
 
 
     }

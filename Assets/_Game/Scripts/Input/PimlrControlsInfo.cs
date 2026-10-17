@@ -35,17 +35,18 @@ public class PimlrControlsInfo : MonoBehaviour
     // {Xbox, PlayStation, action}
     static readonly string[,] GamepadRows =
     {
-        { "L Stick", "L Stick", "Move" },
+        // PIMLR (post-playtest): matches PimlrInput.PedalMode = TapToPedal (shoot while riding).
+        { "L Stick", "L Stick", "Move  |  Ride: Steer, pull back to Brake / Reverse" },
         { "R Stick", "R Stick", "Camera" },
-        { "RT", "R2", "Fire  |  Drive: Accelerate" },
-        { "LT", "L2", "Aim  |  Drive: Brake / Reverse" },
-        { "A", "X", "Jump / Interact" },
+        { "RT", "R2", "Fire" },
+        { "LT", "L2", "Aim" },
+        { "A", "X", "Jump / Interact  |  Ride: Tap to Pedal (hold to cruise)" },
         { "X", "Square", "Reload" },
         { "B", "Circle", "Crouch / Prone / Stand  |  Exit Vehicle" },
         { "Y", "Triangle", "Play / Pause Track" },
         { "LB", "L1", "Previous Track" },
         { "RB", "R1", "Next Track" },
-        { "L3", "L3", "Run" },
+        { "L3", "L3", "Sprint (click to toggle)" },
         { "D-Pad L/R", "D-Pad L/R", "Switch Weapon" },
         { "Start", "Options", "Menu / Pause" },
     };

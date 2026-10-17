@@ -252,7 +252,8 @@ namespace JUTPS
             //GameExecutionManager.Instance.pla
 
             if (fader != null) fader.Fade(UIFader.FADE.FadeOut, 0.4f, 0.4f);
-            yield return new WaitForSeconds(1f);
+            // PIMLR (post-playtest): real seconds - a timeScale left at 0 (pause during HATER FREE!) must not hold the black screen.
+            yield return new WaitForSecondsRealtime(1f);
             SceneManagerScript.Instance.uiManager.ShowMenu("VideoScreen");
         }
         /*public void OnSetPlayerCar()

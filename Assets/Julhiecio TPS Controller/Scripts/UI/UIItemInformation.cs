@@ -18,7 +18,7 @@ namespace JUTPS.InventorySystem.UI
         public Text ItemName;
         public Text ItemQuantity;
         public GameObject BulletLabel;
-        public Text BulletQuantity;
+        public TMPro.TMP_Text BulletQuantity;
         public Image ItemHealth;
         void Start()
         {

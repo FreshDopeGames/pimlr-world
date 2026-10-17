@@ -44,11 +44,15 @@ public static class PlayerProfile
 
     public static bool HasSetDisplayName => !string.IsNullOrEmpty(DisplayName);
 
+    /// <summary>PIMLR (post-playtest): raised when the name changes, so on-screen name labels refresh.</summary>
+    public static event Action DisplayNameChanged;
+
     public static void StartNewPlayer()
     {
         PlayerPrefs.DeleteKey(DisplayNameKey);
         PlayerPrefs.SetString(AnonymousIdKey, Guid.NewGuid().ToString("N"));
         PlayerPrefs.Save();
+        DisplayNameChanged?.Invoke();
     }
 
     /// <summary>Cleans/clamps input and stores it; returns the name actually saved.</summary>
@@ -60,6 +64,7 @@ public static class PlayerProfile
         if (cleaned.Length > MaxNameLength) cleaned = cleaned.Substring(0, MaxNameLength);
         DisplayName = cleaned;
         PlayerPrefs.Save();
+        DisplayNameChanged?.Invoke();
         return cleaned;
     }
 }

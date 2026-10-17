@@ -61,7 +61,7 @@ namespace JUTPS.VehicleSystem
                 // PIMLR: on gamepad, RT accelerates and LT brakes / reverses (left stick only steers; B exits).
                 float verticalInput = JUInput.GetAxis(JUInput.Axis.MoveVertical);
                 bool brakeInput = JUInput.GetButton(JUInput.Buttons.JumpButton);
-                if (PimlrInput.UsingGamepad) PimlrInput.GamepadVehicleInputs(rb, transform, out verticalInput, out brakeInput);
+                if (PimlrInput.UsingGamepad) PimlrInput.GamepadVehicleInputs(rb, transform, out verticalInput, out brakeInput, pedalVehicle: false); // PIMLR: car = RT/LT
 
                 SetEngineInputs(
                 JUInput.GetAxis(JUInput.Axis.MoveHorizontal),   //Left/Right Input Value

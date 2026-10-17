@@ -28,13 +28,33 @@ public class PlmrMainMenuPanel : MonoBehaviour
         if (coinText != null && CoinManager.Instance) coinText.text = CoinManager.Instance.GetCoins().ToString();
     }
 
+    // PIMLR (post-playtest): B / Circle closes this menu like Start / Options does (called by PimlrMenuNavigator
+    // when the open menu has no Close / Back button of its own).
+    static readonly System.Collections.Generic.List<PlmrMainMenuPanel> instances = new System.Collections.Generic.List<PlmrMainMenuPanel>();
+
+    public static bool TryCloseFromController()
+    {
+        foreach (var p in instances)
+        {
+            // Only in the Living Room (a player to hand control back to) - never the 00_MainMenu splash buttons.
+            if (p != null && p.isActiveAndEnabled && p.characterController != null && p.target != null && p.target.activeSelf)
+            {
+                p.target.SetActive(false);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void OnEnable()
     {
+        if (!instances.Contains(this)) instances.Add(this);
         if (CoinManager.Instance)
             CoinManager.Instance.coinValueChanged += OnCoinValueChange;
     }
     private void OnDisable()
     {
+        instances.Remove(this);
         if (CoinManager.Instance)
             CoinManager.Instance.coinValueChanged -= OnCoinValueChange;
     }
@@ -185,7 +205,13 @@ public class PlmrMainMenuPanel : MonoBehaviour
         {
             PlayerControllerStart();
         }
+
+        // PIMLR (post-playtest): menu just closed -> brief button pause so the closing press doesn't jump.
+        if (targetWasActive && !target.activeSelf) PimlrInput.BlockGameplayInputFor(PimlrInput.UnpauseButtonPause, blockMovement: false);
+        targetWasActive = target.activeSelf;
     }
+
+    bool targetWasActive;
 
     void HandleToggleTarget()
     {

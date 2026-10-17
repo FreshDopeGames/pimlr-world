@@ -134,6 +134,9 @@ public class DialogueAwakener : MonoBehaviour
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        // PIMLR (post-playtest): short input pause so the button that ended the dialogue can't also jump / move.
+        PimlrInput.OnDialogueClosed();
     }
 
     public void IncreasePoints() 
@@ -169,6 +172,7 @@ public class DialogueAwakener : MonoBehaviour
     public void EndDialogBox()
     {
         DialogueManager.instance.EndDialogue();
+        PimlrInput.OnDialogueClosed(); // PIMLR (post-playtest)
         uIManager.ShowMenu("PLMRMainMenuPanel");
     }
     [ContextMenu("EndDialogBoxAndSpawnZonbies")]

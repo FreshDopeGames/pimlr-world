@@ -264,6 +264,17 @@ public class PimlrMenuNavigator : MonoBehaviour
     // inside the JUTPS Interface or the music player.
     static readonly string[] OverlayRoots = { "Pause Screen", "Pause BG", "BlurrBG", "MusicLibrary", "Loot Items" };
 
+    static bool IsMusicWidget(Selectable s)
+    {
+        if (s.TryGetComponent(out PimlrNavHint hint) && hint.isMenu) return false;
+        for (Transform t = s.transform; t != null; t = t.parent)
+        {
+            if (System.Array.IndexOf(OverlayRoots, t.name) >= 0) return false; // e.g. the music library popup
+            if (t.GetComponent<MusicSystem>() != null) return true;
+        }
+        return false;
+    }
+
     static bool IsGameplayHud(Selectable s)
     {
         if (s.TryGetComponent(out PimlrNavHint hint) && hint.isMenu) return false;
@@ -444,6 +455,13 @@ public class PimlrMenuNavigator : MonoBehaviour
     bool TryCancel()
     {
         Selectable target = FindCancelTarget(items);
+        // PIMLR (post-playtest): the Living Room menu has no Close button, so B used to fall through to the music
+        // widget's "Back" (previous track) button. Close the menu instead, the same as Start / Options.
+        if (target == null && PlmrMainMenuPanel.TryCloseFromController())
+        {
+            rescanTimer = 0f;
+            return true;
+        }
         if (target == null)
         {
             // Not necessarily a focusable item (e.g. a full-screen overlay button behind the pause panel).
@@ -470,6 +488,7 @@ public class PimlrMenuNavigator : MonoBehaviour
             foreach (var s in pool)
             {
                 if (pass == 0 && IsGameplayHud(s)) continue;
+                if (IsMusicWidget(s)) continue; // PIMLR (post-playtest): its Back = previous track, never "cancel"
                 if (IsCancelButton(s)) return s;
             }
         return null;

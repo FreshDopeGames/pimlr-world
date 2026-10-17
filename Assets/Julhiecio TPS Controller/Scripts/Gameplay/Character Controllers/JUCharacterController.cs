@@ -101,6 +101,18 @@ namespace JUTPS
             bool AimInput = JUInput.GetButton(JUInput.Buttons.AimingButton);
             bool AimInputDown = JUInput.GetButtonDown(JUInput.Buttons.AimingButton);
 
+            // PIMLR (post-playtest): driving the car is driving only - no aiming or shooting (RT accelerates on a
+            // controller). On the bike, no firing while the camera points behind / outside the arm's range.
+            if (IsDriving && !PimlrIsRidingBike)
+            {
+                ShotInput = ShotInputDown = AimInput = AimInputDown = false;
+            }
+            else if (PimlrIsRidingBike)
+            {
+                GetLookPosition(); // refreshes PimlrRideAimOutOfRange for this frame
+                if (PimlrRideAimOutOfRange) ShotInput = ShotInputDown = false;
+            }
+
             FireModeTimer(ShotInput, AimInput);
 
             if (!BlockHorizontalInput) HorizontalX = JUInput.GetAxis(JUInput.Axis.MoveHorizontal);
@@ -185,7 +197,15 @@ namespace JUTPS
             }
 
             //Running
-            if (JUInput.GetButton(JUInput.Buttons.RunButton))
+            // PIMLR (post-playtest): on a controller L3 TOGGLES sprint (click on, click again / stop moving to turn
+            // off). Keyboard Shift is still hold-to-run. The three run* values below replace the raw button reads.
+            bool runHeld, runDown, runUp;
+            UpdateRunInput(out runHeld, out runDown, out runUp);
+            // PIMLR (post-playtest): out of stamina = no running until it recovers.
+            if (runHeld && PimlrStamina.IsExhausted(this)) { runHeld = false; runDown = false; runUp = true; }
+            // Sprint = the run button (Shift / L3 toggle), not AutoRun's normal run from a fully pushed stick.
+            IsSprintInputActive = runHeld && !IsCrouched;
+            if (runHeld)
             {
                 if (WalkOnRunButton)
                 {
@@ -214,13 +234,13 @@ namespace JUTPS
             }
 
             //Start sprinting impulse
-            if (JUInput.GetButtonDown(JUInput.Buttons.RunButton) && AutoRun && SprintOnRunButton)
+            if (runDown && AutoRun && SprintOnRunButton)
             {
                 SprintSpeedDecrease = 6;
                 //Debug.Log("Start Sprinting");
             }
             //Force stop sprinting
-            if (JUInput.GetButtonUp(JUInput.Buttons.RunButton) && SprintOnRunButton == true)
+            if (runUp && SprintOnRunButton == true)
             {
                 IsSprinting = false;
             }
@@ -979,7 +999,13 @@ namespace JUTPS
                 // Do physical damage
                 if (physicalDamage > PhysicalDamageStartAt)
                 {
-                    TakeDamage(physicalDamage, other.contacts[0].point);
+                    // PIMLR (post-playtest): no VFX on vehicle/physics collisions. No hit position = no blood particle,
+                    // and the player's red damage-screen flash is skipped for this hit only.
+                    JUHealth collisionHealth = GetComponent<JUHealth>();
+                    bool bloodScreen = collisionHealth != null && collisionHealth.BloodScreenEffect;
+                    if (collisionHealth != null) collisionHealth.BloodScreenEffect = false;
+                    TakeDamage(physicalDamage);
+                    if (collisionHealth != null) collisionHealth.BloodScreenEffect = bloodScreen;
                     
                     //Hit damage on screen
                     //FX.HitMarkerEffect.HitCheck("Skin", "Player", other.contacts[0].point, physicalDamage);
@@ -994,6 +1020,42 @@ namespace JUTPS
 
         #endregion
 
+
+        // ---- PIMLR (post-playtest): L3 sprint toggle ----
+        [Header("PIMLR Sprint Toggle (controller)")]
+        [Tooltip("L3 toggles sprint on a controller instead of having to hold it.")]
+        public bool GamepadSprintToggle = true;
+        [Tooltip("Sprint turns off after the left stick has been released for this many seconds.")]
+        public float SprintToggleStopDelay = 0.25f;
+        private bool sprintToggled;
+        /// <summary>PIMLR: true while the player is asking to sprint (Shift held / L3 toggled on). Stamina drains on this.</summary>
+        [HideInInspector] public bool IsSprintInputActive;
+        private float sprintToggleIdleTime;
+
+        private void UpdateRunInput(out bool held, out bool down, out bool up)
+        {
+            if (!GamepadSprintToggle || !PimlrInput.UsingGamepad)
+            {
+                sprintToggled = false;
+                held = JUInput.GetButton(JUInput.Buttons.RunButton);
+                down = JUInput.GetButtonDown(JUInput.Buttons.RunButton);
+                up = JUInput.GetButtonUp(JUInput.Buttons.RunButton);
+                return;
+            }
+
+            bool was = sprintToggled;
+            if (JUInput.GetButtonDown(JUInput.Buttons.RunButton)) sprintToggled = !sprintToggled;
+
+            // Auto-off: stick let go for a moment, crouched / prone, out of stamina, or in a vehicle.
+            bool moving = Mathf.Abs(HorizontalX) > 0.2f || Mathf.Abs(VerticalY) > 0.2f;
+            sprintToggleIdleTime = moving ? 0f : sprintToggleIdleTime + Time.deltaTime;
+            if (sprintToggled && (sprintToggleIdleTime > SprintToggleStopDelay || IsCrouched || IsProne || !CanSprint || IsDriving || PimlrStamina.IsExhausted(this)))
+                sprintToggled = false;
+
+            held = sprintToggled;
+            down = sprintToggled && !was;
+            up = !sprintToggled && was;
+        }
 
         void OnAnimatorIK(int layerIndex)
         {

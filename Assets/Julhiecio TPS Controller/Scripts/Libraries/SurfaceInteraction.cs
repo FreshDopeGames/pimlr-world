@@ -167,8 +167,10 @@ namespace JUTPS.FX
         /// <param name="Postion"> Position to instantiate ParticleFX </param>
         /// <param name="Rotation"> Rotation to instantiate ParticleFX </param>
         /// <param name="TimeToDestroy"> Time to auto destroy ParticleFX</param>
-        public static void InstantiateParticleFX(SurfaceFX[] SurfaceFx, string SurfaceTag = "Untagged", Vector3 Postion = default, Quaternion Rotation = default, Transform parent = null, float TimeToDestroy = 5f)
+        public static GameObject InstantiateParticleFX(SurfaceFX[] SurfaceFx, string SurfaceTag = "Untagged", Vector3 Postion = default, Quaternion Rotation = default, Transform parent = null, float TimeToDestroy = 5f)
         {
+            // PIMLR (post-playtest): returns the spawned FX (the last one, if several matched) so callers can tweak it.
+            GameObject spawned = null;
             Instantiated = false;
 
             for (int i = 0; i < SurfaceFx.Length; i++)
@@ -176,6 +178,7 @@ namespace JUTPS.FX
                 if (SurfaceTag == SurfaceFx[i].SurfaceTag && SurfaceFx[i].ParticleFXPrefab != null)
                 {
                     GameObject pfx = GameObject.Instantiate(SurfaceFx[i].ParticleFXPrefab, Postion, Rotation);
+                    spawned = pfx;
                     pfx.transform.parent = parent;
                     //pfx.hideFlags = HideFlags.HideInHierarchy;
 
@@ -192,6 +195,7 @@ namespace JUTPS.FX
             if (Instantiated == false && SurfaceFx.Length > 0)
             {
                 GameObject pfx = GameObject.Instantiate(SurfaceFx[0].ParticleFXPrefab, Postion, Rotation);
+                spawned = pfx;
                 pfx.transform.parent = parent;
                 //pfx.hideFlags = HideFlags.HideInHierarchy;
 
@@ -201,6 +205,7 @@ namespace JUTPS.FX
                 }
                 Instantiated = true;
             }
+            return spawned;
         }
     }
 

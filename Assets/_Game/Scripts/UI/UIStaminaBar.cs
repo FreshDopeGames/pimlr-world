@@ -21,54 +21,35 @@ public class UIStaminaBar : MonoBehaviour
     [Tooltip("Filled Image whose fillAmount represents remaining sprint stamina.")]
     [SerializeField] private Image fillImage; // ASSIGN IN EDITOR
 
-    [Tooltip("Player controller. Leave null to auto-resolve from GameExecutionManager.")]
-    [SerializeField] private JUCharacterController player; // AUTO-RESOLVED if null
+    [Tooltip("Unused since the post-playtest stamina rework (the bar reads PimlrStamina). Kept so scene data still loads.")]
+    [SerializeField] private JUCharacterController player;
 
     [Header("Options")]
-    [Tooltip("Smoothing speed for the bar. 0 = snap instantly.")]
-    [SerializeField] private float lerpSpeed = 8f;
+    [Tooltip("How fast the bar catches up (fill per second). 0 = snap instantly.")]
+    [SerializeField] private float lerpSpeed = 3f;
 
     [Tooltip("Hide the bar entirely when stamina is full (idle).")]
     [SerializeField] private bool hideWhenFull = false;
 
-    [Tooltip("Tint applied while stamina is depleted (can't sprint).")]
-    [SerializeField] private Color depletedColor = new Color(1f, 0.4f, 0.4f, 1f);
+    [Tooltip("Tint while exhausted (sprinting locked until it recovers). Multiplies your sprite's colour.")]
+    [SerializeField] private Color depletedColor = new Color(0.55f, 0.55f, 0.55f, 1f);
     [SerializeField] private Color normalColor = Color.white;
-
-    private void TryResolvePlayer()
-    {
-        if (player != null) return;
-
-        var gem = GameExecutionManager.Instance;
-        if (gem != null && gem.playerHandler != null)
-        {
-            player = gem.playerHandler.jUCharacterController;
-        }
-    }
 
     private void Update()
     {
         if (fillImage == null) return;
 
-        if (player == null)
-        {
-            TryResolvePlayer();
-            if (player == null) return;
-        }
+        // PIMLR (post-playtest): reads the real stamina pool (PimlrStamina on the player), which only drains while
+        // sprinting / punching. The old source (JUTPS NormalizedSprintStamina) is a sprint-speed ramp that rises
+        // whenever the player runs, which made the bar fill up from 0 on normal running.
+        PimlrStamina st = PimlrStamina.Resolve();
+        if (st == null) return;
 
-        float target = player.NormalizedSprintStamina;
+        float target = st.Normalized;
+        fillImage.fillAmount = lerpSpeed <= 0f ? target : Mathf.MoveTowards(fillImage.fillAmount, target, lerpSpeed * Time.deltaTime);
 
-        if (lerpSpeed <= 0f)
-        {
-            fillImage.fillAmount = target;
-        }
-        else
-        {
-            fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, target, lerpSpeed * Time.deltaTime);
-        }
-
-        // Colour feedback: red-ish when the player has run out of sprint.
-        fillImage.color = player.CanSprintNow ? normalColor : depletedColor;
+        // Darker while exhausted (sprinting locked until it recovers).
+        fillImage.color = st.Exhausted ? depletedColor : normalColor;
 
         if (hideWhenFull)
         {

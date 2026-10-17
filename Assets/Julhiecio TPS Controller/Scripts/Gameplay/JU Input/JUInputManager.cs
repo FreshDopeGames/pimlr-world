@@ -78,6 +78,8 @@ namespace JUTPS.JUInputSystem
 			}
 
 			UpdateAxis();
+			// PIMLR (post-playtest): movement waits out the post-dialogue input pause too (camera look stays live).
+			if (PimlrInput.GameplayMovementBlocked) { MoveHorizontal = 0f; MoveVertical = 0f; }
 			if (BlockStandardInputs) return;
 
 			UpdateGetButtonDown();
@@ -95,11 +97,30 @@ namespace JUTPS.JUInputSystem
 				PressedShooting = PressedShootingDown = false;
 			}
 
-			// PIMLR: on a controller RT accelerates and LT brakes while in a vehicle - they must not also fire / aim.
-			if (PimlrInput.UsingGamepad && PimlrInput.PlayerInVehicle)
+			// PIMLR: in the Triggers pedal mode RT accelerates and LT brakes while in a vehicle - they must not also fire / aim.
+			// PIMLR (post-playtest): in TapToPedal mode RT / LT stay Fire / Aim (shoot while riding) and A pedals instead.
+			if (PimlrInput.UsingGamepad && PimlrInput.PlayerInVehicle && !PimlrInput.CanShootWhileRiding)
 			{
 				PressedShooting = PressedShootingDown = false;
 				PressedAiming = PressedAimingDown = false;
+			}
+
+			// PIMLR (post-playtest): short input pause after a dialogue closes / the game unpauses
+			// (PimlrInput.BlockGameplayInputFor), so the A press that confirmed the last "Next" can't also jump.
+			if (PimlrInput.GameplayButtonsBlocked)
+			{
+				PressedShooting = PressedShootingDown = false;
+				PressedAiming = PressedAimingDown = false;
+				PressedReload = PressedReloadDown = false;
+				PressedJump = PressedJumpDown = false;
+				PressedPunch = PressedPunchDown = false;
+				PressedCrouch = PressedCrouchDown = false;
+				PressedProne = PressedProneDown = false;
+				PressedRoll = PressedRollDown = false;
+				PressedPickup = PressedPickupDown = false;
+				PressedInteract = PressedInteractDown = false;
+				PressedNextItem = PressedNextItemDown = false;
+				PressedPreviousItem = PressedPreviousItemDown = false;
 			}
 
 			//In the new input system the "GetUp" method are now events (see the method "AddInputUpListeners" bellow)
@@ -190,6 +211,7 @@ namespace JUTPS.JUInputSystem
 				{
 					float m = Mathf.InverseLerp(GamepadLookDeadzone, 1f, stick.magnitude);
 					look = stick.normalized * (m * m) * GamepadLookSpeed * (Time.deltaTime * 60f);
+					look *= PimlrAimAssist.LookScale; // PIMLR (post-playtest): aim-assist friction over a target
 				}
 				else if (look == stick)
 				{

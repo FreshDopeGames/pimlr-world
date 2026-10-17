@@ -14803,6 +14803,7 @@ MonoBehaviour:
   DestroyTime: 0
   HightPrecisionCollisionDetection: 1
   ImpactAddForce: 1
+  PimlrSudsPhysics: 1
   Ricochet: 0
   RicochetAngle: 25
   MaxRicochets: 1

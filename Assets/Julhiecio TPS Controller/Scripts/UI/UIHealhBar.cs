@@ -26,6 +26,10 @@ namespace JUTPS.UI
         [SerializeField] private bool ChangeHPTextColorToo = true;
 
         private float oldFillAmount;
+
+        // PIMLR (post-playtest): read-only access for the stamina bar, which copies the player's health bar.
+        public bool IsPlayerBar => IsPlayerHealthBar;
+        public Image BarImage => HealthBarImage;
         void Start()
         {
             if (IsPlayerHealthBar)

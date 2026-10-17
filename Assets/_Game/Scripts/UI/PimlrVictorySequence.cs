@@ -31,6 +31,7 @@ public class PimlrVictorySequence : MonoBehaviour
     string word;
     Color color;
     Action onComplete;
+    float hold = -1f; // PIMLR: per-call hold length; < 0 = HoldSeconds
     CanvasGroup textGroup;
     RectTransform textRect;
     Image dim, barTop, barBottom;
@@ -38,7 +39,7 @@ public class PimlrVictorySequence : MonoBehaviour
     bool finished;
 
     /// <summary>Plays the sequence, then invokes <paramref name="onComplete"/> with time back at 1x.</summary>
-    public static void Play(string word, Color color, Action onComplete = null)
+    public static void Play(string word, Color color, Action onComplete = null, float holdSeconds = -1f)
     {
         if (active) { onComplete?.Invoke(); return; }
         var go = new GameObject("PIMLR_VictorySequence");
@@ -46,6 +47,7 @@ public class PimlrVictorySequence : MonoBehaviour
         active.word = word;
         active.color = color;
         active.onComplete = onComplete;
+        active.hold = holdSeconds;
         active.BuildUI();
     }
 
@@ -92,12 +94,13 @@ public class PimlrVictorySequence : MonoBehaviour
 
         // 2) Hold with a slow push-in and a light victory pulse.
         t = 0f;
-        while (t < HoldSeconds)
+        float holdFor = hold >= 0f ? hold : HoldSeconds;
+        while (t < holdFor)
         {
             if (Bail()) yield break;
             if (!PausedNow()) t += Time.unscaledDeltaTime;
             SetTimeScale(SlowMotionScale);
-            float push = Mathf.Lerp(1f, 1.06f, t / HoldSeconds);
+            float push = Mathf.Lerp(1f, 1.06f, holdFor > 0f ? t / holdFor : 1f);
             float pulse = 1f + Mathf.Sin(t * 5f) * 0.015f;
             textRect.localScale = Vector3.one * push * pulse;
             yield return null;

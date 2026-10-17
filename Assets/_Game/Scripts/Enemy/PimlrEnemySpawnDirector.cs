@@ -16,6 +16,8 @@ using UnityEngine.AI;
 public class PimlrEnemySpawnDirector : MonoBehaviour
 {
     public const string AuthoredPointsRootName = "PIMLR_EnemySpawnPoints";
+    /// <summary>PIMLR (post-playtest): Infinite Mode spawn distance vs. the PimlrSpawnFX asset (10-55 m -> 8-41 m).</summary>
+    public static float InfiniteDistanceScale = 0.75f;
 
     static PimlrEnemySpawnDirector runner;
     static PimlrSpawnFXSettings settings;
@@ -154,6 +156,11 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         recent.RemoveAll(r => Time.time - r.time > 2.5f);
 
         var candidates = new List<Vector3>();
+        // PIMLR (post-playtest): Infinite Mode spawns a little closer than Story (same settings asset, scaled).
+        bool infiniteRun = (InfiniteMode.Instance != null && InfiniteMode.Instance.isActiveAndEnabled)
+                           || (RunStats.Active && RunStats.Mode == RunMode.Infinite);
+        float distScale = infiniteRun ? InfiniteDistanceScale : 1f;
+        float minD = s.minDistanceFromPlayer * distScale, maxD = s.maxDistanceFromPlayer * distScale;
         var authored = GameObject.Find(AuthoredPointsRootName);
         if (authored)
         {
@@ -166,7 +173,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
             for (int i = 0; i < 28; i++)
             {
                 float ang = Random.Range(0f, Mathf.PI * 2f);
-                float dist = Random.Range(s.minDistanceFromPlayer, s.maxDistanceFromPlayer);
+                float dist = Random.Range(minD, maxD);
                 Vector3 p = player.position + new Vector3(Mathf.Cos(ang), 0f, Mathf.Sin(ang)) * dist;
                 if (NavMesh.SamplePosition(p, out var hit, 6f, NavMesh.AllAreas)) candidates.Add(hit.position);
             }
@@ -177,13 +184,13 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         {
             float d = Vector3.Distance(Flat(c), Flat(player.position));
             if (Mathf.Abs(c.y - player.position.y) > s.maxHeightDifference) continue;
-            if (authored && (d < s.minDistanceFromPlayer * 0.6f || d > s.maxDistanceFromPlayer * 2f)) continue;
+            if (authored && (d < minD * 0.6f || d > maxD * 2f)) continue;
             if (!Reachable(c)) continue;
 
             float score = Random.Range(0f, 1f);                         // variety
             if (s.preferOffScreen && !VisibleToCamera(c)) score += 2f;  // around the corner / behind you
             foreach (var r in recent) if (Vector3.Distance(r.pos, c) < s.spreadRadius) score -= 3f; // spread out
-            if (authored) score -= Mathf.Abs(d - (s.minDistanceFromPlayer + s.maxDistanceFromPlayer) * 0.5f) * 0.02f;
+            if (authored) score -= Mathf.Abs(d - (minD + maxD) * 0.5f) * 0.02f;
 
             if (score > bestScore) { bestScore = score; best = c; found = true; }
         }

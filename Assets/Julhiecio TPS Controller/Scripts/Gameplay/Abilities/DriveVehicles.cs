@@ -61,7 +61,7 @@ namespace JUTPS.ActionScripts
         protected virtual void Update()
         {
             // PIMLR: let input code know the player is in a vehicle (RT/LT drive the car there, not the gun).
-            if ((IsDriving || IsDrivingByShoot) && CompareTag("Player")) PimlrInput.MarkPlayerInVehicle();
+            if ((IsDriving || IsDrivingByShoot) && CompareTag("Player")) PimlrInput.MarkPlayerInVehicle(VehicleToDrive is MotorcycleController);
             DrivingLocomotion();
             if (Ragdoller != null)
             {

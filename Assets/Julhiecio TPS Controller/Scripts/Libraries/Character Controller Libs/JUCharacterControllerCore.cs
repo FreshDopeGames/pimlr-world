@@ -330,6 +330,52 @@ namespace JUTPS.CharacterBrain
         #region Utilities Functions
         public Vector3 GetLookPosition()
         {
+            // PIMLR (post-playtest): on the bike, aim is limited to a natural one-arm range around the bike's heading.
+            return PimlrClampRideAim(GetRawLookPosition());
+        }
+
+        // ---- PIMLR (post-playtest): bike aim range ----
+        [Header("PIMLR Bike Aim Range (degrees from the bike's heading)")]
+        [Tooltip("How far the gun arm can swing to the right (gun side).")]
+        public float RideAimRight = 100f;
+        [Tooltip("How far across the body to the left.")]
+        public float RideAimLeft = 35f;
+        public float RideAimUp = 30f;
+        public float RideAimDown = 20f;
+        [Tooltip("Firing is blocked when the camera aims more than this many degrees outside the range (behind you).")]
+        public float RideAimFireTolerance = 15f;
+
+        /// <summary>PIMLR: true while riding the bike and the camera points well outside the arm's range.</summary>
+        public bool PimlrRideAimOutOfRange { get; private set; }
+
+        public bool PimlrIsRidingBike => IsDriving && DriveVehicleAbility != null && DriveVehicleAbility.VehicleToDrive is MotorcycleController;
+
+        Vector3 PimlrClampRideAim(Vector3 look)
+        {
+            PimlrRideAimOutOfRange = false;
+            if (!PimlrIsRidingBike || PivotItemRotation == null) return look;
+
+            Transform bike = DriveVehicleAbility.VehicleToDrive.transform;
+            Vector3 origin = PivotItemRotation.transform.position;
+            Vector3 dir = look - origin;
+            float dist = dir.magnitude;
+            if (dist < 0.01f) return look;
+
+            // Yaw / pitch relative to the bike's frame.
+            Vector3 local = bike.InverseTransformDirection(dir / dist);
+            float yaw = Mathf.Atan2(local.x, local.z) * Mathf.Rad2Deg;
+            float pitch = Mathf.Asin(Mathf.Clamp(local.y, -1f, 1f)) * Mathf.Rad2Deg;
+
+            float cy = Mathf.Clamp(yaw, -RideAimLeft, RideAimRight);
+            float cp = Mathf.Clamp(pitch, -RideAimDown, RideAimUp);
+            PimlrRideAimOutOfRange = Mathf.Abs(yaw - cy) > RideAimFireTolerance || Mathf.Abs(pitch - cp) > RideAimFireTolerance;
+
+            Vector3 clamped = Quaternion.Euler(-cp, cy, 0f) * Vector3.forward;
+            return origin + bike.TransformDirection(clamped) * dist;
+        }
+
+        private Vector3 GetRawLookPosition()
+        {
             if (MyCamera == null)
             {
                 return LookAtPosition;
@@ -348,6 +394,13 @@ namespace JUTPS.CharacterBrain
         }
         public Vector3 GetLookDirectionEulerAngles()
         {
+            // PIMLR (post-playtest): the weapon pivot follows the clamped bike aim, so the arm stays in range.
+            if (PimlrIsRidingBike && PivotItemRotation != null)
+            {
+                Vector3 d = GetLookPosition() - PivotItemRotation.transform.position;
+                if (d.sqrMagnitude > 0.0001f) return Quaternion.LookRotation(d).eulerAngles;
+            }
+
             Vector3 lookdir = Quaternion.LookRotation(LookAtPosition - PivotItemRotation.transform.position).eulerAngles;
 
             if (MyCamera != null && LookAtPosition == Vector3.zero)
@@ -1699,6 +1752,8 @@ namespace JUTPS.CharacterBrain
         {
             if (AnimatorParameters.Punch != "")
             {
+                // PIMLR (post-playtest): a new punch costs player stamina; no stamina = no punch.
+                if (!IsPunching && !PimlrStamina.TryPunch(this)) return;
                 anim.SetTrigger(AnimatorParameters.Punch);
                 IsPunching = true;
             }
