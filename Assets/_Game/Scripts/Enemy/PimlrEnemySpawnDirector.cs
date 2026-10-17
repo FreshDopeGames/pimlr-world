@@ -64,6 +64,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     public static void Arrive(GameObject enemy, bool relocate = true)
     {
         if (!enemy) return;
+        PimlrRobotFX.Attach(enemy); // PIMLR: robots - glowing red eyes + electric short-circuit when they die
         enemy.SetActive(false);
         Runner.StartCoroutine(Runner.ArriveRoutine(enemy, relocate));
     }
