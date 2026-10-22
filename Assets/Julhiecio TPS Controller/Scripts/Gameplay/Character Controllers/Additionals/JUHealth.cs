@@ -208,7 +208,8 @@ namespace JUTPS
                 }
                 else
                 {
-                    if (gameObject.name != "Police (AI Chaser)")
+                    // PIMLR: null-safe for test scenes without a GameExecutionManager (e.g. Enemy_Anims).
+                    if (gameObject.name != "Police (AI Chaser)" && GameExecutionManager.Instance != null)
                         GameExecutionManager.Instance.OnKillEnemy();
                 }
             }
