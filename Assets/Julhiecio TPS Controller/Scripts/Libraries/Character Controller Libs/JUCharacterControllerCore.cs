@@ -337,7 +337,7 @@ namespace JUTPS.CharacterBrain
         // ---- PIMLR (post-playtest): bike aim range ----
         [Header("PIMLR Bike Aim Range (degrees from the bike's heading)")]
         [Tooltip("How far the gun arm can swing to the right (gun side).")]
-        public float RideAimRight = 100f;
+        public float RideAimRight = 80f;
         [Tooltip("How far across the body to the left.")]
         public float RideAimLeft = 35f;
         public float RideAimUp = 30f;
