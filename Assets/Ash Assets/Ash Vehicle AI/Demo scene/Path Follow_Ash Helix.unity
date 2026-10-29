@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4903,6 +4902,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 201809204465976084, guid: c709a447f760b9044b25ca19d4e9143a,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 2463294028422422338, guid: c709a447f760b9044b25ca19d4e9143a,
         type: 3}
       propertyPath: m_Name
@@ -4993,7 +4997,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 201809204465976171, guid: c709a447f760b9044b25ca19d4e9143a, type: 3}
+    - {fileID: 8645696824885016095, guid: c709a447f760b9044b25ca19d4e9143a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -10813,6 +10819,11 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: 1.5399933
       objectReference: {fileID: 0}
+    - target: {fileID: 4040996907610824061, guid: 51ee50b58074e384e8529eaaf2caecdd,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 8247787193510287829, guid: 51ee50b58074e384e8529eaaf2caecdd,
         type: 3}
       propertyPath: m_RootOrder
@@ -10883,7 +10894,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4040996907610823938, guid: 51ee50b58074e384e8529eaaf2caecdd, type: 3}
+    - {fileID: 1533237947429368843, guid: 51ee50b58074e384e8529eaaf2caecdd, type: 3}
+    - {fileID: 6832571543695564451, guid: 51ee50b58074e384e8529eaaf2caecdd, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -17173,28 +17187,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 1
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17245,12 +17257,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &968367734 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4038045877917186191, guid: 21acbf7007a4d5343898c89431c34aa7,
@@ -17684,6 +17696,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 1.1679129e-15
       objectReference: {fileID: 0}
+    - target: {fileID: 3756684735641005147, guid: 9341db93f9d544341b57aa8e0044c735,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 3756684736388095306, guid: 9341db93f9d544341b57aa8e0044c735,
         type: 3}
       propertyPath: m_Name
@@ -17759,7 +17776,10 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3756684735641005144, guid: 9341db93f9d544341b57aa8e0044c735, type: 3}
+    - {fileID: 4194129309590195985, guid: 9341db93f9d544341b57aa8e0044c735, type: 3}
+    - {fileID: 6642479980086813655, guid: 9341db93f9d544341b57aa8e0044c735, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3756684736388095308, guid: 9341db93f9d544341b57aa8e0044c735,
@@ -20682,9 +20702,19 @@ PrefabInstance:
       propertyPath: m_YDrive.positionDamper
       value: 500
       objectReference: {fileID: 0}
+    - target: {fileID: 6687322104199772466, guid: f6bed622d83009647ac85ac0c18c2751,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 6687322104199772469, guid: f6bed622d83009647ac85ac0c18c2751,
         type: 3}
       propertyPath: m_Priority
+      value: 37
+      objectReference: {fileID: 0}
+    - target: {fileID: 6687322104199772469, guid: f6bed622d83009647ac85ac0c18c2751,
+        type: 3}
+      propertyPath: m_LegacyPriority
       value: 37
       objectReference: {fileID: 0}
     - target: {fileID: 7000638605640132030, guid: f6bed622d83009647ac85ac0c18c2751,
@@ -20692,6 +20722,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 34ea54dfa465a7d4a922ac468cd5e3fa, type: 2}
+    - target: {fileID: 7711776278332022088, guid: f6bed622d83009647ac85ac0c18c2751,
+        type: 3}
+      propertyPath: m_LegacyPriority
+      value: 37
+      objectReference: {fileID: 0}
     - target: {fileID: 7733266722548955131, guid: f6bed622d83009647ac85ac0c18c2751,
         type: 3}
       propertyPath: m_Mesh
@@ -20728,7 +20763,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 129.32
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6687322104199772469, guid: f6bed622d83009647ac85ac0c18c2751, type: 3}
+    - {fileID: 8404830995325361987, guid: f6bed622d83009647ac85ac0c18c2751, type: 3}
+    - {fileID: 230310977784889428, guid: f6bed622d83009647ac85ac0c18c2751, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -26409,12 +26447,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &1607479727
 AudioListener:
   m_ObjectHideFlags: 0

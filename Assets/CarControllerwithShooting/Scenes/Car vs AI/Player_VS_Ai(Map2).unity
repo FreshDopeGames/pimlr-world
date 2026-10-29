@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1715,6 +1714,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 1831731743}
   playerNameInfo: {fileID: 2046254761}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 1595278334}
   playerGunImg: {fileID: 1823189167}
   isWin: 1
@@ -4345,6 +4345,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
+  aiCarContrtoller: {fileID: 0}
+  currentCarSpeedTxt: {fileID: 0}
   minRotation: 15
   maxRotation: -215
 --- !u!1 &166169793
@@ -4405,6 +4407,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 438312801}
   playerNameInfo: {fileID: 1186860858}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 329759495}
   playerGunImg: {fileID: 1354365936}
   isWin: 0
@@ -6832,6 +6835,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 201809204465976084, guid: c709a447f760b9044b25ca19d4e9143a,
         type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
+    - target: {fileID: 201809204465976084, guid: c709a447f760b9044b25ca19d4e9143a,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -6930,7 +6938,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 201809204465976171, guid: c709a447f760b9044b25ca19d4e9143a, type: 3}
+    - {fileID: 8645696824885016095, guid: c709a447f760b9044b25ca19d4e9143a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -7918,6 +7928,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
+  aiCarContrtoller: {fileID: 0}
+  currentCarSpeedTxt: {fileID: 0}
   minRotation: 140
   maxRotation: -127.5
 --- !u!114 &328788271
@@ -9805,7 +9817,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 0cd5c140c37403a4c8e5ba788d8a0606, type: 3}
 --- !u!4 &362052010 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0cd5c140c37403a4c8e5ba788d8a0606,
+  m_CorrespondingSourceObject: {fileID: -9182575856355518394, guid: 0cd5c140c37403a4c8e5ba788d8a0606,
     type: 3}
   m_PrefabInstance: {fileID: 362052009}
   m_PrefabAsset: {fileID: 0}
@@ -9961,6 +9973,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
+  aiCarContrtoller: {fileID: 0}
+  currentCarSpeedTxt: {fileID: 0}
   minRotation: 45
   maxRotation: -225
 --- !u!114 &372423714
@@ -10193,6 +10207,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 771682081}
   playerNameInfo: {fileID: 1129619698}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 1278116189}
   playerGunImg: {fileID: 1510058485}
   isWin: 0
@@ -11213,6 +11228,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 906963631}
+  aiCarContrtoller: {fileID: 0}
+  currentCarSpeedTxt: {fileID: 0}
   minRotation: 120
   maxRotation: -120
 --- !u!114 &418482352
@@ -14977,6 +14994,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4040996907610824061, guid: 51ee50b58074e384e8529eaaf2caecdd,
         type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
+    - target: {fileID: 4040996907610824061, guid: 51ee50b58074e384e8529eaaf2caecdd,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -15050,7 +15072,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4040996907610823938, guid: 51ee50b58074e384e8529eaaf2caecdd, type: 3}
+    - {fileID: 1533237947429368843, guid: 51ee50b58074e384e8529eaaf2caecdd, type: 3}
+    - {fileID: 6832571543695564451, guid: 51ee50b58074e384e8529eaaf2caecdd, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -16456,6 +16481,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 697659339}
   playerNameInfo: {fileID: 1836401645}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 865594279}
   playerGunImg: {fileID: 1884717345}
   isWin: 0
@@ -22266,6 +22292,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 1058467200}
   playerNameInfo: {fileID: 544149476}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 990571508}
   playerGunImg: {fileID: 239009654}
   isWin: 0
@@ -23075,6 +23102,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 72625666725593681, guid: 25008b9fcbe60454cadc3284de93998d,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 241737941070101922, guid: 25008b9fcbe60454cadc3284de93998d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23180,7 +23212,10 @@ PrefabInstance:
       propertyPath: _fullTorqueOverAllWheels
       value: 10000
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4546497417385306408, guid: 25008b9fcbe60454cadc3284de93998d, type: 3}
+    - {fileID: 1807531286767535244, guid: 25008b9fcbe60454cadc3284de93998d, type: 3}
+    - {fileID: 3835476692081779391, guid: 25008b9fcbe60454cadc3284de93998d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -24748,28 +24783,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 1
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24820,12 +24853,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &968367734 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4038045877917186191, guid: 21acbf7007a4d5343898c89431c34aa7,
@@ -25511,6 +25544,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3756684735641005147, guid: 9341db93f9d544341b57aa8e0044c735,
         type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
+    - target: {fileID: 3756684735641005147, guid: 9341db93f9d544341b57aa8e0044c735,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -25589,7 +25627,10 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3756684735641005144, guid: 9341db93f9d544341b57aa8e0044c735, type: 3}
+    - {fileID: 4194129309590195985, guid: 9341db93f9d544341b57aa8e0044c735, type: 3}
+    - {fileID: 6642479980086813655, guid: 9341db93f9d544341b57aa8e0044c735, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3756684736388095308, guid: 9341db93f9d544341b57aa8e0044c735,
@@ -30387,6 +30428,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687322104199772466, guid: f6bed622d83009647ac85ac0c18c2751,
         type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
+    - target: {fileID: 6687322104199772466, guid: f6bed622d83009647ac85ac0c18c2751,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -30395,11 +30441,21 @@ PrefabInstance:
       propertyPath: m_Priority
       value: 37
       objectReference: {fileID: 0}
+    - target: {fileID: 6687322104199772469, guid: f6bed622d83009647ac85ac0c18c2751,
+        type: 3}
+      propertyPath: m_LegacyPriority
+      value: 37
+      objectReference: {fileID: 0}
     - target: {fileID: 7000638605640132030, guid: f6bed622d83009647ac85ac0c18c2751,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 34ea54dfa465a7d4a922ac468cd5e3fa, type: 2}
+    - target: {fileID: 7711776278332022088, guid: f6bed622d83009647ac85ac0c18c2751,
+        type: 3}
+      propertyPath: m_LegacyPriority
+      value: 37
+      objectReference: {fileID: 0}
     - target: {fileID: 7733266722548955131, guid: f6bed622d83009647ac85ac0c18c2751,
         type: 3}
       propertyPath: m_Mesh
@@ -30436,7 +30492,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 129.32
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6687322104199772469, guid: f6bed622d83009647ac85ac0c18c2751, type: 3}
+    - {fileID: 8404830995325361987, guid: f6bed622d83009647ac85ac0c18c2751, type: 3}
+    - {fileID: 230310977784889428, guid: f6bed622d83009647ac85ac0c18c2751, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -34344,6 +34403,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 247124853}
   playerNameInfo: {fileID: 99852651}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 423141078}
   playerGunImg: {fileID: 1441967078}
   isWin: 0
@@ -38430,12 +38490,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &1607479727
 AudioListener:
   m_ObjectHideFlags: 0
@@ -39732,6 +39792,12 @@ MonoBehaviour:
   - {fileID: 863999210}
   - {fileID: 166169795}
   - {fileID: 1906724731}
+  winText: {fileID: 0}
+  win: {fileID: 0}
+  lose: {fileID: 0}
+  teamA: []
+  teamB: []
+  getResultList: []
 --- !u!114 &1649595595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40005,6 +40071,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -11
       objectReference: {fileID: 0}
+    - target: {fileID: 1240158496685914150, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1240158496685914150, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2065656466291333444, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
         type: 3}
       propertyPath: m_Name
@@ -40089,6 +40165,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -64
+      objectReference: {fileID: 0}
+    - target: {fileID: 5698148535407399955, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5698148535407399955, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5698148535407399955, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5735264400889780471, guid: 48f3438c41edf7946bcb9a1dc041ab1f,
         type: 3}
@@ -41543,6 +41634,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 1807189348}
   playerNameInfo: {fileID: 302725638}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 824511789}
   playerGunImg: {fileID: 2117213907}
   isWin: 0
@@ -46763,6 +46855,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 1650377303}
   playerNameInfo: {fileID: 1794122675}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 1711177203}
   playerGunImg: {fileID: 835559919}
   isWin: 0
@@ -50920,6 +51013,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 1220287587}
   playerNameInfo: {fileID: 1398634212}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 323227208}
   playerGunImg: {fileID: 195298727}
   isWin: 0
@@ -52362,6 +52456,7 @@ MonoBehaviour:
   playerID: 
   playerPoint: {fileID: 1939655360}
   playerNameInfo: {fileID: 1086223902}
+  playerRootImg: {fileID: 0}
   playerProfileImg: {fileID: 1343993589}
   playerGunImg: {fileID: 1749624945}
   isWin: 0

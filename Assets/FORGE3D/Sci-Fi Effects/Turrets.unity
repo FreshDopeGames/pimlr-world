@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 0.3949
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.07130088, g: 0.08926269, b: 0.121263444, a: 0.3949}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &4
 LightmapSettings:
@@ -988,6 +987,7 @@ MonoBehaviour:
   DebugDraw: 0
   DebugTarget: {fileID: 0}
   Animators: []
+  f3DFXController: {fileID: 0}
 --- !u!114 &183544235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,6 +1048,9 @@ MonoBehaviour:
   laserImpulseMuzzle: {fileID: 400004, guid: 45116fb1512dc704b99d70267628129a, type: 3}
   laserImpulseImpact: {fileID: 400010, guid: ce59e020d922ccb43866dee1ba26a673, type: 3}
   laserImpulseOffset: 0
+  playerid: {fileID: 0}
+  DamagePower: 0
+  f3DPlayerTurretController: {fileID: 0}
 --- !u!4 &183544236
 Transform:
   m_ObjectHideFlags: 0
@@ -3219,12 +3222,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &895608273
 AudioListener:
   m_ObjectHideFlags: 0
@@ -6356,6 +6359,7 @@ MonoBehaviour:
   DebugDraw: 0
   DebugTarget: {fileID: 0}
   Animators: []
+  f3DFXController: {fileID: 0}
 --- !u!114 &1519095725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6416,6 +6420,9 @@ MonoBehaviour:
   laserImpulseMuzzle: {fileID: 400004, guid: 45116fb1512dc704b99d70267628129a, type: 3}
   laserImpulseImpact: {fileID: 400010, guid: ce59e020d922ccb43866dee1ba26a673, type: 3}
   laserImpulseOffset: 0
+  playerid: {fileID: 0}
+  DamagePower: 0
+  f3DPlayerTurretController: {fileID: 0}
 --- !u!4 &1519095726
 Transform:
   m_ObjectHideFlags: 0
@@ -6636,6 +6643,7 @@ MonoBehaviour:
   DebugDraw: 1
   DebugTarget: {fileID: 0}
   Animators: []
+  f3DFXController: {fileID: 0}
 --- !u!4 &1585125678
 Transform:
   m_ObjectHideFlags: 0
@@ -6730,6 +6738,9 @@ MonoBehaviour:
   laserImpulseMuzzle: {fileID: 400004, guid: 45116fb1512dc704b99d70267628129a, type: 3}
   laserImpulseImpact: {fileID: 400010, guid: ce59e020d922ccb43866dee1ba26a673, type: 3}
   laserImpulseOffset: 0
+  playerid: {fileID: 0}
+  DamagePower: 0
+  f3DPlayerTurretController: {fileID: 0}
 --- !u!1 &1623273108
 GameObject:
   m_ObjectHideFlags: 0

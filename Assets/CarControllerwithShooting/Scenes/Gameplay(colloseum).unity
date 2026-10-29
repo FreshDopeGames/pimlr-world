@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 0.65
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.10086828, g: 0.40601814, b: 1.6018276, a: 0.65}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &4
 LightmapSettings:
@@ -1435,23 +1434,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MissileCamera (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5345313902904420996, guid: 4e6d219d9e3e1544db2bb2d86ce05722, type: 3}
+    - {fileID: 1160431908944798306, guid: 4e6d219d9e3e1544db2bb2d86ce05722, type: 3}
+    - {fileID: 7538838733240197607, guid: 4e6d219d9e3e1544db2bb2d86ce05722, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e6d219d9e3e1544db2bb2d86ce05722, type: 3}
---- !u!114 &378957261 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5345313902904420996, guid: 4e6d219d9e3e1544db2bb2d86ce05722,
-    type: 3}
-  m_PrefabInstance: {fileID: 378957260}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &386839877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2988,24 +2978,16 @@ PrefabInstance:
         type: 3}
       propertyPath: vc
       value: 
-      objectReference: {fileID: 378957261}
-    m_RemovedComponents: []
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1982681924023948193, guid: 93a4a9e9e93fa1e46b99da602a7586c8, type: 3}
+    - {fileID: 4003727318860125779, guid: 93a4a9e9e93fa1e46b99da602a7586c8, type: 3}
+    - {fileID: 6622730849416936071, guid: 93a4a9e9e93fa1e46b99da602a7586c8, type: 3}
+    - {fileID: 1897538460589864747, guid: 93a4a9e9e93fa1e46b99da602a7586c8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93a4a9e9e93fa1e46b99da602a7586c8, type: 3}
---- !u!114 &582488252 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1982681924023948193, guid: 93a4a9e9e93fa1e46b99da602a7586c8,
-    type: 3}
-  m_PrefabInstance: {fileID: 582488251}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &586651616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3969,7 +3951,7 @@ PrefabInstance:
         type: 3}
       propertyPath: virtualCamera
       value: 
-      objectReference: {fileID: 582488252}
+      objectReference: {fileID: 0}
     - target: {fileID: 7119710251544033065, guid: 160274c840ee5d745af93ce7ca743608,
         type: 3}
       propertyPath: spawnPoints.Array.size
@@ -6217,12 +6199,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &1318461415
 AudioListener:
   m_ObjectHideFlags: 0
@@ -6294,28 +6276,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 2
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 2
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!1 &1325094876
 GameObject:
   m_ObjectHideFlags: 0
@@ -9250,12 +9230,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &2005056051
 GameObject:
   m_ObjectHideFlags: 0

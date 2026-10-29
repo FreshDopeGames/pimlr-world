@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections; // For coroutines
-using Cinemachine;
+using Unity.Cinemachine;
 
 public class MissileControl : MonoBehaviour
 {

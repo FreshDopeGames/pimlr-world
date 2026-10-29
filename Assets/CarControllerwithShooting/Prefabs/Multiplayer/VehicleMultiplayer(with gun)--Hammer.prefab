@@ -61,7 +61,7 @@ PrefabInstance:
     - target: {fileID: 2915848384417368989, guid: 3f57923e7d5acac4596ec171b48b5839,
         type: 3}
       propertyPath: m_Name
-      value: VehicleMultiplayer(with gun)--Hammer Variant
+      value: VehicleMultiplayer(with gun)--Hammer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402188, g: 0.4931649, b: 0.57223135, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4844,8 +4843,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carCameras:
   - {fileID: 0}
-  - {fileID: 3756684737190493092}
-  - {fileID: 201809204005881224}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!224 &226289562
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18354,28 +18353,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 1
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18426,12 +18423,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &968367734 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4038045877917186191, guid: 21acbf7007a4d5343898c89431c34aa7,
@@ -37568,13 +37565,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -37618,18 +37617,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &201809204005881224 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6855480629340328993, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
-    type: 3}
-  m_PrefabInstance: {fileID: 4299204795027437239}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &223696524530558654
 GameObject:
   m_ObjectHideFlags: 0
@@ -42608,8 +42595,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7568062147967821666, guid: bae7fc5ea957c44498f64d8516ee6e47,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6335337194978617599, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 4313592809196543328, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 4016587493618788882, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 8732014154810052012, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -42903,6 +42898,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2345478351904508059, guid: b7e7c0e3d9a0b1e43be1e705941bafc2,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 3457498337153358370, guid: b7e7c0e3d9a0b1e43be1e705941bafc2,
         type: 3}
       propertyPath: sceneId
@@ -42921,6 +42921,9 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3457498337153358370, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
     - {fileID: 5758670485915691745, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 7738584055737930517, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 8470592105524399822, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 4300731267230135918, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -43013,28 +43016,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1120943883940588957
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853000653246305637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa7155796051b734daa718462081dc5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 1.5, z: -4.09}
-  m_XDamping: 0
-  m_YDamping: 0
-  m_ZDamping: 0
-  m_AngularDampingMode: 0
-  m_PitchDamping: 1
-  m_YawDamping: 1
-  m_RollDamping: 5
-  m_AngularDamping: 0
 --- !u!4 &1135760699450108990
 Transform:
   m_ObjectHideFlags: 0
@@ -43064,21 +43045,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2775471788967851170}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1198031900330986780
-Transform:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853000653246305637}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.007876063, y: 0.9841214, z: -0.1714641, w: 0.045200963}
-  m_LocalPosition: {x: 63.42888, y: 205.6224, z: 794.0658}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2924265364940284706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1249833781037890006
 MeshRenderer:
@@ -43329,13 +43295,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -43524,25 +43492,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1853000653246305637
-GameObject:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1198031900330986780}
-  - component: {fileID: 4079759264431385532}
-  - component: {fileID: 1120943883940588957}
-  - component: {fileID: 6245356208827543003}
-  m_Layer: 9
-  m_Name: cm
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1882739459433716261
 GameObject:
   m_ObjectHideFlags: 0
@@ -43712,12 +43661,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &2099799575528753882
 GameObject:
   m_ObjectHideFlags: 0
@@ -44340,8 +44289,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.5, z: -4.09}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1198031900330986780}
+  m_Children: []
   m_Father: {fileID: 8799075692758539210}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2971996633206719613
@@ -44371,6 +44319,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135341182733604905, guid: 20b8e3438d2a22749ad3d0fd596486b4,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
       objectReference: {fileID: 0}
     - target: {fileID: 6476615842760399342, guid: 20b8e3438d2a22749ad3d0fd596486b4,
         type: 3}
@@ -44427,7 +44380,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4030903199216880605, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
+    - {fileID: 2906641004139346219, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
+    - {fileID: 3270519739151223857, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -45087,18 +45043,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3756684737190493092 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2903620106255642899, guid: 3046bed8933587d4fbd09679a0241094,
-    type: 3}
-  m_PrefabInstance: {fileID: 4779572887289222945}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &3764217138339790621
 Transform:
   m_ObjectHideFlags: 0
@@ -50026,6 +49970,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1920267212015937886, guid: 8a2edaf8a085e75498c3085c32c75f62,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 5777138803640176931, guid: 8a2edaf8a085e75498c3085c32c75f62,
         type: 3}
       propertyPath: m_Name
@@ -50041,23 +49990,14 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5172106742382760658, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
+    - {fileID: 2025987850864418577, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
+    - {fileID: 1181017008142951334, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
---- !u!114 &4079759264431385532
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853000653246305637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &4084031531321927091
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -50378,6 +50318,11 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
+    - target: {fileID: 4846730786945357500, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 5538533274217139025, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
         type: 3}
       propertyPath: m_Name
@@ -50438,7 +50383,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6855480629340328993, guid: 7aaedb9eb562b8b4aa99a033abcc9401, type: 3}
+    - {fileID: 6614785258575522347, guid: 7aaedb9eb562b8b4aa99a033abcc9401, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -59969,6 +59916,11 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
+    - target: {fileID: 7940440852613960884, guid: 3046bed8933587d4fbd09679a0241094,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 8372072700087012664, guid: 3046bed8933587d4fbd09679a0241094,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -60029,7 +59981,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 1.53421e-17
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2903620106255642899, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
+    - {fileID: 5695912464605563012, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
+    - {fileID: 1694469678400559269, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -60201,13 +60156,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -60489,13 +60446,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -60672,9 +60631,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44d70cc20219cd84593f67d248eafe36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Offset: {x: 0, y: 0, z: -4.05}
-  m_ApplyAfter: 1
-  m_PreserveComposition: 0
+  Offset: {x: 0, y: 0, z: -4.05}
+  ApplyAfter: 1
+  PreserveComposition: 0
 --- !u!108 &5727295652948712622
 Light:
   m_ObjectHideFlags: 0
@@ -60847,8 +60806,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2924265364940284706}
-  - component: {fileID: 7138523383764766837}
   - component: {fileID: 5674249208973949833}
+  - component: {fileID: 6020843673027047656}
+  - component: {fileID: 6020843673027047655}
+  - component: {fileID: 6020843673027047654}
   m_Layer: 9
   m_Name: Camera Controller CM
   m_TagString: Untagged
@@ -60856,6 +60817,97 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6020843673027047654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020843673027047653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TrackerSettings:
+    BindingMode: 1
+    PositionDamping: {x: 0, y: 0, z: 0}
+    AngularDampingMode: 0
+    RotationDamping: {x: 1, y: 1, z: 5}
+    QuaternionDamping: 0
+  FollowOffset: {x: 0, y: 1.5, z: -4.09}
+--- !u!114 &6020843673027047655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020843673027047653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f38bda98361e1de48a4ca2bd86ea3c17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Composition:
+    ScreenPosition: {x: 0, y: 0}
+    DeadZone:
+      Enabled: 1
+      Size: {x: 0, y: 0}
+    HardLimits:
+      Enabled: 1
+      Size: {x: 0.8, y: 0.8}
+      Offset: {x: 0, y: 0}
+  CenterOnActivate: 1
+  TargetOffset: {x: 0, y: 0, z: 0}
+  Damping: {x: 0.5, y: 0.1}
+  Lookahead:
+    Enabled: 1
+    Time: 0.5
+    Smoothing: 1
+    IgnoreY: 0
+--- !u!114 &6020843673027047656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020843673027047653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority:
+    Enabled: 0
+    m_Value: 0
+  OutputChannel: 1
+  StandbyUpdate: 0
+  m_StreamingVersion: 20170927
+  m_LegacyPriority: 1
+  Target:
+    TrackingTarget: {fileID: 8799075692758539210}
+    LookAtTarget: {fileID: 8799075692758539210}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 60
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 1, y: 1}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
 --- !u!199 &6045231871850670926
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -60912,13 +60964,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -61068,33 +61122,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5618451560261193216, guid: b8292e8d2e4b167428387a000e3afad9, type: 3}
---- !u!114 &6245356208827543003
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853000653246305637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
-  m_LookaheadTime: 0.5
-  m_LookaheadSmoothing: 1
-  m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0.5
-  m_VerticalDamping: 0.1
-  m_ScreenX: 0.5
-  m_ScreenY: 0.5
-  m_DeadZoneWidth: 0
-  m_DeadZoneHeight: 0
-  m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
-  m_BiasX: 0
-  m_BiasY: 0
-  m_CenterOnActivate: 1
 --- !u!198 &6275784701708778574
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -70614,13 +70641,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -71250,13 +71279,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -71289,45 +71320,6 @@ Transform:
   - {fileID: 7324130959775743461}
   m_Father: {fileID: 6854944885179557893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7138523383764766837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6020843673027047653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ExcludedPropertiesInInspector:
-  - m_Script
-  m_LockStageInInspector: 
-  m_StreamingVersion: 20170927
-  m_Priority: 1
-  m_StandbyUpdate: 0
-  m_LookAt: {fileID: 8799075692758539210}
-  m_Follow: {fileID: 8799075692758539210}
-  m_Lens:
-    FieldOfView: 60
-    OrthographicSize: 5
-    NearClipPlane: 0.3
-    FarClipPlane: 1000
-    Dutch: 0
-    ModeOverride: 0
-    LensShift: {x: 0, y: 0}
-    GateFit: 2
-    FocusDistance: 10
-    m_SensorSize: {x: 1, y: 1}
-  m_Transitions:
-    m_BlendHint: 0
-    m_InheritPosition: 0
-    m_OnCameraLive:
-      m_PersistentCalls:
-        m_Calls: []
-  m_LegacyBlendHint: 0
-  m_ComponentOwner: {fileID: 1198031900330986780}
 --- !u!4 &7198579373338488252
 Transform:
   m_ObjectHideFlags: 0
@@ -77536,13 +77528,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -85162,6 +85156,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2912973059255138271, guid: 687385b84cb7ff041a720c59b72304a6,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 7626957692304421722, guid: 687385b84cb7ff041a720c59b72304a6,
         type: 3}
       propertyPath: circuit
@@ -85170,6 +85169,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1560614560470380406, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
     - {fileID: 6361446939896676481, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
+    - {fileID: 2907719786805149926, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
+    - {fileID: 7889450932082432154, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

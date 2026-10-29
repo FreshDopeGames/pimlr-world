@@ -40805,6 +40805,11 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 0
+  RideAimRight: 80
+  RideAimLeft: 35
+  RideAimUp: 30
+  RideAimDown: 20
+  RideAimFireTolerance: 15
   HandIKTransitionSpeed: 2
   WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
@@ -40830,6 +40835,9 @@ MonoBehaviour:
   - Bones
   - Wall
   - Bullet
+  GamepadSprintToggle: 1
+  SprintToggleStopDelay: 0.25
+  IsSprintInputActive: 0
 --- !u!1 &1510154299499116097
 GameObject:
   m_ObjectHideFlags: 0

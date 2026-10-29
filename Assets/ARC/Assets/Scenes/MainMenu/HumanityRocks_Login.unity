@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -598,6 +597,20 @@ MonoBehaviour:
   uISignUp: {fileID: 892783499}
   goalPanel: {fileID: 0}
   musicSystem: {fileID: 0}
+  minimapBlipController: {fileID: 0}
+  musicPurchasePanel: {fileID: 0}
+  musicData: []
+  loadingVideoPlayer: {fileID: 0}
+  waveScreen: {fileID: 0}
+  playInterLevelFMV: 0
+  fmvVideoPlayer: {fileID: 0}
+  fmvClip: {fileID: 0}
+  fmvStreamingAssetsFileName: PLMRVideo.mp4
+  fmvScreenRoot: {fileID: 0}
+  fmvMaxWaitSeconds: 60
+  loadingMenuName: Loading Screen
+  menuAfterLoad: 
+  minLoadingScreenSeconds: 1.5
 --- !u!1001 &892783496
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1045,6 +1058,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   img: {fileID: 1302386700}
+  startCovered: 0
+  useUnscaledTime: 1
 --- !u!114 &1302386700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1118,6 +1133,7 @@ MonoBehaviour:
   createPlayerManager: 0
   createEnumManager: 0
   authManager: 0
+  uiPrefabName: Global UI
 --- !u!4 &1400752030
 Transform:
   m_ObjectHideFlags: 0

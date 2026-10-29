@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18247879, g: 0.22818922, b: 0.30725047, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4371,12 +4370,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &140757774
 AudioListener:
   m_ObjectHideFlags: 0
@@ -8962,12 +8961,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!20 &339943840
 Camera:
   m_ObjectHideFlags: 0
@@ -19705,6 +19704,7 @@ MonoBehaviour:
   createPlayerManager: 0
   createEnumManager: 0
   authManager: 0
+  uiPrefabName: Global UI
 --- !u!114 &961317688 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7276189006477856046, guid: 8e71398a8aa0b4ce08a9b215050c1e6b,
@@ -19767,6 +19767,20 @@ MonoBehaviour:
   uISignUp: {fileID: 0}
   goalPanel: {fileID: 0}
   musicSystem: {fileID: 0}
+  minimapBlipController: {fileID: 0}
+  musicPurchasePanel: {fileID: 0}
+  musicData: []
+  loadingVideoPlayer: {fileID: 0}
+  waveScreen: {fileID: 0}
+  playInterLevelFMV: 0
+  fmvVideoPlayer: {fileID: 0}
+  fmvClip: {fileID: 0}
+  fmvStreamingAssetsFileName: PLMRVideo.mp4
+  fmvScreenRoot: {fileID: 0}
+  fmvMaxWaitSeconds: 60
+  loadingMenuName: Loading Screen
+  menuAfterLoad: 
+  minLoadingScreenSeconds: 1.5
 --- !u!4 &968482292
 Transform:
   m_ObjectHideFlags: 0
@@ -37579,12 +37593,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!20 &1763912078
 Camera:
   m_ObjectHideFlags: 0

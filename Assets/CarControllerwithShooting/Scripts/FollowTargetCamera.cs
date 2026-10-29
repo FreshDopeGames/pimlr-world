@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using System.Collections;
 using UnityEngine;
 
@@ -35,8 +35,8 @@ namespace CarControllerwithShooting
                 float scroll = Input.GetAxis("Mouse ScrollWheel");
                 if (GameplayManager.Instance.virtualCamera != null)
                 {
-                    GameplayManager.Instance.virtualCamera.m_Lens.FieldOfView -= scroll * ZoomSensitivity;
-                    GameplayManager.Instance.virtualCamera.m_Lens.FieldOfView = Mathf.Clamp(GameplayManager.Instance.virtualCamera.m_Lens.FieldOfView, MinFOV, MaxFOV);
+                    GameplayManager.Instance.virtualCamera.Lens.FieldOfView -= scroll * ZoomSensitivity;
+                    GameplayManager.Instance.virtualCamera.Lens.FieldOfView = Mathf.Clamp(GameplayManager.Instance.virtualCamera.Lens.FieldOfView, MinFOV, MaxFOV);
                     //childCamera.LookAt = SocketPlayerManager.Instance.MyPlayer.transform;
 
 

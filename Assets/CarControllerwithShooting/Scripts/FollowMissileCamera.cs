@@ -1,7 +1,7 @@
 
 using System.Collections;
 using UnityEngine;
-using Cinemachine;
+using Unity.Cinemachine;
 using CarControllerwithShooting;
 
 
@@ -9,7 +9,7 @@ public class FollowMissileCamera : MonoBehaviour
 {
     public Transform Target;
 
-    public CinemachineVirtualCamera vc;
+    public CinemachineCamera vc;
     //public Transform CarCameraTarget;
     public float PositionFolowForce = 5f;
     public float RotationFolowForce = 5f;
@@ -44,8 +44,8 @@ public class FollowMissileCamera : MonoBehaviour
         {
             // Change the target to the missile (Dhruv)
             Target = missileTransform;
-            vc.m_LookAt = Target;
-            vc.m_Follow = Target;
+            vc.LookAt = Target;
+            vc.Follow = Target;
             GameCanvas.Instance.crossHairHolder.SetActive(false);
             vc.gameObject.SetActive(true);
 
@@ -53,8 +53,8 @@ public class FollowMissileCamera : MonoBehaviour
         else
         {
             // Reset the target back to the car (Dhruv)
-            vc.m_LookAt = null;
-            vc.m_Follow = null;
+            vc.LookAt = null;
+            vc.Follow = null;
             GameCanvas.Instance.crossHairHolder.SetActive(true);
             StartCoroutine(AssigncardCamera());
         }
@@ -65,7 +65,7 @@ public class FollowMissileCamera : MonoBehaviour
     {
         //Debug.Log("::::::::::>>>????");
         yield return new WaitForSeconds(2);
-        if (vc.m_Follow ==null)
+        if (vc.Follow ==null)
         {
             if (SocketPlayerManager.Instance.MyPlayer)
                 Target = SocketPlayerManager.Instance.MyPlayer.controller.camTarget.transform;
