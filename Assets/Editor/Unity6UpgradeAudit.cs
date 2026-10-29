@@ -148,13 +148,23 @@ namespace PIMLR.EditorTools
                 string full = files[i].Replace('\\', '/');
                 string rel = "Assets" + full.Substring(Application.dataPath.Length);
                 if (rel.Contains("/TextMesh Pro/Examples & Extras/")) continue; // covered by folder finding
+                if (rel.EndsWith("/Unity6UpgradeAudit.cs")) continue;           // its own rule patterns
                 if (i % 25 == 0) Progress("Scripts: " + rel, i, files.Length);
 
                 string[] lines = File.ReadAllLines(full);
+                bool inVersionIf = false, inOldBranch = false;
                 for (int ln = 0; ln < lines.Length; ln++)
+                {
+                    string t = lines[ln].TrimStart();
+                    // #if UNITY_2023_2_OR_NEWER / UNITY_6000_... : the #else branch is the 2022.3 code path, never compiled on Unity 6.
+                    if (t.StartsWith("#if") && (t.Contains("UNITY_6000") || t.Contains("UNITY_2023"))) { inVersionIf = true; inOldBranch = false; continue; }
+                    if (inVersionIf && t.StartsWith("#else")) { inOldBranch = true; continue; }
+                    if (inVersionIf && t.StartsWith("#endif")) { inVersionIf = inOldBranch = false; continue; }
+                    if (inOldBranch || t.StartsWith("//")) continue;
                     foreach (var r in CodeRules)
                         if (r.Rx.IsMatch(lines[ln]))
                             Add(f, r.Sev, r.Category, $"{rel}:{ln + 1}", r.Note);
+                }
             }
         }
 
@@ -178,7 +188,8 @@ namespace PIMLR.EditorTools
                     Add(f, Sev.Fix, "Missing scripts", p, $"{missing} missing script component(s).");
 
                 string[] rpmTypes = root.GetComponentsInChildren<Component>(true)
-                    .Where(c => c != null && (c.GetType().Namespace ?? "").StartsWith("ReadyPlayerMe"))
+                    .Where(c => c != null && (c.GetType().Namespace ?? "").StartsWith("ReadyPlayerMe")
+                                && !c.GetType().Assembly.GetName().Name.StartsWith("Assembly-CSharp")) // RPMCompat stubs are fine
                     .Select(c => c.GetType().Name).Distinct().ToArray();
                 if (rpmTypes.Length > 0)
                     Add(f, Sev.Blocker, "Ready Player Me", p, "RPM components: " + string.Join(", ", rpmTypes));

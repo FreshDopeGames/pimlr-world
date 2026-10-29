@@ -209,7 +209,11 @@ public class PimlrDeathSequence : MonoBehaviour
         tmp.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
         tmp.characterSpacing = 14f;
         tmp.alignment = TextAlignmentOptions.Center;
+#if UNITY_2023_2_OR_NEWER
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+#else
         tmp.enableWordWrapping = false;
+#endif
         tmp.color = new Color32(6, 250, 255, 255);
         tmp.raycastTarget = false;
         try

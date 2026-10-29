@@ -92,7 +92,11 @@ public class PlayerNameBadge : MonoBehaviour
             text.fontSharedMaterial = copyStyleFrom.fontSharedMaterial;
         }
         text.fontSize = fontSize;
+#if UNITY_2023_2_OR_NEWER
+        text.textWrappingMode = TextWrappingModes.NoWrap;
+#else
         text.enableWordWrapping = false;
+#endif
         text.overflowMode = TextOverflowModes.Ellipsis;
         text.alignment = align;
         text.raycastTarget = false; // never steal clicks / controller focus from the panel's buttons

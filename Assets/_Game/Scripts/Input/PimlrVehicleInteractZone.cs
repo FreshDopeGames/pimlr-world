@@ -113,7 +113,11 @@ public class PimlrVehiclePrompt : MonoBehaviour
         label.fontSize = 5f;
         label.fontStyle = FontStyles.Bold;
         label.alignment = TextAlignmentOptions.Center;
+#if UNITY_2023_2_OR_NEWER
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+#else
         label.enableWordWrapping = false;
+#endif
         label.color = Color.white;
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 255);

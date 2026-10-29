@@ -765,6 +765,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sirihanna
       objectReference: {fileID: 0}
+    - target: {fileID: 5373592273530654632, guid: a318958e38386224ea25565e5b713336,
+        type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 74d1f1607542c6b41a4f079834cc278c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

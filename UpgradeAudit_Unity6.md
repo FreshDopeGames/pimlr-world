@@ -1,0 +1,291 @@
+# PIMLR World — Unity 6 Upgrade Audit
+Editor: 2022.3.62f3 | Generated: 2026-10-29 01:51
+
+**Verdict: no blockers. Safe to attempt the upgrade on a branch.**
+
+Blockers: 0 | Fix before/during upgrade: 42 | Warnings: 225
+
+## Fix (42)
+
+### Missing scripts (34)
+- `Assets/_Game/Prefabs/Grenadier/EnergyGrenade.prefab` — 1 missing script component(s).
+- `Assets/_Game/Resources/PIMLR_UI.prefab` — 2 missing script component(s).
+- `Assets/_Game/Scene/PIMLR_World/00_MainMenu.unity` — 1 unresolved script GUID(s) in the scene.
+- `Assets/_Game/Scene/PIMLR_World/DoNotUse/03_LevelSelection.unity (disabled in Build Settings)` — 2 unresolved script GUID(s) in the scene.
+- `Assets/AddedImplements/Prefabs/SpawnableVehicles/Hacker.prefab` — 1 missing script component(s).
+- `Assets/AddedImplements/Prefabs/SpawnableVehicles/Hunter.prefab` — 1 missing script component(s).
+- `Assets/AddedImplements/Scripts/Common/LevelSelectionGrid.prefab` — 1 missing script component(s).
+- `Assets/AddedImplements/VFXGraphParticles/uLiquid - Misc - Slime Hose v4.prefab` — 1 missing script component(s).
+- `Assets/ARC/Assets/Scenes/MainMenu/NeonCityScene.unity (disabled in Build Settings)` — 11 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Sci-Fi_Track_06.unity (disabled in Build Settings)` — 3 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Track_00.unity (disabled in Build Settings)` — 1 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Track_01.unity (disabled in Build Settings)` — 1 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Track_02.unity (disabled in Build Settings)` — 1 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Track_03.unity (disabled in Build Settings)` — 1 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Track_04.unity (disabled in Build Settings)` — 1 unresolved script GUID(s) in the scene.
+- `Assets/ARC/Assets/Scenes/Tracks/Demo/Track_05.unity (disabled in Build Settings)` — 1 unresolved script GUID(s) in the scene.
+- `Assets/Ash Assets/Ash Vehicle AI/AI Vehicles/MultiplayerObjects&Scripts/PlayerParent.prefab` — 2 missing script component(s).
+- `Assets/Ash Assets/Ash Vehicle AI/AI Vehicles/Old Presets/RoomPlayer.prefab` — 2 missing script component(s).
+- `Assets/Ash Assets/New Folder/PlayerPa.prefab` — 2 missing script component(s).
+- `Assets/Ash Assets/New Folder/PlayerParent.prefab` — 2 missing script component(s).
+- `Assets/AssetsByME/Police Car/Materials/Police Texures/Perfabs/Police Car.prefab` — 1 missing script component(s).
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Prefabs/AircraftJet.prefab` — 1 missing script component(s).
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Prefabs/AircraftJetAI.prefab` — 1 missing script component(s).
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Prefabs/AircraftPropeller.prefab` — 1 missing script component(s).
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Prefabs/AircraftPropellerAi.prefab` — 1 missing script component(s).
+- `Assets/CarControllerwithShooting/Prefabs/AdvancedCarSystem.prefab` — 3 missing script component(s).
+- `Assets/CarControllerwithShooting/Prefabs/Bullets/EnemyMissile.prefab` — 1 missing script component(s).
+- `Assets/CarControllerwithShooting/Scenes/Gameplay(terrain).unity (disabled in Build Settings)` — 4 unresolved script GUID(s) in the scene.
+- `Assets/DialogueSysyem/Prefab/ResponsePoint.prefab` — 1 missing script component(s).
+- `Assets/DialogueSysyem/YannickWorld/Prefabs/Managers.prefab` — 1 missing script component(s).
+- `Assets/Reversed Interactive/New Gen Urban/Prefabs/Lights and Posts/Traffic Light 1.prefab` — 2 missing script component(s).
+- `Assets/Reversed Interactive/New Gen Urban/Prefabs/Lights and Posts/Traffic2.prefab` — 2 missing script component(s).
+- `Assets/Reversed Interactive/New Gen Urban/Prefabs/Lights and Posts/TrafficTwin 1.prefab` — 4 missing script component(s).
+- `Assets/SocketDemo/Prefabs/Cube.prefab` — 2 missing script component(s).
+
+### Pink material (shader missing) (8)
+- `Assets/_Game/PlayerModel/Arms.001.mat` — Shader missing or failed to compile.
+- `Assets/_Game/PlayerModel/Feet.001.mat` — Shader missing or failed to compile.
+- `Assets/_Game/PlayerModel/Head.001.mat` — Shader missing or failed to compile.
+- `Assets/_Game/PlayerModel/Torso.001.mat` — Shader missing or failed to compile.
+- `Assets/_Game/PlayerModel/Wheels.mat` — Shader missing or failed to compile.
+- `Assets/EasyRoads3D/Resources/Materials/crossings/crossing material.mat` — Shader missing or failed to compile.
+- `Assets/EasyRoads3D/Resources/Materials/roundabouts/roundabout 2 lane.mat` — Shader missing or failed to compile.
+- `Assets/FORGE3D/Sci-Fi Effects/Examples/Legacy Turret/Materials/Turret.mat` — Shader missing or failed to compile.
+
+## Warn (225)
+
+### Built-in RP material (92)
+- `Assets/_Game/ItemsModel/PIMLR World Clothes/uploads_files_4737628_Jacket.dae` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/_Game/ItemsModel/PIMLR World Clothes/uploads_files_4737628_Pants.dae` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/_Game/ItemsModel/PIMLR World Clothes/uploads_files_4737628_Shirt.dae` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_0 (1).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_0.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_2 (1).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_2.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_3 (1).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_3 (2).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colored_marble_tile_3.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_colorful_marble_tile_0.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_marble_tile_1 (1).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_marble_tile_1 (2).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_marble_tile_1.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_marble_tile_2 (1).mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_marble_tile_2.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_vibrant_colored_marble_tile_0.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Aquaset/Marble Materials/Materials/Default_vibrant_colored_marble_tile_1.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Explosion_01.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Fire.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Missile_Smoke.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Smoke.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Smoke_Black.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Smoke_SubEmitter.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Smoke_White.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Smoke_White_Alpha.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_Sparks_01.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/ARC/Assets/Materials/Particles/Particles_White_Trail.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ash Assets/Materials/ParticleFirecloud.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ash Assets/Materials/ParticleSmokeWhite.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Police Car/Police Texures/Materials/Police Car 1.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Materials/ParticleAfterburner.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Materials/ParticleContrail.mat` — 'Legacy Shaders/Particles/Additive (Soft)' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Aircraft/Materials/ParticleJetTrail.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Car/Materials/ParticleBurnout.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Car/Materials/ParticleSmokeWhite.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Car/Materials/SkyCarLightGlows.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/AssetsByME/Standard Assets/Vehicles/Car/Materials/TrailSkid.mat` — 'Legacy Shaders/Particles/Multiply' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Atom Ball/Materials/Atom Ball Atom Lines.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Atom Ball/Materials/Atom Ball Atom Sphere.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Bomb Ball/Materials/Bomb Ball.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Bucky Ball/Materials/Bucky Ball.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Eye Ball/Materials/EyeBall - Simple.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Eye Ball/Materials/EyeBall Iris.mat` — 'Standard (Specular setup)' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Eye Ball/Materials/EyeBall Lens.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Eye Ball/Materials/EyeBall White.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Materials Old/WheelBall.mat` — 'Legacy Shaders/Self-Illumin/Specular' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Wheel Ball - Old/Materials/Wheel Ball - Old.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Wheel Ball/Materials/Wheel Ball.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Ball Pack/Models/Wooden Ball/Materials/Wooden Ball.mat` — 'Standard (Specular setup)' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/CarControllerwithShooting/MaterialsTextures/CFX3_RayStraight ADD.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/CarControllerwithShooting/Prefabs/Bullets/Particles/TexturesMaterials/WFX_M_Impact Smoke.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/CarControllerwithShooting/Prefabs/Bullets/Particles/TexturesMaterials/WFX_M_Impact WoodDebris.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/CarControllerwithShooting/Prefabs/Player/CarComponents/Particle/WFX_M_Smoke.mat` — 'Legacy Shaders/Particles/Additive (Soft)' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/EasyRoads3D/Materials/roadsample_d.mat` — 'Legacy Shaders/Diffuse' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/EasyRoads3D/Resources/Materials/sidewalks/sidewalk.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/Bullet Surfaces/dev_material_dirt.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/Bullet Surfaces/dev_material_glass.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/Bullet Surfaces/dev_material_grass.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/Bullet Surfaces/dev_material_metal.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/Bullet Surfaces/dev_material_stone.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/Bullet Surfaces/dev_material_wood.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev_big.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev_emojis.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev_half.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev_miniscene.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev_small.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/dev2.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/devcrate.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Demo/Materials/devtarget.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Models/Materials/ARPG FX.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Models/Materials/Material #30.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Models/Materials/No Name.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Models/Materials/sphereshield.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Models/Materials/verticalglow02.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Epic Toon FX/Models/Materials/verticalgradient2.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/FORGE3D/Sci-Fi Effects/Effects/Debris/Meshes/Materials/scene root.mat` — 'Legacy Shaders/Diffuse' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/FORGE3D/Sci-Fi Effects/Misc/Materials/prototype_black_dff.mat` — 'Legacy Shaders/Diffuse' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Julhiecio TPS Controller/Materials/Particle Materials/SmokeParticle.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/Materials/New Material.mat` — 'Standard' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Models/City/Mat/Foliage.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/ParticleDebris.mat` — 'Mobile/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/ParticleDuststorm.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/ParticleFirework.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/ParticleSmokeWhite.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/ParticleSpark.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/RCCExhaust.mat` — 'Legacy Shaders/Particles/Alpha Blended' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/RCCExhaustFlame.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/RCCWheelBurnout.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Particle Materials/RCCWheelSlip.mat` — 'Mobile/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+- `Assets/RealisticCarControllerV3/Textures/LightTrail.mat` — 'Legacy Shaders/Particles/Additive' renders pink in URP. Pre-existing; fix with Window > Rendering > Render Pipeline Converter.
+
+### Multiple URP renderers (5)
+- `Assets/ARC/Assets/RP/URP/UniversalRenderPipelineAsset_Renderer.asset` — Deferred renderer — 5 renderers in project. Prime suspect for WebGL white/pink output; settle on one.
+- `Assets/Reversed Interactive/New Gen Urban/URPSettings/ForwardRenderer.asset` — Forward renderer — 5 renderers in project. Prime suspect for WebGL white/pink output; settle on one.
+- `Assets/Settings/URP-Balanced-Renderer.asset` — Forward renderer — 5 renderers in project. Prime suspect for WebGL white/pink output; settle on one.
+- `Assets/Settings/URP-HighFidelity-Renderer.asset` — Forward renderer — 5 renderers in project. Prime suspect for WebGL white/pink output; settle on one.
+- `Assets/Settings/URP-Performant-Renderer.asset` — Forward renderer — 5 renderers in project. Prime suspect for WebGL white/pink output; settle on one.
+
+### Obsolete API (125)
+- `Assets/_Game/CC-CharaterCustomization/CodeMonkey/Utils/UtilsClass.cs:42` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Customization/Customization_Handler.cs:20` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Enemy/PimlrGunnerAI.cs:93` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Input/PimlrAimAssist.cs:112` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Input/PimlrAimAssist.cs:52` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Input/PimlrMenuNavigator.cs:147` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/LeaderboardUI.cs:164` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Level/LevelInit.cs:29` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Level/LevelInit.cs:36` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Level/PimlrVehicleNavObstacles.cs:21` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Level/PimlrVehicleNavObstacles.cs:22` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Manager/AuthManager.cs:171` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Manager/AuthManager.cs:468` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/Manager/PimlrInfiniteStart.cs:59` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/UI/PimlrDeathSequence.cs:119` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/UI/PimlrDeathSequence.cs:251` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/UI/PimlrVictorySequence.cs:252` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/UI/PMLR/PlmrMainMenuPanel.cs:82` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/_Game/Scripts/UI/UISignUp.cs:155` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/ARC/Airplane/RaycastDetectLimitZone.cs:53` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Camera/camSystem.cs:178` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Inputs/InputRemaper/btnRempInfoEditor.cs:85` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/GameMechanics/LapCounterBadge.cs:77` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Garage/GarageManager.cs:289` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Language/LanguageManager.cs:83` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Other/LayerSelector.cs:22` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Other/LayerSelectorEditor.cs:41` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Pause/PauseManager.cs:46` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Pause/PauseManager.cs:54` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Pause/PauseManager.cs:68` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/SceneStepsManager/StepsAssistantModes.cs:525` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Manager/Tuto/TutoAssistant.cs:102` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/MiniMap/CreateMinimapEditor.cs:89` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Other/TVSystem/TVSystem.cs:45` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/PowerUps/EachPower/PU_MachineGun.cs:61` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/PowerUps/EachPower/PU_Mine.cs:68` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/PowerUps/EachPower/PU_Missile.cs:112` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/PowerUps/PowerUpsItemsGlobalParamsEditor.cs:105` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/PowerUps/PowerUpsSystem.cs:252` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/PowerUps/PowerUpsSystemAssistant.cs:846` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Text/CurrentTextEditor.cs:98` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Text/w_GizmosManager.cs:92` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Text/w_GlobalParams.cs:150` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Text/w_GlobalParams.cs:168` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Text/w_GlobalParams.cs:186` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Text/w_GlobalParams.cs:336` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Track/Race/gizmosCP.cs:15` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Track/Race/StartLineEditor.cs:124` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Track/w_EditLimit.cs:73` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Track/w_PathGenerator.cs:121` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Track/w_PathGenerator.cs:70` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/UI/CanvasMainMenu/PageInEditor.cs:378` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/UI/CanvasMainMenu/PreventGamepadNoSelection.cs:64` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/UI/CarSelectionPage/CarSelectionAssistant.cs:114` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/UI/CarSelectionPage/CarSelectionAssistant.cs:141` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Vehicles/VehicleActionsWhenRaceEnded.cs:117` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Vehicles/VehicleActionsWhenRaceEnded.cs:84` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Vehicles/VehicleDamage.cs:533` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ARC/Assets/Scripts/TS/Vehicles/VehicleDamage.cs:551` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Ash Assets/Ash Vehicle AI/AI Scripts/WaypointProgressTracker.cs:72` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/AssetsByME/Standard Assets/CrossPlatformInput/Scripts/AxisTouchButton.cs:38` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/AssetsByME/Standard Assets/CrossPlatformInput/Scripts/MobileControlRig.cs:44` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/ChatbotUIController.cs:248` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/DialogueSysyem/YannickWorld/DialogueAwakenerArea/DialogueAwakener.cs:104` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/DialogueSysyem/YannickWorld/DialogueAwakenerArea/DialogueAwakener.cs:222` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/DialogueSysyem/YannickWorld/DialogueAwakenerArea/DialogueAwakener.cs:238` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/DialogueSysyem/YannickWorld/DialogueAwakenerArea/DialogueAwakener.cs:241` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/DialogueSysyem/YannickWorld/DialogueAwakenerArea/DialogueAwakener.cs:243` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Editor/ConvertToURP.cs:11` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Editor/PimlrFitCheckMaterials.cs:28` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Editor/PimlrGltfToUrpLit.cs:108` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Editor/PimlrGltfToUrpLit.cs:48` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Editor/PimlrGltfToUrpLit.cs:54` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Extensions/Best HTTP/Examples/Helpers/SampleBase.cs:20` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Extensions/Best HTTP/Examples/Helpers/SelectorUI/SampleSelectorUI.cs:36` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/PoolManager/Editor/F3DPoolManagerEditor.cs:16` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/F3DBeam.cs:274` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/F3DBeam.cs:297` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/F3DLightning.cs:239` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/Turrets/Constructor/Editor/F3DTurretConstructorEditor.cs:82` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/Turrets/Constructor/Editor/F3DTurretEditorWindow.cs:3082` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/Turrets/Constructor/Editor/F3DTurretEditorWindow.cs:3131` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/Turrets/Constructor/Editor/F3DTurretEditorWindow.cs:3737` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/FORGE3D/Sci-Fi Effects/Code/Turrets/Constructor/Editor/F3DTurretEditorWindow.cs:90` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Gameplay/Camera Controllers/CameraStateTrigger.cs:20` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Gameplay/Character Controllers/Additionals/AimOnRightJoystickDirection.cs:32` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Gameplay/JU Input/JUInputManager.cs:740` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Gameplay/JU Input/JUInputManager.cs:742` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Gameplay/JU Input/JUInputManager.cs:765` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Gameplay/Weapon Management/ThrowableItem.cs:40` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Libraries/Character Controller Libs/JUCharacterControllerCore.cs:2011` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Libraries/Character Controller Libs/JUCharacterControllerCore.cs:272` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Physics/DestructibleObject.cs:54` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/UI/Crosshair.cs:288` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/UI/Crosshair.cs:55` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Julhiecio TPS Controller/Scripts/Utilities/JUPauseGame.cs:26` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Plugins/CW/Shared/Common/Examples/Scripts/CwDemo.cs:145` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Plugins/CW/Shared/Common/Examples/Scripts/CwDemo.cs:158` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Plugins/CW/Shared/Common/Examples/Scripts/CwDemo.cs:173` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Plugins/CW/Shared/Common/Examples/Scripts/CwInputManager.cs:470` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Plugins/CW/Shared/Common/Required/Scripts/CwHelper.cs:511` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_AIEditor.cs:66` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_CameraEditor.cs:135` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_CameraEditor.cs:153` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_CameraEditor.cs:176` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_CameraEditor.cs:191` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_Editor.cs:1484` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_Editor.cs:1487` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_EditorWindows.cs:337` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_EditorWindows.cs:340` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_EditorWindows.cs:67` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Editor/RCC_EditorWindows.cs:70` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_AICarController.cs:107` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_CarSelectionExample.cs:32` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_CustomizerExample.cs:402` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_CustomizerExample.cs:403` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:390` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:391` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:406` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:407` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:423` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:424` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_SceneManager.cs:90` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/RealisticCarControllerV3/Scripts/RCC_Singleton.cs:19` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+- `Assets/Vuplex/WebView/Demos/Scripts/CanvasWorldSpaceDemo.cs:75` — Obsolete warning in Unity 6. Use FindFirstObjectByType / FindObjectsByType.
+
+### Out-of-scope content (2)
+- `Assets/ARC` — Humanity Rocks — not PIMLR. Removing it (on a branch) shrinks the upgrade surface and the URP renderer conflict.
+- `Assets/CarControllerwithShooting` — Helix — not PIMLR. Removing it (on a branch) shrinks the upgrade surface and the URP renderer conflict.
+
+### TextMeshPro (1)
+- `Packages/manifest.json` — "com.unity.textmeshpro": "3.0.7" — Merged into com.unity.ugui on Unity 6; migrated automatically.
