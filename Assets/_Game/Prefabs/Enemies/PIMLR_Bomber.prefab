@@ -5255,7 +5255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa2549d042f8b6d41bb6289069865f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 201.81819
+  Health: 200
   MaxHealth: 300
   BloodScreenEffect: 0
   BloodHitParticle: {fileID: 6079834135112903994, guid: 62ac816a3081b684092e03f0ec31a51c,
@@ -5263,7 +5263,7 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2309257217936371360}
         m_TargetAssemblyTypeName: JUTPS.Utilities.AutoDestroy, Assembly-CSharp
         m_MethodName: TimedDestroyObject
         m_Mode: 1
@@ -5275,7 +5275,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2577382990596672588}
         m_TargetAssemblyTypeName: JUTPS.Utilities.JUAutoInstantiate, Assembly-CSharp
         m_MethodName: InstantiatePrefab
         m_Mode: 1
@@ -5300,7 +5300,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   IsDead: 0
-  healthSlider: {fileID: 0}
+  healthSlider: {fileID: 8959502726583821865}
   rcc_CarControllerV3: {fileID: 0}
   rcc_AICarController: {fileID: 0}
 --- !u!114 &3152173343544100674
@@ -6054,3 +6054,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8173628131132764054}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8959502726583821865 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 952514861926107583, guid: 9eca73075dc11dd479329fc08035d67b,
+    type: 3}
+  m_PrefabInstance: {fileID: 8173628131132764054}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

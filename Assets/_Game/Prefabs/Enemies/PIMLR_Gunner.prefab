@@ -160,7 +160,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 5258c76fde61b214bbf0f35fd361c48b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.99994755
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5258c76fde61b214bbf0f35fd361c48b,
         type: 3}
@@ -170,7 +170,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 5258c76fde61b214bbf0f35fd361c48b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.010242826
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5258c76fde61b214bbf0f35fd361c48b,
         type: 3}
@@ -3410,6 +3410,18 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7210386551091979972}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5258c76fde61b214bbf0f35fd361c48b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6745943003293219826}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5258c76fde61b214bbf0f35fd361c48b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1649159384059335934}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5258c76fde61b214bbf0f35fd361c48b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2265397937196289937}
     - targetCorrespondingSourceObject: {fileID: -2977088234659116609, guid: 5258c76fde61b214bbf0f35fd361c48b,
         type: 3}
       insertIndex: -1
@@ -4265,6 +4277,18 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1268745102050635357}
+        m_TargetAssemblyTypeName: JUTPS.Utilities.AutoDestroy, Assembly-CSharp
+        m_MethodName: TimedDestroyObject
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 4114095396404267479}
         m_TargetAssemblyTypeName: JUTPS.JUHealth, Assembly-CSharp
         m_MethodName: OnBossEnemyWash
@@ -4408,6 +4432,62 @@ MonoBehaviour:
   LegsDamageIntensity: 0.8
   ArmsDamageIntensity: 0.5
   AllParts: []
+--- !u!114 &-6745943003293219826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488376223041417201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f71acaa527df4c4087aaf08bff820cca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eyeRenderers: []
+  eyeAnchors: []
+--- !u!114 &-1649159384059335934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488376223041417201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa766d1015a45d5819f544b07b6a856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2265397937196289937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488376223041417201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daa1bb212f1c8d4418c2815af93a6de3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  engageRadius: 18
+  disengageRadius: 28
+  forgetSeconds: 4
+  preferredRange: 2.5
+  minRange: 1.8
+  maxRange: 3.6
+  rangeChangeMin: 1.2
+  rangeChangeMax: 2.8
+  pathBeyond: 7
+  patrolRadius: 14
+  patrolPauseMin: 1
+  patrolPauseMax: 3
+  patrolLegTimeout: 12
+  steerResponsiveness: 4
+  probeDistance: 1.5
+  playerTag: Player
+  patrolCenter: {x: 12.35, y: -0.028, z: 38.647}
+  followPlayerArea: 0
 --- !u!4 &2628190885525142967 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 734122489633926935, guid: 5258c76fde61b214bbf0f35fd361c48b,

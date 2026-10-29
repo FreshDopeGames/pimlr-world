@@ -365,6 +365,13 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         playerInventory.EquipItem(playerInventory.AllHoldableItems[0].ItemSwitchID);
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo("0 / 1");
         Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false;
+        // PIMLR: Zombie Boss must be the boss object placed (inactive) in this scene, e.g. "Big Boss" - not a prefab asset
+        // from the Project window. Arrive() only switches an existing object on, so an asset here means no boss ever appears.
+        if (zombieBoss == null || !zombieBoss.scene.IsValid())
+        {
+            Debug.LogError("GameExecutionManager: 'Zombie Boss' must reference the boss object in the scene (e.g. 'Big Boss'), not a prefab asset. No boss spawned.", this);
+            return;
+        }
         // PIMLR: the boss steps out of a portal where it's placed instead of popping in.
         PimlrEnemySpawnDirector.Arrive(zombieBoss, relocate: false);
     }
