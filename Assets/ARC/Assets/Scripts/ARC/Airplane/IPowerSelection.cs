@@ -22,7 +22,7 @@ namespace TS.Generics
     
     public interface IPowerSelection<T>
     {
-        [SerializeField]
+        // PIMLR (Unity 6): removed [SerializeField] - only valid on fields; it never applied to this interface method.
         Transform PowerUpSelectionRules(T powerUpsList);
     }
 }

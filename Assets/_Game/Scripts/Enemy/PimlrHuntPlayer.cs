@@ -123,7 +123,7 @@ public class PimlrHuntPlayer : MonoBehaviour
             if (abs >= minSpacingDegrees) continue;
 
             float push = (minSpacingDegrees - abs) * 0.5f;
-            float side = delta > 0f ? 1f : delta < 0f ? -1f : (GetInstanceID() > other.GetInstanceID() ? 1f : -1f);
+            float side = delta > 0f ? 1f : delta < 0f ? -1f : (GetHashCode() > other.GetHashCode() ? 1f : -1f);
             shift += push * side;
         }
         shift = Mathf.Clamp(shift, -maxShiftDegrees, maxShiftDegrees);

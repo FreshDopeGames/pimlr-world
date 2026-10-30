@@ -477,9 +477,9 @@ public class RCC_WheelCollider : RCC_Core {
             // If slips are bigger than target value...
             if (totalSlip > RCC_GroundMaterials.Instance.frictions[groundIndex].slip) {
 
-                Vector3 skidPoint = wheelHit.point + 1f * (rigid.velocity) * Time.deltaTime;
+                Vector3 skidPoint = wheelHit.point + 1f * (rigid.linearVelocity) * Time.deltaTime;
 
-                if (rigid.velocity.magnitude > 1f && isGrounded && wheelHit.normal != Vector3.zero && wheelHit.point != Vector3.zero && skidPoint != Vector3.zero && Mathf.Abs(skidPoint.x) > 1f && Mathf.Abs(skidPoint.z) > 1f)
+                if (rigid.linearVelocity.magnitude > 1f && isGrounded && wheelHit.normal != Vector3.zero && wheelHit.point != Vector3.zero && skidPoint != Vector3.zero && Mathf.Abs(skidPoint.x) > 1f && Mathf.Abs(skidPoint.z) > 1f)
                     lastSkidmark = RCC_SkidmarksManager.Instance.AddSkidMark(skidPoint, wheelHit.normal, totalSlip - RCC_GroundMaterials.Instance.frictions[groundIndex].slip, wheelWidth, lastSkidmark, groundIndex);
                 else
                     lastSkidmark = -1;
@@ -618,7 +618,7 @@ public class RCC_WheelCollider : RCC_Core {
     /// </summary>
     private void Drift() {
 
-        Vector3 relativeVelocity = transform.InverseTransformDirection(rigid.velocity);
+        Vector3 relativeVelocity = transform.InverseTransformDirection(rigid.linearVelocity);
         float sqrVel = (relativeVelocity.x * relativeVelocity.x) / 100f;
 
         if (wheelHit.forwardSlip > 0)
@@ -683,7 +683,7 @@ public class RCC_WheelCollider : RCC_Core {
                 audioSource.Play();
 
             // If vehicle is moving, set volume and pitch. Otherwise set them to 0.
-            if (rigid.velocity.magnitude > 1f) {
+            if (rigid.linearVelocity.magnitude > 1f) {
 
                 audioSource.volume = Mathf.Lerp(0f, audioVolume, totalSlip - 0);
                 audioSource.pitch = Mathf.Lerp(1f, .8f, audioSource.volume);

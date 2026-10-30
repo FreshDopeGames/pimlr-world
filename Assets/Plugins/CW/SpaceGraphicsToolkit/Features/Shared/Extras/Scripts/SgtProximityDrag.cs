@@ -47,13 +47,13 @@ namespace SpaceGraphicsToolkit
 				var drag        = Mathf.Lerp(dragMax, dragMin, distance01);
 				var angularDrag = Mathf.Lerp(angularDragMax, angularDragMin, distance01);
 
-				cachedRigidbody.drag        = drag;
-				cachedRigidbody.angularDrag = angularDrag;
+				cachedRigidbody.linearDamping        = drag;
+				cachedRigidbody.angularDamping = angularDrag;
 			}
 			else
 			{
-				cachedRigidbody.drag        = dragMin;
-				cachedRigidbody.angularDrag = angularDragMin;
+				cachedRigidbody.linearDamping        = dragMin;
+				cachedRigidbody.angularDamping = angularDragMin;
 			}
 		}
 	}

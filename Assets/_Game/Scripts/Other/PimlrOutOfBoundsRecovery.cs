@@ -80,7 +80,7 @@ public class PimlrOutOfBoundsRecovery : MonoBehaviour
         nextSample = Time.time + sampleInterval;
 
         // Only remember spots that are clearly on the city ground and not mid-air.
-        bool settled = body ? Mathf.Abs(body.velocity.y) < 1.5f : true;
+        bool settled = body ? Mathf.Abs(body.linearVelocity.y) < 1.5f : true;
         bool grounded = driving || player.IsGrounded;
         if (settled && grounded && target.position.y > floorY - 1f)
         {
@@ -105,7 +105,7 @@ public class PimlrOutOfBoundsRecovery : MonoBehaviour
 
         if (body)
         {
-            body.velocity = Vector3.zero;
+            body.linearVelocity = Vector3.zero;
             body.angularVelocity = Vector3.zero;
             body.position = pos;
             body.rotation = driving ? safeRot : body.rotation;

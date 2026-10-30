@@ -164,7 +164,7 @@ public static class PimlrInput
         if (pedalVehicle && PedalMode == PimlrPedalMode.TapToPedal)
         {
             UpdatePedal();
-            float speed = rb ? Vector3.Dot(rb.velocity, vehicle.forward) : 0f;
+            float speed = rb ? Vector3.Dot(rb.linearVelocity, vehicle.forward) : 0f;
             float stickY = Pad.leftStick.ReadValue().y;
 
             if (stickY < StickBrakeThreshold)
@@ -180,7 +180,7 @@ public static class PimlrInput
 
         float rt = Pad.rightTrigger.ReadValue(); if (rt < TriggerDeadzone) rt = 0f;
         float lt = Pad.leftTrigger.ReadValue();  if (lt < TriggerDeadzone) lt = 0f;
-        float forwardSpeed = rb ? Vector3.Dot(rb.velocity, vehicle.forward) : 0f;
+        float forwardSpeed = rb ? Vector3.Dot(rb.linearVelocity, vehicle.forward) : 0f;
 
         if (lt > 0f && forwardSpeed > BrakeBeforeReverseSpeed)        { brake = true; vertical = 0f; }  // braking while rolling forward
         else if (rt > 0f && forwardSpeed < -BrakeBeforeReverseSpeed)  { brake = true; vertical = 0f; }  // braking while rolling backward

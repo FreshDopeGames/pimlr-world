@@ -183,7 +183,7 @@ public class MissileControl : MonoBehaviour
     {
         if ((playerID == SocketPlayerManager.Instance.player_Id || isAI) && rb != null)
         {
-            rb.velocity = transform.forward * speed;
+            rb.linearVelocity = transform.forward * speed;
             //Debug.Log("Speed:::::::::" + speed);
         }
 

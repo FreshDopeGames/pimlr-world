@@ -25,7 +25,7 @@ public class RCC_Camera : MonoBehaviour {
 
         public float speed { get { if (!playerVehicle) return 0f; return playerVehicle.speed; } }
 
-        public Vector3 localVelocity { get { if (!playerVehicle) return Vector3.zero; return playerVehicle.transform.InverseTransformDirection(playerVehicle.rigid.velocity); } }
+        public Vector3 localVelocity { get { if (!playerVehicle) return Vector3.zero; return playerVehicle.transform.InverseTransformDirection(playerVehicle.rigid.linearVelocity); } }
 
         private RCC_HoodCamera _hoodCamera;
         public RCC_HoodCamera hoodCamera {

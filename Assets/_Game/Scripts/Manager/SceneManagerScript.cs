@@ -94,7 +94,7 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
     {
         base.Awake();
         if (Instance != this)
-            Debug.LogWarning($"[SceneManagerScript:{GetInstanceID()}] Duplicate manager instance detected; Singleton will destroy this GameObject.");
+            Debug.LogWarning($"[SceneManagerScript:{GetHashCode()}] Duplicate manager instance detected; Singleton will destroy this GameObject.");
     }
 
     private void Update()
@@ -281,12 +281,12 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
         if (loadingVideoPlayer != null)
             loadingVideoPlayer.url = Application.streamingAssetsPath + "/Loadingvideo.mp4";
         else
-            Debug.LogWarning($"[SceneManagerScript:{GetInstanceID()}] Loading VideoPlayer reference is NULL.");
+            Debug.LogWarning($"[SceneManagerScript:{GetHashCode()}] Loading VideoPlayer reference is NULL.");
 
         if (waveScreen != null)
             waveScreen.url = Application.streamingAssetsPath + "/Loadingvideo.mp4";
         else
-            Debug.LogWarning($"[SceneManagerScript:{GetInstanceID()}] Wave Screen VideoPlayer reference is NULL.");
+            Debug.LogWarning($"[SceneManagerScript:{GetHashCode()}] Wave Screen VideoPlayer reference is NULL.");
 
         if (_coins != null && CoinManager.Instance)
         {

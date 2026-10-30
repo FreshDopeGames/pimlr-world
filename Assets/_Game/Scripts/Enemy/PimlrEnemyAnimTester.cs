@@ -456,7 +456,7 @@ public class PimlrEnemyAnimTester : MonoBehaviour
     void OnGUI()
     {
         if (!showPanel) return;
-        windowRect = GUI.Window(GetInstanceID(), windowRect, DrawWindow, "PIMLR Enemy Anim Tester");
+        windowRect = GUI.Window(GetHashCode(), windowRect, DrawWindow, "PIMLR Enemy Anim Tester");
     }
 
     void DrawWindow(int id)

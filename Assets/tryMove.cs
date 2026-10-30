@@ -36,7 +36,7 @@ void carMove()
         W_BL.motorTorque = speed * Input.GetAxis("Vertical");
         W_BL.motorTorque = speed * Input.GetAxis("Vertical");
 
-        float speedFactor = this.GetComponent<Rigidbody>().velocity.magnitude / lowestSpeed;
+        float speedFactor = this.GetComponent<Rigidbody>().linearVelocity.magnitude / lowestSpeed;
         float currentAngle = Mathf.Lerp(lowestAngel, highesAngel, speedFactor);
         currentAngle *= Input.GetAxis("Horizontal");
         currentAngle *= Input.GetAxis("Horizontal");

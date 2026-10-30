@@ -69,8 +69,8 @@ public class RCC_Editor : Editor {
                 pivot.AddComponent<RCC_CarControllerV3>();
 
                 pivot.GetComponent<Rigidbody>().mass = 1500f;
-                pivot.GetComponent<Rigidbody>().drag = .01f;
-                pivot.GetComponent<Rigidbody>().angularDrag = .5f;
+                pivot.GetComponent<Rigidbody>().linearDamping = .01f;
+                pivot.GetComponent<Rigidbody>().angularDamping = .5f;
                 pivot.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
 
                 Selection.activeGameObject.transform.SetParent(pivot.transform);
@@ -83,8 +83,8 @@ public class RCC_Editor : Editor {
                 selectedVehicle.AddComponent<RCC_CarControllerV3>();
 
                 selectedVehicle.GetComponent<Rigidbody>().mass = 1500f;
-                selectedVehicle.GetComponent<Rigidbody>().drag = .01f;
-                selectedVehicle.GetComponent<Rigidbody>().angularDrag = .5f;
+                selectedVehicle.GetComponent<Rigidbody>().linearDamping = .01f;
+                selectedVehicle.GetComponent<Rigidbody>().angularDamping = .5f;
                 selectedVehicle.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
 
                 Selection.activeGameObject = selectedVehicle;

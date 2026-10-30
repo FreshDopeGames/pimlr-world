@@ -48,7 +48,7 @@ public static class PimlrInfiniteStart
         var rb = player.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.position = target;
             rb.rotation = facing;

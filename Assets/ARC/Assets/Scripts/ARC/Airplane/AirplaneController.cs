@@ -591,15 +591,15 @@ namespace TS.ARC
                             vehiclePathFollow.b_MoveAvailable &&
                             !rb.isKinematic)
                         {
-                            rb.velocity = Vector3.MoveTowards(rb.velocity, vehicleAI.desiredVelocity,Time.deltaTime * 300);
+                            rb.linearVelocity = Vector3.MoveTowards(rb.linearVelocity, vehicleAI.desiredVelocity,Time.deltaTime * 300);
 
 
                             float maxSpeed = defaultSpeed +
                                 (refSpeed  +
                                 vehicleAI.OffsetSpeedDistanceAiToP1 +
                                 vehicleBooster.currentBoost) * aiReachMaxSpeedAfterStartCurve.Evaluate(vehicleAI.aiSmoothStart);
-                            if (rb.velocity.magnitude > maxSpeed)
-                                rb.velocity = rb.velocity.normalized * (maxSpeed);
+                            if (rb.linearVelocity.magnitude > maxSpeed)
+                                rb.linearVelocity = rb.linearVelocity.normalized * (maxSpeed);
                         }
                     }
 
@@ -614,11 +614,11 @@ namespace TS.ARC
                     rb.MoveRotation(GyroXAxis.rotation * deltaRotation2);
 
                     //-> Limit the plane velocity
-                    if (rb.velocity.magnitude > currentSpeed && 
+                    if (rb.linearVelocity.magnitude > currentSpeed && 
                         !vehicleAI.enabled &&
                         !rb.isKinematic)
                     {
-                        rb.velocity = rb.velocity.normalized * (currentSpeed);
+                        rb.linearVelocity = rb.linearVelocity.normalized * (currentSpeed);
                     }
                 }
             }            
@@ -721,7 +721,7 @@ namespace TS.ARC
             Grp_MoveWithWings.gameObject.SetActive(false);
             vehicleInfo.b_IsVehicleAvailableToMove = false;
             Force = 0;
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             rb.isKinematic = true;
             aSourceWind.Stop();
             aSourceEngineSound.Stop();
@@ -842,7 +842,7 @@ namespace TS.ARC
             yield return new WaitUntil(() => vehicleInfo.b_IsVehicleAvailableToMove);
 
             Force = 200;
-            rb.velocity = GyroXAxis.transform.forward.normalized * -10;
+            rb.linearVelocity = GyroXAxis.transform.forward.normalized * -10;
 
             if (!vehicleAI.enabled && aSourceWind.gameObject.activeInHierarchy)
                 aSourceWind.Play();

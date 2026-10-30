@@ -53,7 +53,7 @@ namespace CarControllerwithShooting
         public bool Skidding { get; private set; }
         public float BrakeInput { get; private set; }
         public float CurrentSteerAngle { get { return _steerAngle; } }
-        public float CurrentSpeed { get { return _rigidbody.velocity.magnitude * 3.6f; } }
+        public float CurrentSpeed { get { return _rigidbody.linearVelocity.magnitude * 3.6f; } }
         public float MaxSpeed { get { return _topSpeed; } }
         public float Revs { get; private set; }
         public float AccelInput { get; private set; }
@@ -332,10 +332,10 @@ namespace CarControllerwithShooting
         public float speed;
         private void CapSpeed()
         {
-            speed = _rigidbody.velocity.magnitude;
+            speed = _rigidbody.linearVelocity.magnitude;
             speed *= 3.6f;
             if (speed > _topSpeed)
-                _rigidbody.velocity = (_topSpeed / 3.6f) * _rigidbody.velocity.normalized;
+                _rigidbody.linearVelocity = (_topSpeed / 3.6f) * _rigidbody.linearVelocity.normalized;
 
             //GameCanvas.Instance.Update_Text_Speed();
         }
@@ -352,7 +352,7 @@ namespace CarControllerwithShooting
 
             for (int i = 0; i < 4; i++)
             {
-                if (CurrentSpeed > 5 && Vector3.Angle(transform.forward, _rigidbody.velocity) < 50f)
+                if (CurrentSpeed > 5 && Vector3.Angle(transform.forward, _rigidbody.linearVelocity) < 50f)
                 {
                     wheelColliders[i].brakeTorque = _brakeTorque * footBrake;
                 }
@@ -365,7 +365,7 @@ namespace CarControllerwithShooting
 
             if (footBrake > 0)
             {
-                if (CurrentSpeed > 5 && Vector3.Angle(transform.forward, _rigidbody.velocity) < 50f)
+                if (CurrentSpeed > 5 && Vector3.Angle(transform.forward, _rigidbody.linearVelocity) < 50f)
                 {
                     //TurnBrakeLightsOn();
                 }
@@ -396,7 +396,7 @@ namespace CarControllerwithShooting
             {
                 float turnAdjust = (transform.eulerAngles.y - _oldRotation) * _steerHelper;
                 Quaternion velRotation = Quaternion.AngleAxis(turnAdjust, Vector3.up);
-                _rigidbody.velocity = velRotation * _rigidbody.velocity;
+                _rigidbody.linearVelocity = velRotation * _rigidbody.linearVelocity;
             }
 
             _oldRotation = transform.eulerAngles.y;
@@ -446,7 +446,7 @@ namespace CarControllerwithShooting
         private void AddDownForce()
         {
             if (_downForce > 0)
-                _rigidbody.AddForce(_downForce * _rigidbody.velocity.magnitude * -transform.up);
+                _rigidbody.AddForce(_downForce * _rigidbody.linearVelocity.magnitude * -transform.up);
         }
 
         private void CheckForWheelSpin()

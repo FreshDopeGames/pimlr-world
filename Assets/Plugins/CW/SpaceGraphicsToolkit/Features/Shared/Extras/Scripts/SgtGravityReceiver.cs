@@ -24,7 +24,7 @@ namespace SpaceGraphicsToolkit
 			if (visual != null)
 			{
 				var position = transform.position;
-				var velocity = cachedRigidbody.velocity;
+				var velocity = cachedRigidbody.linearVelocity;
 				var mass     = cachedRigidbody.mass;
 
 				visual.useWorldSpace = true;
@@ -79,7 +79,7 @@ namespace SpaceGraphicsToolkit
 				cachedRigidbodySet = true;
 			}
 
-			cachedRigidbody.velocity += CalculateAcceleration(transform.position, cachedRigidbody.mass) * Time.fixedDeltaTime;
+			cachedRigidbody.linearVelocity += CalculateAcceleration(transform.position, cachedRigidbody.mass) * Time.fixedDeltaTime;
 
 			RebuildVisual();
 		}

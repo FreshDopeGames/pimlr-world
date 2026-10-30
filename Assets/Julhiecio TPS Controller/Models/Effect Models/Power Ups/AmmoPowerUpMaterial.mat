@@ -22,6 +22,7 @@ Material:
     RenderType: Opaque
   disabledShaderPasses:
   - ALWAYS
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -39,6 +40,7 @@ Material:
     - _Color: {r: 0.27843133, g: 0.5803921, b: 0.8784314, a: 1}
     - _EmissionColor: {r: 0.08018869, g: 0.1161754, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &6274310420608181194
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -51,4 +53,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 10
