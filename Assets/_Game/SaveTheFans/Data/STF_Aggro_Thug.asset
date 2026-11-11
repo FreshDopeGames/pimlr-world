@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4dc46c4e984e0242a00233b3af2ca07, type: 3}
+  m_Name: STF_Aggro_Thug
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.Missions.SaveTheFans.FanAggroProfile
+  focusMode: 1
+  grudgeDamageThreshold: 0.12
+  damageWindow: 3
+  grudgeDuration: 6
+  grudgeBreakDistance: 25
+  washRange: 2.2
+  washPerSecond: 3
+  faceFanWhileWashing: 1
+  swingAtFan: 1
+  swingInterval: 1.6
+  hypeValue: 1

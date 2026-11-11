@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c786d18221cd3a042b59656fe93b51d5, type: 3}
+  m_Name: STF_Waves_Fan1
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.Missions.SaveTheFans.FanWaveSet
+  waves:
+  - name: Wave 1
+    preWaveDelay: 0
+    spawnInterval: 0.75
+    maxAlive: 4
+    interleaveTypes: 1
+    entries:
+    - label: Thug
+      prefab: {fileID: 8114356081070409092, guid: 13d371c5732573f4388918d58c2dc333, type: 3}
+      count: 3
+      aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
+  - name: Wave 2
+    preWaveDelay: 5
+    spawnInterval: 0.75
+    maxAlive: 5
+    interleaveTypes: 1
+    entries:
+    - label: Thug
+      prefab: {fileID: 8114356081070409092, guid: 13d371c5732573f4388918d58c2dc333, type: 3}
+      count: 5
+      aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
+  - name: Wave 3
+    preWaveDelay: 5
+    spawnInterval: 0.75
+    maxAlive: 6
+    interleaveTypes: 1
+    entries:
+    - label: Thug
+      prefab: {fileID: 8114356081070409092, guid: 13d371c5732573f4388918d58c2dc333, type: 3}
+      count: 7
+      aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
+  washRateMultiplier: 1
+  coinReward: 100
+  recoveryBetweenWaves: 25

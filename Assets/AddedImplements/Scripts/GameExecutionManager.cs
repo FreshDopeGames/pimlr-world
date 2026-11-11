@@ -283,6 +283,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     IEnumerator SaveTheFansStart()
     {
         yield return StartCoroutine(WaitForscreenfadeOut(""));
+        playerInventory.EquipItem(playerInventory.AllHoldableItems[0].ItemSwitchID); // PIMLR #STF: equip like every other stage
         SceneManagerScript.Instance.goalPanel.enemyInfoHolder.SetActive(false);
         var mission = PIMLR.Missions.SaveTheFans.SaveTheFansMission.Instance;
         if (mission != null) mission.BeginMission();
