@@ -208,8 +208,7 @@ public class InfiniteMode : Singleton<InfiniteMode>
                 enemy.transform.rotation = Quaternion.Euler(0, Random.Range(-360, 360), 0);
                 enemy.Health = enemy.MaxHealth;
 
-                // The Story bomber isn't wired to Infinite Mode's kill counter (Infinite prefabs use BossDead).
-                if (enemy.GetComponent<BossDead>() == null) enemy.OnDeath.AddListener(OnKillEnemy);
+                WireKillCounter(enemy);
 
                 PimlrEnemySpawnDirector.Arrive(enemy.gameObject);
                 yield return new WaitForSeconds(Random.Range(1.2f, 2.2f));
@@ -227,6 +226,7 @@ public class InfiniteMode : Singleton<InfiniteMode>
                 JUHealth enemy;
 
                 enemy = Instantiate(normalEnemyPrefab, normalEnemiesHolder);
+                WireKillCounter(enemy);
 
 
                 enemy.transform.position = randomPosOnArea;
@@ -252,6 +252,7 @@ public class InfiniteMode : Singleton<InfiniteMode>
                 JUHealth enemy;
 
                 enemy = Instantiate(bossEnemyPrefab, bossEnemiesHolder);
+                WireKillCounter(enemy);
 
 
                 enemy.transform.position = randomPosOnArea;
@@ -266,6 +267,16 @@ public class InfiniteMode : Singleton<InfiniteMode>
         }
     }
 
+
+    // PIMLR: count a kill for ANY spawned enemy, whatever prefab it came from (e.g. the new FBX-based PIMLR_* enemies).
+    // Older "Infinit" prefabs already count themselves through a persistent OnDeath -> BossDead.OnBossDead entry,
+    // so those are skipped to avoid counting a kill twice.
+    void WireKillCounter(JUHealth enemy)
+    {
+        for (int i = 0; i < enemy.OnDeath.GetPersistentEventCount(); i++)
+            if (enemy.OnDeath.GetPersistentMethodName(i) == nameof(BossDead.OnBossDead)) return;
+        enemy.OnDeath.AddListener(OnKillEnemy);
+    }
 
     public void OnKillEnemy()
     {

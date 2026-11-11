@@ -116,7 +116,7 @@ public class AuthManager : Singleton<AuthManager>
         if (SceneManagerScript.Instance != null && SceneManagerScript.Instance.uiManager != null)
             SceneManagerScript.Instance.uiManager.ShowMenu("Loading Screen");
         else
-            Debug.LogError($"[AuthManager:{GetInstanceID()}] Cannot show Loading Screen: SceneManagerScript or its UIManager reference is NULL.");
+            Debug.LogError($"[AuthManager:{GetHashCode()}] Cannot show Loading Screen: SceneManagerScript or its UIManager reference is NULL.");
     }
 
     private void WirePimlrStartButtons()
@@ -250,7 +250,7 @@ public class AuthManager : Singleton<AuthManager>
         Button pressedButton = FindButton(pressedButtonName);
         if (pressedButton == null)
         {
-            Debug.LogWarning($"[AuthManager:{GetInstanceID()}] Cannot show loading progress: '{pressedButtonName}' was not found.");
+            Debug.LogWarning($"[AuthManager:{GetHashCode()}] Cannot show loading progress: '{pressedButtonName}' was not found.");
             return;
         }
 
@@ -260,7 +260,7 @@ public class AuthManager : Singleton<AuthManager>
 
         if (loadingScreen == null)
         {
-            Debug.LogWarning($"[AuthManager:{GetInstanceID()}] Button '{pressedButtonName}' is not beneath an object named 'Loading Screen'; progress widgets were not toggled.");
+            Debug.LogWarning($"[AuthManager:{GetHashCode()}] Button '{pressedButtonName}' is not beneath an object named 'Loading Screen'; progress widgets were not toggled.");
             return;
         }
 
@@ -293,7 +293,7 @@ public class AuthManager : Singleton<AuthManager>
     {
         if (SceneManagerScript.Instance == null)
         {
-            Debug.LogError($"[AuthManager:{GetInstanceID()}] Cannot load SceneStaticEU: SceneManagerScript.Instance is NULL.");
+            Debug.LogError($"[AuthManager:{GetHashCode()}] Cannot load SceneStaticEU: SceneManagerScript.Instance is NULL.");
             return;
         }
 

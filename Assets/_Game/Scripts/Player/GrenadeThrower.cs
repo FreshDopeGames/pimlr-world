@@ -296,12 +296,12 @@ public class GrenadeThrower : MonoBehaviour
         float t = Mathf.Clamp(flatToAim.magnitude / Mathf.Max(1f, arcHorizontalSpeed), minFlightTime, maxFlightTime);
         if (leadFactor > 0f && player.TryGetComponent(out Rigidbody prb))
         {
-            Vector3 pv = prb.velocity; pv.y = 0f;
+            Vector3 pv = prb.linearVelocity; pv.y = 0f;
             aimPoint += pv * t * leadFactor;
         }
         Vector3 g = rb.useGravity ? Physics.gravity : Vector3.zero;
-        rb.drag = 0f;
-        rb.velocity = (aimPoint - origin) / t - 0.5f * g * t;
+        rb.linearDamping = 0f;
+        rb.linearVelocity = (aimPoint - origin) / t - 0.5f * g * t;
         rb.angularVelocity = Random.insideUnitSphere * 4f; // a little tumble
     }
 }

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402188, g: 0.4931649, b: 0.57223135, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -17264,28 +17263,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 1
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17336,12 +17333,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &968367734 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4038045877917186191, guid: 21acbf7007a4d5343898c89431c34aa7,
@@ -35499,6 +35496,9 @@ MonoBehaviour:
       body:
         title: Race_Red
         color: rgb(255,22,44)
+      molding:
+        title: 
+        color: 
       frame:
         title: Race_Red
         color: rgb(255,22,44)
@@ -35514,9 +35514,30 @@ MonoBehaviour:
       wheel_light:
         title: original
         color: original
+      bumpers:
+        title: 
+        color: 
+      spoiler:
+        title: 
+        color: 
+      accent_lights:
+        title: 
+        color: 
+      front_rear_fascia:
+        title: 
+        color: 
       led_logo:
         title: original
         color: original
+      cargo_cover:
+        title: 
+        color: 
+      front_grille:
+        title: 
+        color: 
+      warning_lights:
+        title: 
+        color: 
       upper_body:
         title: Race_Red
         color: rgb(255,22,44)
@@ -35532,14 +35553,20 @@ MonoBehaviour:
       accent_piece_two:
         title: original
         color: original
+      led_lights:
+        title: 
+        color: 
+    weapons: 
+    playerWeapons: []
     created_at: 
     updated_at: 2023-11-10T17:33:43.000000Z
   HunterPrefab: {fileID: 689636596202599219, guid: c0f28347738f8324bba81743ccdc0b7f,
     type: 3}
-  HackerPrefab: {fileID: 8641097065460419021, guid: 1ce96b35cc377644ab4a5c886a38b794,
-    type: 3}
   HammerPrefab: {fileID: 0}
   HeroPrefab: {fileID: 0}
+  HackerPrefab: {fileID: 8641097065460419021, guid: 1ce96b35cc377644ab4a5c886a38b794,
+    type: 3}
+  HypePrefab: {fileID: 0}
 --- !u!4 &2879228370232260415
 Transform:
   m_ObjectHideFlags: 0

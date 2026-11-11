@@ -9,8 +9,8 @@ public class FollowPlayer : MonoBehaviour
     {
         //Debug.Log(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowMissileCamera>().name);
         //GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowMissileCamera>().CarCameraTarget = this.gameObject.transform;
-        GameplayManager.Instance.virtualCamera.m_LookAt = this.gameObject.transform;
-        GameplayManager.Instance.virtualCamera.m_Follow = this.gameObject.transform;
+        GameplayManager.Instance.virtualCamera.LookAt = this.gameObject.transform;
+        GameplayManager.Instance.virtualCamera.Follow = this.gameObject.transform;
     }
     private void Update()
     {

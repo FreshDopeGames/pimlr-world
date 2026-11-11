@@ -40,8 +40,8 @@ public class PlayerID : MonoBehaviour
 		if (isLocalPlayer)
         {
 
-            GameplayManager.Instance.virtualCamera.m_LookAt = controller.camTarget.transform;
-            GameplayManager.Instance.virtualCamera.m_Follow = controller.camTarget.transform;
+            GameplayManager.Instance.virtualCamera.LookAt = controller.camTarget.transform;
+            GameplayManager.Instance.virtualCamera.Follow = controller.camTarget.transform;
 
 			if (SocketPlayerManager.Instance.helixPlayerInfo.teamA)
 			{

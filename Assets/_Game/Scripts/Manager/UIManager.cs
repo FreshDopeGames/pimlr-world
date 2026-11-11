@@ -119,7 +119,7 @@ public class UIManager : MonoBehaviour
     {
         if (UIMenus == null)
         {
-            Debug.LogError($"[UIManager:{GetInstanceID()}] UIMenus is NULL; cannot disable screens.");
+            Debug.LogError($"[UIManager:{GetHashCode()}] UIMenus is NULL; cannot disable screens.");
             return;
         }
 

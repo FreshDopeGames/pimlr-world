@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -303,8 +302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85ad5c0d9f18f248b90f5267b2874e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerManager: {fileID: 1294850219}
-  UIManager: {fileID: 1612688705}
 --- !u!1 &152274493
 GameObject:
   m_ObjectHideFlags: 0
@@ -1109,12 +1106,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &554052309
 GameObject:
   m_ObjectHideFlags: 0
@@ -3264,8 +3261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 522b5fffe077fda4994155a05c86d0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 
   Url: https://895f-2405-201-200b-c05b-355b-4f18-3a33-b1bb.ngrok-free.app
-  teamSelection: {fileID: 7125187744653815808}
 --- !u!1 &1278308127
 GameObject:
   m_ObjectHideFlags: 0
@@ -3385,12 +3382,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace5b3b2895e55e49b361067a0365991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyPlayer: {fileID: 0}
   playerName: 
   player_Id: 
   IsMaster: 0
   MaxPlayer: 8
-  playerList:
-    data: []
+  helixPlayerInfo:
+    userName: 
+    userID: 
+    isLocalUser: 0
+    userRegion: 
+    roomID: 
+    roomName: 
+    isRoomHostUser: 0
+    roomMaxPlayer: 10
+    roomCurrentPlayer: 0
+    teamA: 0
+    teamB: 0
+    userReadyRoom: 0
+    userStartRoom: 0
+    userKillPoint: 0
+    team_A_KillPoint: 0
+    team_B_KillPoint: 0
+  randomRegionName: 
 --- !u!4 &1294850220
 Transform:
   m_ObjectHideFlags: 0
@@ -3999,10 +4013,11 @@ MonoBehaviour:
   - {fileID: 311462707}
   - {fileID: 1988379428}
   MassagePanal: {fileID: 7125187744840754323}
-  Loader: {fileID: 7125187744660273799}
   LobbyPanal: {fileID: 7125187745711764656}
+  mapSelection: {fileID: 0}
   abs: {fileID: 7125187745537411968}
   PlayerName: {fileID: 7125187745091789297}
+  helixUIManager: {fileID: 0}
 --- !u!1 &1629309249
 GameObject:
   m_ObjectHideFlags: 0
@@ -5337,15 +5352,18 @@ MonoBehaviour:
   joinButton: {fileID: 92354748}
   Readybtn: {fileID: 2006409477}
   StartBtn: {fileID: 1693203308}
-  LeaveBtn: {fileID: 639694472}
+  RoomnameListParant: {fileID: 0}
+  PlayerListParant: {fileID: 0}
   roomNamePrefab: {fileID: 5332386670385018946, guid: 8afe84fe7269971499f45e1d9adae39b,
     type: 3}
-  RoomnameListParant: {fileID: 0}
-  roomNameList: []
   PLayerListPrefab: {fileID: 767347681081097840, guid: 7bceeeb668f393049b5e20b1f60363a5,
     type: 3}
-  PlayerListParant: {fileID: 0}
+  teamPlayerListPrefab: {fileID: 0}
+  roomNameList: []
   PlayerList: []
+  teamPlayerListPrefabTransform: {fileID: 0}
+  helix_Team_Selection: {fileID: 0}
+  helix_Your_Team: {fileID: 0}
 --- !u!222 &1988379431
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6989,6 +7007,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamPlayerPrefab: {fileID: 767347681081097840, guid: f5501db738691de4eada8ed914c8aca4,
     type: 3}
+  helix_your_team: {fileID: 0}
   teamA: {fileID: 1198543111}
   teamB: {fileID: 1192532419}
   team_AList: []
@@ -9076,15 +9095,18 @@ MonoBehaviour:
   joinButton: {fileID: 7125187745054013229}
   Readybtn: {fileID: 7125187744767307279}
   StartBtn: {fileID: 1114788065}
-  LeaveBtn: {fileID: 1909201817}
+  RoomnameListParant: {fileID: 663330081}
+  PlayerListParant: {fileID: 1814395680}
   roomNamePrefab: {fileID: 5332386670385018946, guid: 8afe84fe7269971499f45e1d9adae39b,
     type: 3}
-  RoomnameListParant: {fileID: 663330081}
-  roomNameList: []
   PLayerListPrefab: {fileID: 767347681081097840, guid: 7bceeeb668f393049b5e20b1f60363a5,
     type: 3}
-  PlayerListParant: {fileID: 1814395680}
+  teamPlayerListPrefab: {fileID: 0}
+  roomNameList: []
   PlayerList: []
+  teamPlayerListPrefabTransform: {fileID: 0}
+  helix_Team_Selection: {fileID: 0}
+  helix_Your_Team: {fileID: 0}
 --- !u!224 &7125187745751790340
 RectTransform:
   m_ObjectHideFlags: 0

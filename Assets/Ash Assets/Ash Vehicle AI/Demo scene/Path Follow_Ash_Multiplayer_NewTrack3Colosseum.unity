@@ -38,8 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.004052912, g: 0.00022148578, b: 0.00000005538049,
-    a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2328,28 +2326,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 1
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2400,12 +2396,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &990556396 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8614037103697156251, guid: 6a50626f90549b54298a8b06ffa11a44,
@@ -4982,6 +4978,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6335337194978617599, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 4313592809196543328, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 4016587493618788882, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 8732014154810052012, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1858228324533079962, guid: bae7fc5ea957c44498f64d8516ee6e47,
@@ -5101,6 +5100,9 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3457498337153358370, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
     - {fileID: 5758670485915691745, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 7738584055737930517, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 8470592105524399822, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 4300731267230135918, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1037088001182142186, guid: b7e7c0e3d9a0b1e43be1e705941bafc2,
@@ -5232,7 +5234,10 @@ PrefabInstance:
       propertyPath: sensorLength
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4030903199216880605, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
+    - {fileID: 2906641004139346219, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
+    - {fileID: 3270519739151223857, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7290937553341595559, guid: 20b8e3438d2a22749ad3d0fd596486b4,
@@ -5334,7 +5339,10 @@ PrefabInstance:
       propertyPath: lookAheadForTargetOffset
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5172106742382760658, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
+    - {fileID: 2025987850864418577, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
+    - {fileID: 1181017008142951334, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 196291755608492502, guid: 8a2edaf8a085e75498c3085c32c75f62,
@@ -5356,6 +5364,11 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 1301696384}
+    - target: {fileID: 4846730786945357500, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 5538533274217139025, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
         type: 3}
       propertyPath: m_Name
@@ -5416,7 +5429,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6855480629340328993, guid: 7aaedb9eb562b8b4aa99a033abcc9401, type: 3}
+    - {fileID: 6614785258575522347, guid: 7aaedb9eb562b8b4aa99a033abcc9401, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -5549,7 +5564,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.00000032968816
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2903620106255642899, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
+    - {fileID: 5695912464605563012, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
+    - {fileID: 1694469678400559269, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -5661,6 +5679,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1560614560470380406, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
     - {fileID: 6361446939896676481, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
+    - {fileID: 2907719786805149926, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
+    - {fileID: 7889450932082432154, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

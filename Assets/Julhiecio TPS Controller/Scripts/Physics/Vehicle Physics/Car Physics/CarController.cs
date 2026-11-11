@@ -106,8 +106,8 @@ namespace JUTPS.VehicleSystem
 
             if (PlayerTruck)
             {
-                if (rb) rb.angularDrag = TruckAngularDrag;
-                float speed = rb ? rb.velocity.magnitude : GetVehicleCurrentSpeed();
+                if (rb) rb.angularDamping = TruckAngularDrag;
+                float speed = rb ? rb.linearVelocity.magnitude : GetVehicleCurrentSpeed();
                 float steerFactor = Mathf.Lerp(1f, HighSpeedSteerFactor, Mathf.Clamp01(speed / Mathf.Max(1f, FullSteerFalloffSpeed)));
                 float maxAngle = Mathf.Min(MaxSteerAngle, TruckMaxSteerAngle);
                 WheelSteerAngle(WheelColliders[0], truckSteer * steerFactor * maxAngle, maxAngle);

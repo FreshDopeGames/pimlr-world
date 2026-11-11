@@ -84,7 +84,7 @@ namespace JUTPS.WeaponSystem
             //If movement is physic type
             if (MovementType == BulletMovementType.Physics)
             {
-                rb.velocity = transform.forward * BulletVelocity;
+                rb.linearVelocity = transform.forward * BulletVelocity;
                 if (UsesDrop) rb.useGravity = false; // we apply DropGravity ourselves
             }
             else
@@ -138,11 +138,11 @@ namespace JUTPS.WeaponSystem
             if (UsesDrop)
             {
                 ballisticVelocity += Vector3.down * DropGravity * Time.fixedDeltaTime;
-                rb.velocity = ballisticVelocity;
+                rb.linearVelocity = ballisticVelocity;
                 if (ballisticVelocity.sqrMagnitude > 0.01f) transform.rotation = Quaternion.LookRotation(ballisticVelocity);
                 return;
             }
-            rb.velocity = transform.forward * BulletVelocity;
+            rb.linearVelocity = transform.forward * BulletVelocity;
         }
         private void MoveForward()
         {

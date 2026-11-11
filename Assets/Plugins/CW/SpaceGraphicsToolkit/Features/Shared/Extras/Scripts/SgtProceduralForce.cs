@@ -26,7 +26,7 @@ namespace SpaceGraphicsToolkit
 				axis = direction.normalized;
 			}
 
-			GetComponent<Rigidbody>().velocity = axis * speed;
+			GetComponent<Rigidbody>().linearVelocity = axis * speed;
 		}
 	}
 }

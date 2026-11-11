@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -33,7 +33,8 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Opaque
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -105,6 +106,7 @@ Material:
     m_Ints: []
     m_Floats:
     - Vector1_70b1a3dc2c8048908a62b575eee1ce8c: 1.5
+    - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaCutoff: 0.5
     - _AlphaToMask: 0
@@ -137,6 +139,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SampleGI: 0
+    - _ScreenSpaceReflectionsContributeTransparent: 1
     - _Shininess: 0.078125
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
@@ -147,6 +150,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _UVSec: 0
+    - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
     - Color_63cea7f4ce054c198a5dc24ecfc0b411: {r: 12.98587, g: 32, b: 0, a: 0}
@@ -159,6 +163,7 @@ Material:
     - _bLayerColorB: {r: 0, g: 0, b: 0, a: 0}
     - _bLayerColorC: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1002 &2100001
 EditorExtensionImpl:
   serializedVersion: 6

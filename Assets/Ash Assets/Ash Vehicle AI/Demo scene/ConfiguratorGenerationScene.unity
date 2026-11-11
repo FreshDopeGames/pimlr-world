@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402188, g: 0.4931649, b: 0.57223135, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4348,8 +4347,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carCameras:
   - {fileID: 0}
-  - {fileID: 3756684737190493092}
-  - {fileID: 201809204005881224}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!224 &226289562
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17267,28 +17266,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
+  ShowDebugText: 0
+  ShowCameraFrustum: 1
+  IgnoreTimeScale: 0
+  WorldUpOverride: {fileID: 0}
+  ChannelMask: -1
+  UpdateMethod: 1
+  BlendUpdateMethod: 1
+  LensModeOverride:
+    Enabled: 0
+    DefaultMode: 2
+  DefaultBlend:
+    Style: 1
+    Time: 2
+    CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  CustomBlends: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17339,12 +17336,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &968367734 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4038045877917186191, guid: 21acbf7007a4d5343898c89431c34aa7,
@@ -35426,18 +35423,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1301092832}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &201809204005881224 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6855480629340328993, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
-    type: 3}
-  m_PrefabInstance: {fileID: 4299204795027437239}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &646483414136242809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35511,8 +35496,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7568062147967821666, guid: bae7fc5ea957c44498f64d8516ee6e47,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6335337194978617599, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 4313592809196543328, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 4016587493618788882, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
+    - {fileID: 8732014154810052012, guid: bae7fc5ea957c44498f64d8516ee6e47, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -35580,6 +35573,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2345478351904508059, guid: b7e7c0e3d9a0b1e43be1e705941bafc2,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 3457498337153358370, guid: b7e7c0e3d9a0b1e43be1e705941bafc2,
         type: 3}
       propertyPath: sceneId
@@ -35598,6 +35596,9 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3457498337153358370, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
     - {fileID: 5758670485915691745, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 7738584055737930517, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 8470592105524399822, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
+    - {fileID: 4300731267230135918, guid: b7e7c0e3d9a0b1e43be1e705941bafc2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -35629,6 +35630,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135341182733604905, guid: 20b8e3438d2a22749ad3d0fd596486b4,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
       objectReference: {fileID: 0}
     - target: {fileID: 6476615842760399342, guid: 20b8e3438d2a22749ad3d0fd596486b4,
         type: 3}
@@ -35685,23 +35691,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4030903199216880605, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
+    - {fileID: 2906641004139346219, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
+    - {fileID: 3270519739151223857, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20b8e3438d2a22749ad3d0fd596486b4, type: 3}
---- !u!114 &3756684737190493092 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2903620106255642899, guid: 3046bed8933587d4fbd09679a0241094,
-    type: 3}
-  m_PrefabInstance: {fileID: 4779572887289222945}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4072221666670928094
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35760,6 +35757,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1920267212015937886, guid: 8a2edaf8a085e75498c3085c32c75f62,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 5777138803640176931, guid: 8a2edaf8a085e75498c3085c32c75f62,
         type: 3}
       propertyPath: m_Name
@@ -35775,7 +35777,10 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5172106742382760658, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
+    - {fileID: 2025987850864418577, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
+    - {fileID: 1181017008142951334, guid: 8a2edaf8a085e75498c3085c32c75f62, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -35793,6 +35798,11 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
+    - target: {fileID: 4846730786945357500, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 5538533274217139025, guid: 7aaedb9eb562b8b4aa99a033abcc9401,
         type: 3}
       propertyPath: m_Name
@@ -35853,7 +35863,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6855480629340328993, guid: 7aaedb9eb562b8b4aa99a033abcc9401, type: 3}
+    - {fileID: 6614785258575522347, guid: 7aaedb9eb562b8b4aa99a033abcc9401, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -35881,6 +35893,11 @@ PrefabInstance:
       propertyPath: circuit
       value: 
       objectReference: {fileID: 637783062}
+    - target: {fileID: 7940440852613960884, guid: 3046bed8933587d4fbd09679a0241094,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 8372072700087012664, guid: 3046bed8933587d4fbd09679a0241094,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -35941,7 +35958,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 1.53421e-17
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2903620106255642899, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
+    - {fileID: 5695912464605563012, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
+    - {fileID: 1694469678400559269, guid: 3046bed8933587d4fbd09679a0241094, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -36087,6 +36107,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2912973059255138271, guid: 687385b84cb7ff041a720c59b72304a6,
+        type: 3}
+      propertyPath: m_Name
+      value: Camera Controller CM
+      objectReference: {fileID: 0}
     - target: {fileID: 7626957692304421722, guid: 687385b84cb7ff041a720c59b72304a6,
         type: 3}
       propertyPath: circuit
@@ -36095,6 +36120,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1560614560470380406, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
     - {fileID: 6361446939896676481, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
+    - {fileID: 2907719786805149926, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
+    - {fileID: 7889450932082432154, guid: 687385b84cb7ff041a720c59b72304a6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

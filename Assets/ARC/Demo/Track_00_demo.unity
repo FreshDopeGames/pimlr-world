@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44300556, g: 0.49219704, b: 0.5719264, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -24336,12 +24335,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!20 &230381282
 Camera:
   m_ObjectHideFlags: 0
@@ -40398,12 +40397,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!81 &344003776
 AudioListener:
   m_ObjectHideFlags: 0
@@ -50039,6 +50038,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -61774,6 +61774,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -90491,20 +90492,6 @@ MonoBehaviour:
   listVehicles: []
   b_InitDone: 0
   vehicleGlobalData: {fileID: 11400000, guid: d27c853f0b3564decb3f678bd8738827, type: 2}
-  choosablePlayerSpaceshipData:
-    spaceships:
-    - {fileID: 6946648026651403349, guid: 2eff27a76d7f6e140b1231e5d7901480, type: 3}
-    - {fileID: 5298360004269876139, guid: c51ef449d610b1b438e2c3389e7eb696, type: 3}
-    - {fileID: 6617692882833667195, guid: 664ea567f44c5624585ca1a942e00d3c, type: 3}
-    - {fileID: 6463084594277331482, guid: c4d2dc35188a6e94c940b52e9df1d9ac, type: 3}
-    - {fileID: 7083084636010536539, guid: 594d94f2f63ee1b4193aa8d4d0901505, type: 3}
-    - {fileID: 6174200840519407118, guid: 64ec2fb5a4968d44b9d24a221019120a, type: 3}
-    characters:
-    - {fileID: 4970319016303706950, guid: bd89f5fb4c2b3534a8a147553e212db3, type: 3}
-    - {fileID: 6034210395751058083, guid: 5c3834b03227c4d46bec18e357c9bc61, type: 3}
-    - {fileID: 4146739569089856737, guid: bf70848514e3efc4fb87bd1324ae7662, type: 3}
-    - {fileID: 266969564765134066, guid: d16640c86ad9fef4eaaec28130249b4b, type: 3}
-    flames: []
   URL: https://www.idea-labs.xyz/api/humanityrocks/vehicles/1
 --- !u!1001 &788936370
 PrefabInstance:
@@ -117828,6 +117815,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -140972,6 +140960,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -154943,6 +154932,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -164246,6 +164236,7 @@ MonoBehaviour:
   txtGlobalTimeList: []
   txtLapTimeList: []
   updateLapValueList: 
+  updateAllowed: 1
   howManyPosChecked: 50
   bAllowPositionToBeUpdated: 0
   howManyLapsInTheCurrentRace: 3
@@ -187688,6 +187679,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -188488,6 +188480,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -214061,6 +214054,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -225229,6 +225223,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -232168,6 +232163,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -245419,6 +245415,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -251835,6 +251832,7 @@ Terrain:
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 2
   m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1

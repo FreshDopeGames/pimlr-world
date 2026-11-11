@@ -170,7 +170,7 @@ namespace SpaceGraphicsToolkit
 			// Translate by difference
 			if (target != null)
 			{
-				target.velocity += remainingDelta - newDelta;
+				target.linearVelocity += remainingDelta - newDelta;
 			}
 			else
 			{

@@ -16,7 +16,7 @@ public class UILodingScreen : MonoBehaviour
     {
         if (AuthManager.Instance == null || loadingBarDatas == null)
         {
-            Debug.LogWarning($"[UILodingScreen:{GetInstanceID()}] Cannot populate loading-screen title/description: AuthManager={(AuthManager.Instance != null ? "available" : "NULL")}, loadingBarDatas={(loadingBarDatas != null ? loadingBarDatas.Length.ToString() : "NULL")}.");
+            Debug.LogWarning($"[UILodingScreen:{GetHashCode()}] Cannot populate loading-screen title/description: AuthManager={(AuthManager.Instance != null ? "available" : "NULL")}, loadingBarDatas={(loadingBarDatas != null ? loadingBarDatas.Length.ToString() : "NULL")}.");
             return;
         }
 

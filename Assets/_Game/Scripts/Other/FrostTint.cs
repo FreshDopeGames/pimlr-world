@@ -149,7 +149,7 @@ public class FrostTint : MonoBehaviour
     private void Update()
     {
         if (!isFrozen || glowLight == null || !glowLight.enabled || glowPulse <= 0f) return;
-        float phase = Time.time * 4f + GetInstanceID() * 0.37f;   // each enemy shimmers on its own beat
+        float phase = Time.time * 4f + GetHashCode() * 0.37f;   // each enemy shimmers on its own beat
         glowLight.intensity = glowLightIntensity * (1f - glowPulse + glowPulse * (0.5f + 0.5f * Mathf.Sin(phase)));
     }
 

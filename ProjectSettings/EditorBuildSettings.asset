@@ -60,5 +60,4 @@ EditorBuildSettings:
     path: Assets/ARC/Assets/Scenes/Tracks/Demo/Sci-Fi_Track_06.unity
     guid: 2288531e9763eaa44ba29b15a98272d2
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: 2ec44aec0dd0a564fa6de8ea4b3c5852,
-      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 2ec44aec0dd0a564fa6de8ea4b3c5852, type: 2}

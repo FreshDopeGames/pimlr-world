@@ -1,18 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 /// <summary>
-/// PIMLR: swap the Ready Player Me body on an enemy/NPC prefab for another downloaded RPM avatar, keeping
-/// everything JUTPS hangs off the skeleton (weapon positions, IK targets, ragdoll, health bar, AI...).
-/// Why the Inspector couldn't do it: the boss prefabs were built from the same .glb as Big Boss, and a skinned
-/// mesh can't just be dragged in - its bones, bind pose and materials all have to come across together.
+/// PIMLR: swap the Ready Player Me body on a character for another avatar, keeping everything JUTPS hangs off
+/// the skeleton (weapon positions, IK targets, ragdoll, health bar, AI, Animator avatar...).
+/// Why the Inspector couldn't do it: a skinned mesh can't just be dragged in - its bones, bind pose and
+/// materials all have to come across together.
 ///
-/// What it does, by bone/renderer NAME (all RPM avatars share the same rig names):
+/// What it does, by bone/renderer NAME (all RPM rigs share the same bone names):
 ///   1. copies the new avatar's bone pose onto the target skeleton (so the new mesh's bind pose fits),
-///   2. points every Renderer_* at the new avatar's mesh + materials (adds Hair/Beard etc. if the old one lacked them),
-///   3. hides Renderer_* pieces the new avatar doesn't have.
+///   2. points every body renderer at the new avatar's mesh + materials (adds pieces the old one lacked),
+///   3. hides body pieces the new avatar doesn't have.
+/// Renderer names are matched ignoring the "Renderer_" / "Wolf3D_" prefix, so an FBX export
+/// (Wolf3D_Body, EyeLeft...) lines up with a renamed rig (Renderer_Body, Renderer_EyeLeft...).
+///
+/// Target: a prefab asset (edited and saved) OR a GameObject in the open scene (edited in place, undoable).
+/// Source: an RPM avatar prefab/.glb, or an FBX exported from one (e.g. Assets/_Game/Prefabs/Players/Thurz.fbx).
 /// Menu: PIMLR / Characters / Swap RPM Avatar...
 /// </summary>
 public class PimlrAvatarSwapper : EditorWindow
@@ -20,42 +26,58 @@ public class PimlrAvatarSwapper : EditorWindow
     const string DefaultTarget = "Assets/_Game/Prefabs/WaterBallonBoss.prefab";
     const string DefaultSourceGuidPath = "Assets/Ready Player Me/Avatars/64e634111dfe4c3936791db2/2fac66e374c947c41bc74325c6e3d934/64e634111dfe4c3936791db2.prefab";
 
-    GameObject targetPrefab;
+    GameObject targetObject;
     GameObject sourceAvatar;
 
     [MenuItem("PIMLR/Characters/Swap RPM Avatar...")]
     static void Open()
     {
         var w = GetWindow<PimlrAvatarSwapper>(true, "Swap RPM Avatar");
-        w.minSize = new Vector2(460, 170);
-        w.targetPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DefaultTarget);
+        w.minSize = new Vector2(460, 190);
+        // Prefill with whatever is selected: a scene character or a prefab asset.
+        var sel = Selection.activeGameObject;
+        w.targetObject = sel != null ? sel : AssetDatabase.LoadAssetAtPath<GameObject>(DefaultTarget);
         w.sourceAvatar = AssetDatabase.LoadAssetAtPath<GameObject>(DefaultSourceGuidPath);
     }
 
     void OnGUI()
     {
-        EditorGUILayout.HelpBox("Target = the character prefab to re-skin (e.g. WaterBallonBoss).\nSource = a downloaded RPM avatar prefab (Assets/Ready Player Me/Avatars/<id>/.../<id>.prefab) or its .glb.", MessageType.Info);
-        targetPrefab = (GameObject)EditorGUILayout.ObjectField("Target prefab", targetPrefab, typeof(GameObject), false);
-        sourceAvatar = (GameObject)EditorGUILayout.ObjectField("Source RPM avatar", sourceAvatar, typeof(GameObject), false);
-        GUI.enabled = targetPrefab && sourceAvatar;
+        EditorGUILayout.HelpBox(
+            "Target = the character to re-skin: a prefab asset, or a character in the open scene (e.g. SceneStaticEU > Player).\n" +
+            "Source = an RPM avatar prefab/.glb, or an FBX exported from one (e.g. _Game/Prefabs/Players/Thurz.fbx).",
+            MessageType.Info);
+        targetObject = (GameObject)EditorGUILayout.ObjectField("Target", targetObject, typeof(GameObject), true);
+        sourceAvatar = (GameObject)EditorGUILayout.ObjectField("Source avatar", sourceAvatar, typeof(GameObject), false);
+        GUI.enabled = targetObject && sourceAvatar;
         if (GUILayout.Button("Swap", GUILayout.Height(30)))
-            Swap(targetPrefab, sourceAvatar);
+            Swap(targetObject, sourceAvatar);
         GUI.enabled = true;
     }
 
-    public static void Swap(GameObject targetAsset, GameObject sourceAsset)
+    public static void Swap(GameObject target, GameObject sourceAsset)
     {
-        string targetPath = AssetDatabase.GetAssetPath(targetAsset);
-        if (string.IsNullOrEmpty(targetPath)) { Debug.LogError("Target must be a prefab asset."); return; }
+        bool isAsset = EditorUtility.IsPersistent(target);
+        string targetPath = isAsset ? AssetDatabase.GetAssetPath(target) : null;
+        if (isAsset && string.IsNullOrEmpty(targetPath)) { Debug.LogError("Swap RPM Avatar: target asset has no path."); return; }
 
-        GameObject root = PrefabUtility.LoadPrefabContents(targetPath);
+        GameObject root;
+        if (isAsset)
+        {
+            root = PrefabUtility.LoadPrefabContents(targetPath);
+        }
+        else
+        {
+            root = target;
+            Undo.RegisterFullObjectHierarchyUndo(root, "Swap RPM Avatar");
+        }
+
         GameObject src = (GameObject)Object.Instantiate(sourceAsset);
         src.hideFlags = HideFlags.HideAndDontSave;
         try
         {
             var srcRenderers = src.GetComponentsInChildren<SkinnedMeshRenderer>(true);
             var dstRenderers = root.GetComponentsInChildren<SkinnedMeshRenderer>(true)
-                                   .Where(r => r.name.StartsWith("Renderer_") || r.name.StartsWith("Wolf3D")).ToList();
+                                   .Where(IsBodyRenderer).ToList();
             if (srcRenderers.Length == 0 || dstRenderers.Count == 0)
             {
                 EditorUtility.DisplayDialog("Swap RPM Avatar", "Couldn't find RPM skinned renderers on the target or the source.", "OK");
@@ -79,21 +101,24 @@ public class PimlrAvatarSwapper : EditorWindow
                 posed++;
             }
 
-            // 2) renderers
+            // 2) renderers - matched by name with the Renderer_/Wolf3D_ prefix ignored
+            bool usesRendererPrefix = dstRenderers.Any(r => r.name.StartsWith("Renderer_"));
             Transform rendererParent = dstRenderers[0].transform.parent;
             var matched = new HashSet<SkinnedMeshRenderer>();
             int swapped = 0, added = 0;
             foreach (var s in srcRenderers)
             {
-                var d = dstRenderers.FirstOrDefault(r => r.name == s.name);
+                string key = Key(s.name);
+                var d = dstRenderers.FirstOrDefault(r => Key(r.name) == key && !matched.Contains(r));
                 if (d == null)
                 {
-                    var go = new GameObject(s.name);
+                    var go = new GameObject(usesRendererPrefix ? "Renderer_" + key : s.name);
                     go.layer = dstRenderers[0].gameObject.layer;
                     go.transform.SetParent(rendererParent, false);
                     go.transform.localPosition = s.transform.localPosition;
                     go.transform.localRotation = s.transform.localRotation;
                     go.transform.localScale = s.transform.localScale;
+                    if (!isAsset) Undo.RegisterCreatedObjectUndo(go, "Swap RPM Avatar");
                     d = go.AddComponent<SkinnedMeshRenderer>();
                     d.shadowCastingMode = dstRenderers[0].shadowCastingMode;
                     d.updateWhenOffscreen = dstRenderers[0].updateWhenOffscreen;
@@ -121,17 +146,41 @@ public class PimlrAvatarSwapper : EditorWindow
             foreach (var d in dstRenderers)
                 if (!matched.Contains(d)) { d.gameObject.SetActive(false); hidden++; }
 
-            PrefabUtility.SaveAsPrefabAsset(root, targetPath);
-            Debug.Log($"Swap RPM Avatar: '{targetAsset.name}' now uses '{sourceAsset.name}'. Posed {posed} bones, swapped {swapped} renderer(s), added {added}, hid {hidden}.", targetAsset);
+            if (isAsset)
+            {
+                PrefabUtility.SaveAsPrefabAsset(root, targetPath);
+            }
+            else
+            {
+                foreach (var r in root.GetComponentsInChildren<Renderer>(true)) PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+                EditorSceneManager.MarkSceneDirty(root.scene);
+                // Keep the white, tintable Fit Check materials on the clothing pieces (the source avatar brings textured ones).
+                PimlrFitCheckMaterials.Restore(true);
+            }
+
+            Debug.Log($"Swap RPM Avatar: '{target.name}' now uses '{sourceAsset.name}'. Posed {posed} bones, swapped {swapped} renderer(s), added {added}, hid {hidden}.", target);
             EditorUtility.DisplayDialog("Swap RPM Avatar",
-                $"Done. {swapped} swapped, {added} added, {hidden} hidden.\n\nOpen the prefab to check it. Scene instances with their own renderer overrides keep those overrides - revert them if the old look still shows.",
+                $"Done. {swapped} swapped, {added} added, {hidden} hidden.\n\n" +
+                (isAsset ? "Open the prefab to check it. Scene instances with their own renderer overrides keep those overrides - revert them if the old look still shows."
+                         : "The scene is now modified - save it (Ctrl+S). Edit > Undo reverts the swap."),
                 "OK");
         }
         finally
         {
             Object.DestroyImmediate(src);
-            PrefabUtility.UnloadPrefabContents(root);
+            if (isAsset) PrefabUtility.UnloadPrefabContents(root);
         }
+    }
+
+    static bool IsBodyRenderer(SkinnedMeshRenderer r) =>
+        r.name.StartsWith("Renderer_") || r.name.StartsWith("Wolf3D") || r.name == "EyeLeft" || r.name == "EyeRight";
+
+    // "Renderer_Outfit_Top" / "Wolf3D_Outfit_Top" -> "Outfit_Top"; "Renderer_EyeLeft" / "EyeLeft" -> "EyeLeft"
+    static string Key(string n)
+    {
+        if (n.StartsWith("Renderer_")) return n.Substring("Renderer_".Length);
+        if (n.StartsWith("Wolf3D_")) return n.Substring("Wolf3D_".Length);
+        return n;
     }
 
     static Transform FindRigRoot(SkinnedMeshRenderer r)

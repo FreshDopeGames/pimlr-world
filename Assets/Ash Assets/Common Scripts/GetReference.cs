@@ -46,7 +46,7 @@ namespace AshVP
 
         void FixedUpdate()
         {
-            CurrentSpeedMps = transform.InverseTransformDirection(rb.velocity).magnitude;
+            CurrentSpeedMps = transform.InverseTransformDirection(rb.linearVelocity).magnitude;
 
 
             for (int i = 0; i < gearShifts.Length; i++)

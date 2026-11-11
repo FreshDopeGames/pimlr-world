@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.56278163, g: 0.6353658, b: 0.6929577, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2436,6 +2435,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!1 &67863236
 GameObject:
   m_ObjectHideFlags: 0
@@ -7526,13 +7526,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -12862,12 +12864,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &232532725
 GameObject:
   m_ObjectHideFlags: 0
@@ -13207,13 +13209,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 2
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 4300000, guid: 6499342c3ae53104780ba528bc51f4df, type: 3}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -26696,12 +26700,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf232e985e36e4449b8a4a376ea0e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skinColorCatalogue: {fileID: 1166444165}
+  shirtColorCatalogue: {fileID: 0}
   hairColorCatalogue: {fileID: 246326478}
-  faceShapeColorCatalogue: {fileID: 1565020213}
-  eyebrowsColorChangeCatalogue: {fileID: 1888069762}
-  eyesColorCatalogue: {fileID: 1920671596}
-  scarTatooColorCatalogue: {fileID: 854662724}
+  pantsColorCatalogue: {fileID: 0}
+  shoesColorChangeCatalogue: {fileID: 0}
+  colorsCatalogue: []
+  imageOfButtons: []
+  changeColor: {fileID: 0}
+  activeBtn: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &557885567
 GameObject:
   m_ObjectHideFlags: 0
@@ -63993,14 +63999,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eaa6b527321c824b8f4357511fd97c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cars: []
-  colourableMaterials:
-  - {fileID: -8022088438238926171, guid: c5e22e92c20300e418ae25c6550c2da1, type: 3}
   colors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  cars: []
+  renderers: []
+  colourableMaterials:
+  - {fileID: -8022088438238926171, guid: c5e22e92c20300e418ae25c6550c2da1, type: 3}
+  selectedMaterial: {fileID: 0}
 --- !u!4 &1661947645
 Transform:
   m_ObjectHideFlags: 0
@@ -68553,13 +68561,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 2
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 0001030405
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -84619,6 +84629,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: YannicksWorld
+  gameMode: 0
+  targetGame: 0
 --- !u!136 &2144407851
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -85365,7 +85377,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!114 &744643479485638747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85473,6 +85485,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   IsDead: 0
+  healthSlider: {fileID: 0}
+  rcc_CarControllerV3: {fileID: 0}
+  rcc_AICarController: {fileID: 0}
 --- !u!95 &805949454465768837
 Animator:
   serializedVersion: 5
@@ -85661,7 +85676,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!137 &911235736610884435
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -85781,7 +85796,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!4 &1037813009274326096
 Transform:
   m_ObjectHideFlags: 0
@@ -86446,7 +86461,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!1 &1809551985381496443
 GameObject:
   m_ObjectHideFlags: 0
@@ -92578,7 +92593,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!114 &3526646074579307724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93285,7 +93300,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!1 &4096659208462575196
 GameObject:
   m_ObjectHideFlags: 0
@@ -93641,6 +93656,7 @@ MonoBehaviour:
   UseDefaultInputsOnVehicleInteraction: 1
   CheckVehiclesByTrigger: 1
   DriveSelectedVehicleOnStart: 0
+  UnequipWeaponOnEnter: 0
   VehicleDrivableNearby: 0
   IsDriving: 0
   IsDrivingByShoot: 0
@@ -94804,7 +94820,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!224 &6010737739560374159
 RectTransform:
   m_ObjectHideFlags: 0
@@ -94913,13 +94929,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -95281,7 +95299,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!4 &6349895393667448137
 Transform:
   m_ObjectHideFlags: 0
@@ -95470,7 +95488,7 @@ SkinnedMeshRenderer:
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+  m_DirtyAABB: 0
 --- !u!82 &6618256155364341557
 AudioSource:
   m_ObjectHideFlags: 0
@@ -95960,6 +95978,7 @@ MonoBehaviour:
   HumanoidSpine: {fileID: 0}
   LeftHandWeightIK: 0
   RightHandWeightIK: 0
+  MaxWeaponReadyDelay: -1
   CurrentTimeToDisableFireMode: 0
   VehicleInArea: {fileID: 0}
   VehicleInShootingArea: {fileID: 0}
@@ -95996,6 +96015,13 @@ MonoBehaviour:
   IsWeaponSwitching: 0
   InverseKinematics: 1
   IsArtificialIntelligence: 0
+  RideAimRight: 80
+  RideAimLeft: 35
+  RideAimUp: 30
+  RideAimDown: 20
+  RideAimFireTolerance: 15
+  HandIKTransitionSpeed: 2
+  WeaponSwitchDuration: 0.5
   UseDefaultControllerInput: 1
   AutoRun: 0
   WalkOnRunButton: 1
@@ -96019,6 +96045,9 @@ MonoBehaviour:
   - Bones
   - Wall
   - Bullet
+  GamepadSprintToggle: 1
+  SprintToggleStopDelay: 0.25
+  IsSprintInputActive: 0
 --- !u!1 &6857223158403836927
 GameObject:
   m_ObjectHideFlags: 0
@@ -97595,10 +97624,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvatarId: 6503b737fcabde8ee108ac20
-  AvatarMetadata:
-    BodyType: 1
-    OutfitGender: 1
-    SkinTone: '#b37554'
 --- !u!4 &9106329668223100251
 Transform:
   m_ObjectHideFlags: 0

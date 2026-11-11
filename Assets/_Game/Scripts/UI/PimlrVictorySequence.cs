@@ -210,7 +210,11 @@ public class PimlrVictorySequence : MonoBehaviour
         tmp.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
         tmp.characterSpacing = 10f;
         tmp.alignment = TextAlignmentOptions.Center;
+#if UNITY_2023_2_OR_NEWER
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+#else
         tmp.enableWordWrapping = false;
+#endif
         tmp.color = color;
         tmp.raycastTarget = false;
         try
