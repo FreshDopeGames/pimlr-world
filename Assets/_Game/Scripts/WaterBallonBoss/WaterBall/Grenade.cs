@@ -54,10 +54,14 @@ public class Grenade : MonoBehaviour
         Explode(transform.position, Vector3.up);
     }
 
+    /// <summary>PIMLR #STF: raised when any water balloon bursts (point, splash radius).</summary>
+    public static event System.Action<Vector3, float> Exploded;
+
     private void Explode(Vector3 point, Vector3 normal)
     {
         if (hasExploded) return;
         hasExploded = true;
+        Exploded?.Invoke(point, explosionRadius); // PIMLR #STF: Save The Fans fans take splash wash
 
         bool zone2Done = GameExecutionManager.Instance != null && GameExecutionManager.Instance.zone2Finish;
         if (!zone2Done)

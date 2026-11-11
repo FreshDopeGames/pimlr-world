@@ -593,17 +593,19 @@ public class AuthManager : Singleton<AuthManager>
     #endregion
 
 
+    // PIMLR #STATS: boosts are now multipliers on the artist's base stats (PlayerStatBlock), never absolute values,
+    // so a boost can't wipe an artist's stats. For Thurz (all 5s) the results equal the old numbers:
+    // Speed 3 -> 6 (x2), MaxHealth 100 -> 150 (x1.5, refilled), car MaxVelocity/Torque 300/600 -> 600/1200 (x2).
+    public const string BoostModifierSource = "boost"; // PIMLR #STATS
+
     public void PowerChange(AchievementReward newAchievementReward)
     {
+        AchievementReward previousReward = achievementReward; // PIMLR #ANL
         achievementReward = newAchievementReward;
-        //Debug.LogError("PowerChange:>>" + newAchievementReward.ToString());
         ResetPowerups();
         if (newAchievementReward == AchievementReward.MovementSpeed)
         {
-            if (GameExecutionManager.Instance)
-            {
-                GameExecutionManager.Instance.playerHandler.jUCharacterController.Speed = 6;
-            }
+            PlayerStatBlock.AddModifier(BoostModifierSource, StatKind.Speed, 2f); // PIMLR #STATS (was Speed = 6)
         }
         //else if (newAchievementReward == AchievementReward.AmmoSize)
         //{
@@ -612,10 +614,7 @@ public class AuthManager : Singleton<AuthManager>
         else if (newAchievementReward == AchievementReward.VehicleSpeed)
         {
             if (GameExecutionManager.Instance)
-            {
-                GameExecutionManager.Instance.carController.VehicleEngine.MaxVelocity = 600;
-                GameExecutionManager.Instance.carController.VehicleEngine.TorqueForce = 1200;
-            }
+                VehicleStatBoost.Apply(GameExecutionManager.Instance.carController, 2f); // PIMLR #STATS (was 600 / 1200)
         }
         //else if (newAchievementReward == AchievementReward.Defense)
         //{
@@ -623,30 +622,26 @@ public class AuthManager : Singleton<AuthManager>
         //}
         else if (newAchievementReward == AchievementReward.MaxHP)
         {
-            if (GameExecutionManager.Instance)
-            {
-                GameExecutionManager.Instance.playerHandler.jUCharacterController.CharacterHealth.MaxHealth = 150;
-                GameExecutionManager.Instance.playerHandler.jUCharacterController.CharacterHealth.Health = 150;
-            }
+            PlayerStatBlock.AddModifier(BoostModifierSource, StatKind.Health, 1.5f); // PIMLR #STATS (was MaxHealth = 150)
+            PlayerStatBlock.RequestHealthRefill();                                   // PIMLR #STATS (was Health = 150)
         }
         else if (newAchievementReward == AchievementReward.FreezeRay)
         {
 
         }
 
-
-
+        // PIMLR #ANL: one event per change (UI_GoalPanel sends Nothing on both disable and destroy).
+        if (previousReward != newAchievementReward)
+            PIMLR.Analytics.PimlrAnalytics.Log("boost_active", new PIMLR.Analytics.AnalyticsData()
+                .Add("boost", newAchievementReward)
+                .Add("previous", previousReward)
+                .Add("on", newAchievementReward != AchievementReward.Nothing));
     }
     public void ResetPowerups()
     {
+        // PIMLR #STATS: drop the boost modifiers; PlayerStatBlock re-applies the artist's base values.
+        PlayerStatBlock.RemoveSource(BoostModifierSource);
         if (GameExecutionManager.Instance)
-        {
-            GameExecutionManager.Instance.playerHandler.jUCharacterController.Speed = 3;
-
-            GameExecutionManager.Instance.carController.VehicleEngine.MaxVelocity = 300;
-            GameExecutionManager.Instance.carController.VehicleEngine.TorqueForce = 600;
-            GameExecutionManager.Instance.playerHandler.jUCharacterController.CharacterHealth.MaxHealth = 100;
-
-        }
+            VehicleStatBoost.Apply(GameExecutionManager.Instance.carController, 1f); // the car's own starting values
     }
 }

@@ -319,28 +319,45 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     public float waitAtTarget = 1f;
     private Vector3 originalPosition;
     private Quaternion originalRotation;
+    // PIMLR #CAM: the car reveal used to fly in a straight line to 'carCinemation' (a camera parked 10 m behind the
+    // Car) and back, cutting through buildings and often framing the side of the truck against a wall. Now the shot
+    // is picked on the most open side of the truck (the street side, preferring its flanks) and both moves are
+    // routed over rooftops by PimlrCinematicCamera. carCinemation is only the fallback if the Car is missing.
+    [Header("Car reveal camera (PIMLR #CAM)")]
+    public float carRevealDistance = 8f;
+    public float carRevealHeight = 2.2f;
     IEnumerator MoveToTargetAndBack()
     {
         tpsCameraController.enabled = false;
-        originalPosition = cameraObj.transform.position;
-        originalRotation = cameraObj.transform.rotation;
+        // PIMLR #CAM: cameraObj is the rig pivot; the lens sits 3 m behind it. Plan and move the lens itself.
+        var lensRig = new PimlrCinematicCamera.LensRig(cameraObj.transform);
+        originalPosition = lensRig.HomePosition;
+        originalRotation = lensRig.HomeRotation;
+
+        Vector3 shotPos;
+        Quaternion shotRot;
+        if (PlayerCar != null)
+        {
+            Vector3 focus = PlayerCar.transform.position + Vector3.up * 1.2f;
+            shotPos = PimlrCinematicCamera.FindOpenShot(focus, carRevealDistance, carRevealHeight, PlayerCar.transform.forward);
+            shotRot = Quaternion.LookRotation((focus - shotPos).normalized, Vector3.up);
+        }
+        else
+        {
+            shotPos = carCinemation.transform.position;
+            shotRot = carCinemation.transform.rotation;
+        }
+
         // Move and rotate to target
-        yield return StartCoroutine(MoveAndRotate(
-           cameraObj.transform.position, carCinemation.transform.position,
-           cameraObj.transform.rotation, carCinemation.transform.rotation,
-            moveDuration
-        ));
+        yield return StartCoroutine(PimlrCinematicCamera.Fly(cameraObj.transform, shotPos, shotRot, moveDuration));
 
         // Wait at target
         yield return new WaitForSeconds(waitAtTarget);
 
         // Move and rotate back to original
-        yield return StartCoroutine(MoveAndRotate(
-           cameraObj.transform.position, originalPosition,
-           cameraObj.transform.rotation, originalRotation,
-            moveDuration
-        ));
+        yield return StartCoroutine(PimlrCinematicCamera.Fly(cameraObj.transform, originalPosition, originalRotation, moveDuration));
 
+        lensRig.Restore();
         tpsCameraController.enabled = true;
     }
 

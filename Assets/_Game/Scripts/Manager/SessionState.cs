@@ -13,6 +13,7 @@ public static class SessionState
         PlayerPrefs.DeleteKey(ZoneProgress.ZoneKey);
         PlayerPrefs.DeleteKey(PIMLR.Missions.SaveTheFans.SaveTheFansMission.PrefNextHeat); // PIMLR #STF
         PlayerPrefs.Save();
+        PIMLR.Analytics.CareerStats.Wipe(); // PIMLR #ANL: career totals reset with progress (raw analytics files are kept)
 
         // PIMLR (playtest): clear the live balance so its next update cannot restore the previous session's coins.
         if (CoinManager.Instance != null)

@@ -9,7 +9,8 @@
 // return null for the duration, which other PIMLR/JUTPS scripts read every frame, and a
 // second URP base camera costs a full extra render on WebGL. One camera avoids both.)
 //
-// Shots are pulled in automatically if a building is between the subject and the camera.
+// Shots are pulled in automatically if a building is between the subject and the camera, and every move
+// between shots is routed by PimlrCinematicCamera: straight when clear, over the rooftops when not.
 // The HUD is faded with a CanvasGroup rather than SetActive(false): UI_GoalPanel.OnDisable
 // resets the active music boost, so the HUD must never be deactivated mid-mission.
 //
@@ -65,6 +66,7 @@ namespace PIMLR.Missions.SaveTheFans
         bool skipRequested;
         Vector3 homePosition;
         Quaternion homeRotation;
+        PimlrCinematicCamera.LensRig lensRig; // PIMLR #STF: shots are planned for the lens, not the pivot 3 m in front of it
         bool controllerWasEnabled;
         CanvasGroup hudGroup;
         float hudAlphaBefore = 1f;
@@ -84,6 +86,7 @@ namespace PIMLR.Missions.SaveTheFans
         public IEnumerator PlayHeatIntro(FanHeat fan, Vector3 enemySpot, System.Action onEnemyShotReached, Transform player)
         {
             if (!Begin()) yield break;
+            reachFrom = player ? player.position : (Vector3?)null; // PIMLR #STF
 
             Vector3 fanFocus = fan ? fan.FocusPoint : enemySpot;
 
@@ -109,6 +112,8 @@ namespace PIMLR.Missions.SaveTheFans
         public IEnumerator PlayQuickFanShot(FanHeat fan)
         {
             if (!fan || !Begin()) yield break;
+            var pc = PlayerControlLock.ResolvePlayer();                // PIMLR #STF
+            reachFrom = pc ? pc.transform.position : (Vector3?)null;
             yield return FlyTo(fan.FocusPoint, fan.transform.forward, travelTime * 0.7f, holdOnFan * 0.5f, null, null);
             yield return ReturnHome();
             End();
@@ -141,8 +146,9 @@ namespace PIMLR.Missions.SaveTheFans
 
             if (freezePlayer) PlayerControlLock.Lock();
 
-            homePosition = cameraTransform.position;
-            homeRotation = cameraTransform.rotation;
+            lensRig = new PimlrCinematicCamera.LensRig(cameraTransform);
+            homePosition = lensRig.HomePosition;
+            homeRotation = lensRig.HomeRotation;
             controllerWasEnabled = cameraController && cameraController.enabled;
             if (cameraController) cameraController.enabled = false;
 
@@ -154,7 +160,8 @@ namespace PIMLR.Missions.SaveTheFans
         void End()
         {
             if (!IsPlaying) return;
-            if (cameraTransform) cameraTransform.SetPositionAndRotation(homePosition, homeRotation);
+            if (lensRig != null) { lensRig.Restore(); lensRig = null; }
+            else if (cameraTransform) cameraTransform.SetPositionAndRotation(homePosition, homeRotation);
             if (cameraController && controllerWasEnabled) cameraController.enabled = true;
 
             if (fadeHud) SetHudVisible(true);
@@ -191,7 +198,7 @@ namespace PIMLR.Missions.SaveTheFans
             Vector3 shotPos = ComputeShotPosition(focus, subjectForward);
             Quaternion shotRot = LookRotationSafe(lookAt - shotPos);
 
-            yield return Move(shotPos, shotRot, travel);
+            yield return Move(shotPos, shotRot, travel, lookAt);
             if (skipRequested) yield break;
 
             onArrive?.Invoke();
@@ -211,64 +218,26 @@ namespace PIMLR.Missions.SaveTheFans
 
         IEnumerator ReturnHome()
         {
-            Vector3 startPos = cameraTransform.position;
-            Quaternion startRot = cameraTransform.rotation;
+            // PIMLR #STF: back to the player along a route that goes over buildings, never through them.
+            // A skip still flies (quickly) rather than cutting through walls.
             float dur = skipRequested ? 0.35f : returnTime;
-            float t = 0f;
-
-            while (t < dur)
-            {
-                t += Time.deltaTime;
-                float k = ease.Evaluate(Mathf.Clamp01(t / dur));
-                cameraTransform.SetPositionAndRotation(Vector3.Lerp(startPos, homePosition, k), Quaternion.Slerp(startRot, homeRotation, k));
-                yield return null;
-            }
+            yield return PimlrCinematicCamera.Fly(cameraTransform, homePosition, homeRotation, dur, ease, null, occlusionMask);
         }
 
-        IEnumerator Move(Vector3 toPos, Quaternion toRot, float duration)
+        IEnumerator Move(Vector3 toPos, Quaternion toRot, float duration, Vector3? lookAt = null)
         {
-            Vector3 fromPos = cameraTransform.position;
-            Quaternion fromRot = cameraTransform.rotation;
-
-            // Arc over rooftops on long moves so we don't clip through buildings mid-flight.
-            float dist = Vector3.Distance(fromPos, toPos);
-            Vector3 arcLift = Vector3.up * Mathf.Clamp(dist * 0.25f, 0f, 25f);
-
-            float t = 0f;
-            while (t < duration)
-            {
-                if (skipRequested) yield break;
-                t += Time.deltaTime;
-                float k = ease.Evaluate(Mathf.Clamp01(t / duration));
-                Vector3 p = Vector3.Lerp(fromPos, toPos, k) + arcLift * Mathf.Sin(k * Mathf.PI);
-                cameraTransform.SetPositionAndRotation(p, Quaternion.Slerp(fromRot, toRot, k));
-                yield return null;
-            }
+            // PIMLR #STF: was a straight lerp with a small arc, which cut through buildings between fan, enemy and
+            // player. Now (PimlrCinematicCamera rules): straight if clear; else down the middle of the streets at the
+            // cinematic height set on the fan, keeping the next subject framed; else over the roofs; else a cut.
+            yield return PimlrCinematicCamera.Fly(cameraTransform, toPos, toRot, duration, ease, () => skipRequested, occlusionMask, lookAt);
         }
+
+        // PIMLR #STF: shots favour spots on the player's walkable side, so moves follow the player's routes.
+        Vector3? reachFrom;
 
         Vector3 ComputeShotPosition(Vector3 focus, Vector3 subjectForward)
         {
-            Vector3 fwd = subjectForward;
-            fwd.y = 0f;
-            if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
-            fwd.Normalize();
-
-            // Try a few angles around the subject; take the first one with a clear view.
-            float[] angles = { 0f, 35f, -35f, 70f, -70f, 120f, -120f, 180f };
-            foreach (float a in angles)
-            {
-                Vector3 dir = Quaternion.AngleAxis(a, Vector3.up) * fwd;
-                Vector3 desired = focus + dir * shotDistance + Vector3.up * shotHeight;
-                Vector3 toCam = desired - focus;
-                if (!Physics.SphereCast(focus, 0.3f, toCam.normalized, out _, toCam.magnitude, occlusionMask, QueryTriggerInteraction.Ignore))
-                    return desired;
-            }
-
-            // Everything blocked (tight alley): pull in close above the subject.
-            Vector3 fallbackDir = (fwd * shotDistance + Vector3.up * shotHeight).normalized;
-            if (Physics.SphereCast(focus, 0.3f, fallbackDir, out var hit, shotDistance, occlusionMask, QueryTriggerInteraction.Ignore))
-                return focus + fallbackDir * Mathf.Max(1.5f, hit.distance - 0.4f);
-            return focus + fallbackDir * shotDistance;
+            return PimlrCinematicCamera.FindShot(focus, subjectForward, shotDistance, shotHeight, occlusionMask, reachFrom);
         }
 
         static Quaternion LookRotationSafe(Vector3 dir)

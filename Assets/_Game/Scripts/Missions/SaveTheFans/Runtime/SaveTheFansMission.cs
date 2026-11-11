@@ -301,6 +301,7 @@ namespace PIMLR.Missions.SaveTheFans
         IEnumerator RunMission(int startHeat)
         {
             CurrentState = State.Intermission; // so IsRunning is true from the first frame
+            SaveTheFansHUD.EnsureExists(this); // PIMLR #STF: placeholder HUD + threat bar if the scene has none
             onMissionStarted?.Invoke();
             var p = PlayerTransform;
             if (p) AmmoRestockStation.CaptureBaseline(p.gameObject);

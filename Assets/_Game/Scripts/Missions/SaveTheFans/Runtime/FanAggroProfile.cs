@@ -42,6 +42,34 @@ namespace PIMLR.Missions.SaveTheFans
         [Tooltip("If the player gets this far away, the grudge breaks and the enemy goes back to the fan.")]
         [Min(2f)] public float grudgeBreakDistance = 25f;
 
+        // PIMLR #STF: how this enemy type gets to the fan.
+        public enum Approach
+        {
+            [Tooltip("Walk straight to a spot beside the fan and wash it from there (thugs, shooters).")]
+            Direct,
+            [Tooltip("Circle the fan around grenade range, drifting in and out of it, and wash only with balloons (bombers).")]
+            OrbitAtThrowRange
+        }
+
+        [Header("Movement")]
+        public Approach approach = Approach.Direct;
+
+        [Tooltip("Multiplies this enemy's move speed in Save The Fans (root-motion speed and JUTPS Speed). 1.2 = 20% faster.")]
+        [Range(0.5f, 2f)] public float moveSpeedMultiplier = 1f;
+
+        [Tooltip("Run to the fan instead of walking. Off = a slow, menacing approach.")]
+        public bool runToFan = false;
+
+        [Header("Orbit (OrbitAtThrowRange only)")]
+        [Tooltip("Balloons are only thrown at the fan from within this distance. The orbit is centred on it.")]
+        [Min(3f)] public float throwRangeToFan = 16f;
+        [Tooltip("How far the orbit drifts inside and outside the throw range (metres either way).")]
+        [Min(0f)] public float orbitSwing = 5f;
+        [Tooltip("Seconds for one full in-and-out drift.")]
+        [Min(1f)] public float orbitSwingPeriod = 10f;
+        [Tooltip("How far ahead along the circle each walk target is, in degrees.")]
+        [Range(5f, 90f)] public float orbitLeadDegrees = 30f;
+
         [Header("Washing the fan")]
         [Tooltip("Flat distance from the fan at which this enemy starts washing it.")]
         [Min(0.5f)] public float washRange = 2.5f;

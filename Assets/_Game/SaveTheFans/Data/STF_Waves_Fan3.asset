@@ -16,7 +16,7 @@ MonoBehaviour:
   - name: Wave 1
     preWaveDelay: 0
     spawnInterval: 0.75
-    maxAlive: 4
+    maxAlive: 5
     interleaveTypes: 1
     entries:
     - label: Thug
@@ -30,7 +30,7 @@ MonoBehaviour:
   - name: Wave 2
     preWaveDelay: 5
     spawnInterval: 0.75
-    maxAlive: 5
+    maxAlive: 6
     interleaveTypes: 1
     entries:
     - label: Thug
@@ -39,7 +39,7 @@ MonoBehaviour:
       aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
     - label: Shooter
       prefab: {fileID: 2488376223041417201, guid: 9a64a6d0435fa5d4ea62ce410f18ec62, type: 3}
-      count: 3
+      count: 2
       aggroProfile: {fileID: 11400000, guid: fac4281bd53f5dd49a58cb2c2b05a133, type: 2}
     - label: Bomber
       prefab: {fileID: 4330128272725175449, guid: f7ee573630dbc9644b57b8fad11dccc2, type: 3}
@@ -48,56 +48,20 @@ MonoBehaviour:
   - name: Wave 3
     preWaveDelay: 5
     spawnInterval: 0.75
-    maxAlive: 6
-    interleaveTypes: 1
-    entries:
-    - label: Thug
-      prefab: {fileID: 8114356081070409092, guid: 13d371c5732573f4388918d58c2dc333, type: 3}
-      count: 8
-      aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
-    - label: Shooter
-      prefab: {fileID: 2488376223041417201, guid: 9a64a6d0435fa5d4ea62ce410f18ec62, type: 3}
-      count: 3
-      aggroProfile: {fileID: 11400000, guid: fac4281bd53f5dd49a58cb2c2b05a133, type: 2}
-    - label: Bomber
-      prefab: {fileID: 4330128272725175449, guid: f7ee573630dbc9644b57b8fad11dccc2, type: 3}
-      count: 1
-      aggroProfile: {fileID: 11400000, guid: c624fb6d468407843b7545c4d6ebcab8, type: 2}
-  - name: Wave 4
-    preWaveDelay: 5
-    spawnInterval: 0.75
     maxAlive: 7
     interleaveTypes: 1
     entries:
     - label: Thug
       prefab: {fileID: 8114356081070409092, guid: 13d371c5732573f4388918d58c2dc333, type: 3}
-      count: 9
+      count: 7
       aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
     - label: Shooter
       prefab: {fileID: 2488376223041417201, guid: 9a64a6d0435fa5d4ea62ce410f18ec62, type: 3}
-      count: 4
+      count: 3
       aggroProfile: {fileID: 11400000, guid: fac4281bd53f5dd49a58cb2c2b05a133, type: 2}
     - label: Bomber
       prefab: {fileID: 4330128272725175449, guid: f7ee573630dbc9644b57b8fad11dccc2, type: 3}
       count: 2
-      aggroProfile: {fileID: 11400000, guid: c624fb6d468407843b7545c4d6ebcab8, type: 2}
-  - name: Wave 5
-    preWaveDelay: 5
-    spawnInterval: 0.75
-    maxAlive: 8
-    interleaveTypes: 1
-    entries:
-    - label: Thug
-      prefab: {fileID: 8114356081070409092, guid: 13d371c5732573f4388918d58c2dc333, type: 3}
-      count: 10
-      aggroProfile: {fileID: 11400000, guid: 57dbf27c7be6c424d9ba37b88314c4d3, type: 2}
-    - label: Shooter
-      prefab: {fileID: 2488376223041417201, guid: 9a64a6d0435fa5d4ea62ce410f18ec62, type: 3}
-      count: 5
-      aggroProfile: {fileID: 11400000, guid: fac4281bd53f5dd49a58cb2c2b05a133, type: 2}
-    - label: Bomber
-      prefab: {fileID: 4330128272725175449, guid: f7ee573630dbc9644b57b8fad11dccc2, type: 3}
-      count: 3
       aggroProfile: {fileID: 11400000, guid: c624fb6d468407843b7545c4d6ebcab8, type: 2}
   washRateMultiplier: 1.3
   coinReward: 250

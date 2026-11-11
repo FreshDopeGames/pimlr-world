@@ -62,6 +62,14 @@ namespace PIMLR.Missions.SaveTheFans
         PimlrBomberAI bomber;
         PimlrHuntPlayer hunter;
         PimlrSeekIntersection seeker;
+        JUCharacterController character;   // PIMLR #STF
+        GrenadeThrower thrower;             // PIMLR #STF: bombers throw at the fan
+
+        // PIMLR #STF: orbit (bombers) and stuck detection
+        float orbitPhase;
+        int orbitDir = 1;
+        Vector3 stuckCheckPos;
+        float stuckCheckTime;
 
         string[] nativeTargetTags = NoTargets;
         float nativeRadius, nativeAngle;
@@ -95,6 +103,18 @@ namespace PIMLR.Missions.SaveTheFans
             zombie = brain as ZombieAI;
             patrol = brain as PatrolAI;
             randomDestination = GetComponent<AIRandomDestination>();
+            character = GetComponent<JUCharacterController>();
+            thrower = GetComponent<GrenadeThrower>();
+
+            // PIMLR #STF: per-type speed (thugs were too slow walking to the fan). Root-motion characters move by
+            // their animation, so RootMotionSpeed is what changes their pace; Speed covers non-root-motion ones.
+            if (character && aggro && !Mathf.Approximately(aggro.moveSpeedMultiplier, 1f))
+            {
+                character.RootMotionSpeed *= aggro.moveSpeedMultiplier;
+                character.Speed *= aggro.moveSpeedMultiplier;
+            }
+            orbitPhase = Random.value * Mathf.PI * 2f;
+            orbitDir = Random.value < 0.5f ? -1 : 1;
 
             if (!brain)
                 Debug.LogWarning($"[SaveTheFans] {name} has no JUTPS AI brain (ZombieAI / PatrolAI). It will count as a kill but won't be steered.", this);
@@ -155,13 +175,17 @@ namespace PIMLR.Missions.SaveTheFans
                 {
                     nextRepath = Time.time + repathSeconds;
                     EnforceFocus();
-                    walkTarget = grudgeActive ? OnNavMesh(player.position) : FanSlot();
+                    walkTarget = grudgeActive ? OnNavMesh(player.position) : (Orbits ? OrbitPoint() : FanSlot());
                 }
                 // Every frame, and after PatrolAI's own Update (see header).
                 brain.Destination = walkTarget;
+
+                // PIMLR #STF: PatrolAI (shooters, bombers) idles when it has no target and hasn't computed a path,
+                // so setting Destination alone never moved them toward the fan. Drive its pathing directly.
+                if (!grudgeActive && patrol) DrivePatrolTowardFan();
             }
 
-            if (!grudgeActive) WashFanIfInRange();
+            if (!grudgeActive && !Orbits) WashFanIfInRange();
         }
 
         void HoldStill()
@@ -218,6 +242,14 @@ namespace PIMLR.Missions.SaveTheFans
             if (!hunter) hunter = GetComponent<PimlrHuntPlayer>();
             if (!seeker) seeker = GetComponent<PimlrSeekIntersection>();
 
+            // PIMLR #STF: bombers lob balloons at the fan unless they've turned on the player.
+            if (!thrower) thrower = GetComponent<GrenadeThrower>();
+            if (thrower)
+            {
+                thrower.TargetOverride = grudgeActive || !Fan ? null : Fan.transform;
+                thrower.TargetRangeOverride = profile ? profile.throwRangeToFan : -1f;
+            }
+
             if (gunner && gunner.enabled != grudgeActive) gunner.enabled = grudgeActive;
             if (bomber && bomber.enabled != grudgeActive) bomber.enabled = grudgeActive;
             if (hunter && hunter.enabled) hunter.enabled = false;   // this script does the steering
@@ -235,6 +267,63 @@ namespace PIMLR.Missions.SaveTheFans
             float standOff = Mathf.Max(1.2f, (profile ? profile.washRange : 2.5f) * 0.7f);
             Vector3 dir = Quaternion.AngleAxis(slotAngleOffset, Vector3.up) * fromFan.normalized;
             return OnNavMesh(fanPos + dir * standOff, fanPos);
+        }
+
+        // ------------------------------------------------------------------ PIMLR #STF: approach
+        bool Orbits => profile && profile.approach == FanAggroProfile.Approach.OrbitAtThrowRange;
+
+        void DrivePatrolTowardFan()
+        {
+            if (!Fan) return;
+            bool run = profile && profile.runToFan;
+
+            if (!Orbits)
+            {
+                // Shooters: slow walk in, then stand and wash from their range.
+                float wash = profile ? profile.washRange : 2.5f;
+                if (FlatDistance(transform.position, Fan.transform.position) <= wash * 0.9f)
+                {
+                    brain.IdleState();
+                    ResetStuck();
+                    return;
+                }
+                brain.GoToPosition(walkTarget, 0.8f, run);
+                return;
+            }
+
+            // Bombers: keep walking the circle. If wedged, turn around.
+            brain.GoToPosition(walkTarget, 1.5f, run);
+            if (Time.time - stuckCheckTime >= 2.5f)
+            {
+                if ((transform.position - stuckCheckPos).sqrMagnitude < 0.6f * 0.6f) { orbitDir = -orbitDir; nextRepath = 0f; }
+                ResetStuck();
+            }
+        }
+
+        void ResetStuck() { stuckCheckPos = transform.position; stuckCheckTime = Time.time; }
+
+        /// A point a little ahead along a circle around the fan whose radius drifts in and out of throw range,
+        /// so balloons fly only part of the time.
+        Vector3 OrbitPoint()
+        {
+            Vector3 c = Fan ? Fan.transform.position : transform.position;
+            Vector3 from = transform.position - c; from.y = 0f;
+            if (from.sqrMagnitude < 0.01f) from = Vector3.forward;
+            float a = Mathf.Atan2(from.z, from.x);
+            float period = Mathf.Max(1f, profile.orbitSwingPeriod);
+            // Centred a little inside throw range: walking the circle the body lags a few metres outward, so this
+            // makes it actually cross in and out of range on each swing.
+            float centre = profile.throwRangeToFan - profile.orbitSwing * 0.4f;
+            float r = Mathf.Max(3f, centre + profile.orbitSwing * Mathf.Sin(orbitPhase + Time.time * Mathf.PI * 2f / period));
+
+            for (int i = 0; i < 4; i++)
+            {
+                float ang = a + orbitDir * profile.orbitLeadDegrees * Mathf.Deg2Rad * (1f + i * 0.5f);
+                Vector3 p = c + new Vector3(Mathf.Cos(ang), 0f, Mathf.Sin(ang)) * r;
+                if (NavMesh.SamplePosition(p, out var hit, 2.5f, NavMesh.AllAreas)) return hit.position;
+            }
+            orbitDir = -orbitDir; // blocked this way (building): go round the other way
+            return OnNavMesh(c + from.normalized * r, transform.position);
         }
 
         static Vector3 OnNavMesh(Vector3 p) => OnNavMesh(p, p);

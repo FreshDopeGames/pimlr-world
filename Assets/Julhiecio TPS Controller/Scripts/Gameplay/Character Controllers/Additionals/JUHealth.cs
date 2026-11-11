@@ -118,11 +118,13 @@ namespace JUTPS
             }
             // PIMLR (playtest): release a frozen enemy the moment a hit would kill it.
             if (frozenByRay && rcc_CarControllerV3 == null && Health - damage <= 0f) ReleaseFreezeForDeath();
+            float pimlrHealthBefore = Health; // PIMLR #ANL
             Health -= damage;
             if (healthSlider != null)
                 healthSlider.value = Health;
 
             LimitHealth();
+            PIMLR.Analytics.CombatTelemetry.OnDamage(this, damage, pimlrHealthBefore); // PIMLR #ANL: hits, kills, damage taken
             Invoke(nameof(CheckHealthState), 0.016f);
 
             if (BloodScreenEffect) BloodScreen.PlayerTakingDamaged();

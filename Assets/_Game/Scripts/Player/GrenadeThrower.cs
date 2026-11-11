@@ -112,8 +112,14 @@ public class GrenadeThrower : MonoBehaviour
         if (!isThrowing) StartCoroutine(ThrowRoutine());
     }
 
+    /// <summary>PIMLR #STF: when set, throw at this instead of the player (Save The Fans bombers throw at the fan).</summary>
+    [System.NonSerialized] public Transform TargetOverride;
+    /// <summary>PIMLR #STF: max throw distance while TargetOverride is set (0 or less = use maxThrowDistance).</summary>
+    [System.NonSerialized] public float TargetRangeOverride = -1f;
+
     private Transform ResolveTarget()
     {
+        if (TargetOverride != null) return TargetOverride; // PIMLR #STF
         if (target != null) return target;
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
         if (player != null) target = player.transform;
@@ -127,7 +133,8 @@ public class GrenadeThrower : MonoBehaviour
 
         Transform player = ResolveTarget();
         if (player == null) yield break;
-        if (maxThrowDistance > 0f && Vector3.Distance(transform.position, player.position) > maxThrowDistance)
+        float range = TargetOverride != null && TargetRangeOverride > 0f ? TargetRangeOverride : maxThrowDistance; // PIMLR #STF
+        if (range > 0f && Vector3.Distance(transform.position, player.position) > range)
             yield break;
 
         isThrowing = true;

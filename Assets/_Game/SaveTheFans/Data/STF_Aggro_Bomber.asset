@@ -17,6 +17,13 @@ MonoBehaviour:
   damageWindow: 3
   grudgeDuration: 1
   grudgeBreakDistance: 25
+  approach: 1
+  moveSpeedMultiplier: 1
+  runToFan: 0
+  throwRangeToFan: 18
+  orbitSwing: 6
+  orbitSwingPeriod: 10
+  orbitLeadDegrees: 30
   washRange: 4
   washPerSecond: 8
   faceFanWhileWashing: 1

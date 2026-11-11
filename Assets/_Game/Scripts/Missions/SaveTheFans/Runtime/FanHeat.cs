@@ -41,7 +41,18 @@ namespace PIMLR.Missions.SaveTheFans
         public Transform cameraFocus;
 
         [Header("Wash meter")]
-        [Min(1f)] public float maxWash = 100f;
+        [Tooltip("The fan's health. Enemies wash it down; at 0 health (wash = max) the heat is lost.")]
+        [Min(1f)] public float maxWash = 200f;
+
+        // PIMLR #STF: health bar over the fan's head while its heat is on.
+        [Tooltip("Build a world-space health bar above the fan, shown only while this fan's heat is running.")]
+        public bool showHealthBar = true;
+        [Tooltip("Height of the bar above the fan's camera focus (head).")]
+        public float healthBarHeight = 0.7f;
+
+        // PIMLR #STF: bombers' water balloons wash the fan when they land close enough.
+        [Tooltip("Wash dealt by one water balloon landing within its splash radius of the fan (full at the centre, half at the edge).")]
+        [Min(0f)] public float balloonSplashWash = 14f;
 
         [Header("Presentation (all optional)")]
         public FanGlowRing ring;
@@ -67,6 +78,19 @@ namespace PIMLR.Missions.SaveTheFans
         public float Wash { get; private set; }
         public float Wash01 => maxWash <= 0f ? 0f : Mathf.Clamp01(Wash / maxWash);
         public bool IsWashedOut => Wash >= maxWash;
+
+        // PIMLR #STF: the wash meter seen as health (what the health bar and HUD show).
+        public float Health => Mathf.Max(0f, maxWash - Wash);
+        public float MaxHealth => maxWash;
+        public float Health01 => 1f - Wash01;
+
+        /// Smoothed wash per second over the last couple of seconds (0 when nobody is washing the fan).
+        public float WashRate { get; private set; }
+
+        /// Seconds until the fan is washed out at the current rate; +Infinity when nobody is washing.
+        public float TimeToWashOut => WashRate > 0.05f ? Health / WashRate : float.PositiveInfinity;
+
+        float washAccumulated; // wash added since the last rate sample
 
         /// True during the intro cinematic so the fan can't be washed while the camera is away.
         public bool Invulnerable { get; set; }
@@ -94,11 +118,32 @@ namespace PIMLR.Missions.SaveTheFans
         {
             SetHighlighted(false);
             SetRestockActive(false);
+            if (showHealthBar && !GetComponentInChildren<FanHealthBar>(true)) FanHealthBar.Create(this); // PIMLR #STF
+        }
+
+        void OnEnable() => Grenade.Exploded += OnBalloonBurst;   // PIMLR #STF
+        void OnDisable() => Grenade.Exploded -= OnBalloonBurst;
+
+        /// PIMLR #STF: a bomber's balloon burst near this fan during its heat washes it.
+        void OnBalloonBurst(Vector3 point, float radius)
+        {
+            var m = SaveTheFansMission.Instance;
+            if (!m || m.CurrentFan != this) return;
+            if (m.CurrentState != SaveTheFansMission.State.Wave && m.CurrentState != SaveTheFansMission.State.BetweenWaves) return;
+
+            Vector3 a = point; a.y = 0f;
+            Vector3 b = transform.position; b.y = 0f;
+            float d = Vector3.Distance(a, b);
+            float reach = radius + 0.5f;
+            if (d > reach) return;
+            AddWash(balloonSplashWash * Mathf.Lerp(1f, 0.5f, d / reach));
         }
 
         public void ResetWash()
         {
             Wash = 0f;
+            WashRate = 0f;
+            washAccumulated = 0f;
             WashResistance = 0f;
             WashChanged?.Invoke(this, Wash01);
             if (ring) ring.SetDanger(0f);
@@ -109,7 +154,9 @@ namespace PIMLR.Missions.SaveTheFans
         {
             if (Invulnerable || IsWashedOut || amount <= 0f) return;
 
+            float before = Wash;
             Wash = Mathf.Min(maxWash, Wash + amount * (1f - Mathf.Clamp01(WashResistance)));
+            washAccumulated += Wash - before; // PIMLR #STF: feeds WashRate
             lastWashTime = Time.time;
             WashChanged?.Invoke(this, Wash01);
             if (ring) ring.SetDanger(Wash01);
@@ -130,6 +177,16 @@ namespace PIMLR.Missions.SaveTheFans
 
         void Update()
         {
+            // PIMLR #STF: exponential average (~1.5 s) of wash per second, for the HUD countdown.
+            float dt = Time.deltaTime;
+            if (dt > 0f)
+            {
+                float instant = washAccumulated / dt;
+                washAccumulated = 0f;
+                WashRate = Mathf.Lerp(WashRate, instant, 1f - Mathf.Exp(-dt / 1.5f));
+                if (WashRate < 0.01f) WashRate = 0f;
+            }
+
             if (!washFx) return;
             bool beingWashed = Time.time - lastWashTime < 0.4f && !IsWashedOut;
             if (beingWashed && !washFx.isPlaying) washFx.Play(true);
