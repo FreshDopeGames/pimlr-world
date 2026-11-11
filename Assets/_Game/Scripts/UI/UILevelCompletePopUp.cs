@@ -10,6 +10,10 @@ public class UILevelCompletePopUp : MonoBehaviour
 
     public string infiniteModeDescription;
 
+    // PIMLR #STF: Save The Fans stage card copy.
+    public string saveTheFansTitle = "<color=#FFC22E>Save The Fans</color>";
+    [TextArea] public string saveTheFansDescription = "The BM Hive is going after your fans. Get to each one before the haters wash them out.";
+
     private void OnEnable()
     {
         // PIMLR (playtest): select the zone copy once and guard each configured data slot.
@@ -47,6 +51,10 @@ public class UILevelCompletePopUp : MonoBehaviour
                 titelText.text = "<color=green>Wave "+ InfiniteMode.Instance.currentWave+ " begins</color>";
                 descriptionText.text = infiniteModeDescription;
                 break;
+            case Zone.SaveTheFans: // PIMLR #STF: stage card
+                titelText.text = saveTheFansTitle;
+                descriptionText.text = saveTheFansDescription;
+                break;
         }
 
     }
@@ -65,5 +73,6 @@ public enum Zone
     Zone2, 
     ZoneBoss2,
     ChatWilly,
-    InfiniteMode
+    InfiniteMode,
+    SaveTheFans // PIMLR #STF: appended last on purpose - existing saves and serialized fields keep their values
 }

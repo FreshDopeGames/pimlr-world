@@ -77,7 +77,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
             startZone == Zone.Zone1 ||
             startZone == Zone.ZoneBoss1 ||
             startZone == Zone.Zone2 ||
-            startZone == Zone.ZoneBoss2)
+            startZone == Zone.ZoneBoss2 ||
+            startZone == Zone.SaveTheFans) // PIMLR #STF
         {
             // PIMLR (leaderboards): a Story run survives deaths / stage restarts (YannicksWorld reloading).
             // Keep the original run, start zone and timer; only quitting out of YannicksWorld cancels it
@@ -139,6 +140,12 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         {
             playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = true;
             StartCoroutine(Zone2Boss());
+        }
+        else if (currentZoneMode == Zone.SaveTheFans)
+        {
+            // PIMLR #STF: restarting the stage after a death resumes at the fan the player was on.
+            playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = true;
+            StartCoroutine(SaveTheFansStart());
         }
         else if(currentZoneMode==Zone.InfiniteMode)
         {
@@ -252,16 +259,52 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
             SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone1_Boss_Battle);
 
-            currentZoneMode = Zone.Zone2;
-            // PIMLR (playtest): persist zone progression through its typed owner.
-            ZoneProgress.Current = currentZoneMode;
-            RunStats.SetZone(currentZoneMode);
             SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo("1/ 1");
-            StartCoroutine(WaitForscreenfadeOut("0/10"));
             zone1Finish = false;
 
-            StartCoroutine(Zone2Start());
+            // PIMLR #STF: Boss 1 is down. Save The Fans runs next, then hands over to Zone 2.
+            // If the mission isn't in the scene the Story goes straight to Zone 2, exactly as before.
+            if (PIMLR.Missions.SaveTheFans.SaveTheFansMission.Instance != null)
+            {
+                currentZoneMode = Zone.SaveTheFans;
+                ZoneProgress.Current = currentZoneMode;
+                RunStats.SetZone(currentZoneMode);
+                PIMLR.Missions.SaveTheFans.SaveTheFansMission.ClearSavedProgress(); // a fresh visit starts at fan 1
+                StartCoroutine(SaveTheFansStart());
+            }
+            else
+            {
+                BeginZone2();
+            }
         }
+    }
+
+    // PIMLR #STF: stage card, then the mission takes over.
+    IEnumerator SaveTheFansStart()
+    {
+        yield return StartCoroutine(WaitForscreenfadeOut(""));
+        SceneManagerScript.Instance.goalPanel.enemyInfoHolder.SetActive(false);
+        var mission = PIMLR.Missions.SaveTheFans.SaveTheFansMission.Instance;
+        if (mission != null) mission.BeginMission();
+        else BeginZone2(); // mission removed from the scene: don't strand the Story on this zone
+    }
+
+    // PIMLR #STF: called by SaveTheFansMission (SendMessage) when the last fan is saved.
+    public void OnSaveTheFansComplete()
+    {
+        if (currentZoneMode != Zone.SaveTheFans) return; // the mission was run on its own for testing
+        BeginZone2();
+    }
+
+    // PIMLR #STF: the original "Boss 1 finished -> Zone 2" hand-off, unchanged, moved into a method.
+    void BeginZone2()
+    {
+        currentZoneMode = Zone.Zone2;
+        // PIMLR (playtest): persist zone progression through its typed owner.
+        ZoneProgress.Current = currentZoneMode;
+        RunStats.SetZone(currentZoneMode);
+        StartCoroutine(WaitForscreenfadeOut("0/10"));
+        StartCoroutine(Zone2Start());
     }
 
     [ContextMenu("aaaaa")]
