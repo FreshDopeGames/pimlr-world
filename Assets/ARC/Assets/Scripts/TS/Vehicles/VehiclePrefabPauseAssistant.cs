@@ -31,9 +31,9 @@ namespace TS.Generics
         public bool PauseMovement()
         {
             remKinematicState = vRb.isKinematic;
-            remVelocity = vRb.linearVelocity;
+            remVelocity = vRb.velocity;
             vRb.isKinematic = false;
-            vRb.linearVelocity = Vector3.zero;
+            vRb.velocity = Vector3.zero;
             //vRb. *= 0;
             vRb.isKinematic = true;
             return true;
@@ -43,7 +43,7 @@ namespace TS.Generics
         {
             vRb.isKinematic = remKinematicState;
             if(remKinematicState == false)
-                vRb.linearVelocity = remVelocity;
+                vRb.velocity = remVelocity;
             return true;
         }
     }

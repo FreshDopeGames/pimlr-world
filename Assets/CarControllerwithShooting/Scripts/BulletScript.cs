@@ -34,7 +34,7 @@ namespace CarControllerwithShooting
             //if ((playerID == SocketPlayerManager.Instance.player_Id || isAI) && rb != null)
             //{
 
-            rb.linearVelocity = this.transform.forward * speed;
+            rb.velocity = this.transform.forward * speed;
 
             activeTime += Time.deltaTime;
 

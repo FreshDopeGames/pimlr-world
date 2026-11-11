@@ -213,8 +213,7 @@ Shader "FORGE3D/HeatDepthFixed"
 			#endif
 			CBUFFER_END
 			sampler2D _Normals;
-			// PIMLR (Unity 6): _CameraDepthTexture_TexelSize is now declared by Unity\'s built-in shader includes.
-			// uniform float4 _CameraDepthTexture_TexelSize;
+			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 						

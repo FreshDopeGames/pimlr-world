@@ -86,7 +86,7 @@ namespace TS.Generics
             }
 
             vehicle = mono.gameObject;
-            startMagnitude = vehicle.GetComponent<Rigidbody>().linearVelocity.magnitude;
+            startMagnitude = vehicle.GetComponent<Rigidbody>().velocity.magnitude;
 
 
             rb = GetComponent<Rigidbody>();
@@ -138,10 +138,10 @@ namespace TS.Generics
                 {
                     if (!bUnParent)
                     {
-                        startMagnitude = vehicle.GetComponent<Rigidbody>().linearVelocity.magnitude;
+                        startMagnitude = vehicle.GetComponent<Rigidbody>().velocity.magnitude;
 
                         rb.isKinematic = false;
-                        rb.linearVelocity = vehicle.GetComponent<Rigidbody>().linearVelocity;
+                        rb.velocity = vehicle.GetComponent<Rigidbody>().velocity;
                         rb.transform.SetParent(null);
                         maxSpeedCurrent = startSpeed;
 
@@ -173,9 +173,9 @@ namespace TS.Generics
                    LookAtTheTarget();
 
                 //-> Limit the missile velocity
-                if(rb.linearVelocity.magnitude > (startMagnitude + maxSpeedTarget) && 
+                if(rb.velocity.magnitude > (startMagnitude + maxSpeedTarget) && 
                     !rb.isKinematic)
-                    rb.linearVelocity = rb.linearVelocity.normalized * (startMagnitude + maxSpeedTarget);
+                    rb.velocity = rb.velocity.normalized * (startMagnitude + maxSpeedTarget);
             }   
         }
 
@@ -189,7 +189,7 @@ namespace TS.Generics
             else
             {
                 if (!rb.isKinematic)
-                    rb.linearVelocity = transform.forward * (startMagnitude + maxSpeedCurrent);
+                    rb.velocity = transform.forward * (startMagnitude + maxSpeedCurrent);
             }
         }
 

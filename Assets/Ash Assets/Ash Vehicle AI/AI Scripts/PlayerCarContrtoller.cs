@@ -136,7 +136,7 @@ namespace AshVP
 		{
             if (!thisPlayer) return;
 
-            carVelocity = transform.InverseTransformDirection(rb.linearVelocity); //local velocity of car
+            carVelocity = transform.InverseTransformDirection(rb.velocity); //local velocity of car
 
 			curveVelocity = Mathf.Abs(carVelocity.magnitude) / 100;
 
@@ -179,11 +179,11 @@ namespace AshVP
                 }
 				else //ADDED
 				{
-                    carVelocity = transform.InverseTransformDirection(rb.linearVelocity);
+                    carVelocity = transform.InverseTransformDirection(rb.velocity);
                     tireVisuals();
                     speedValue = accelerationForce * Time.fixedDeltaTime * 1000
                         * ReverseCurve.Evaluate(Mathf.Abs(carVelocity.z) / 100);
-                    if(rb.linearVelocity.z > -15)
+                    if(rb.velocity.z > -15)
 						rb.AddForceAtPosition(-groundCheck.forward * speedValue, groundCheck.position);
                 } 
             }
@@ -200,7 +200,7 @@ namespace AshVP
                    carVelocity.z < 4 && carVelocity.z > -3)
                 {
                     carVelocity = new Vector3(0, 0, 0);
-					rb.linearVelocity = carVelocity;
+					rb.velocity = carVelocity;
                 }
             }
 
@@ -253,15 +253,15 @@ namespace AshVP
 				brakeLogic();
 
 				//for drift behaviour
-				rb.angularDamping = dragAmount * driftCurve.Evaluate(Mathf.Abs(carVelocity.x) / 70);
+				rb.angularDrag = dragAmount * driftCurve.Evaluate(Mathf.Abs(carVelocity.x) / 70);
 
 				//draws green ground checking ray ....ingnore
 				Debug.DrawLine(groundCheck.position, hit.point, Color.green);
 				grounded = true;
-				rb.linearDamping = 0.1f;
+				rb.drag = 0.1f;
 				if (StopVehicle)
 				{
-					rb.linearDamping = 5f;
+					rb.drag = 5f;
 				}
 
 				rb.centerOfMass = centerOfMass_ground;
@@ -270,11 +270,11 @@ namespace AshVP
 			else
 			{
 				grounded = false;
-				rb.linearDamping = 0.1f;
+				rb.drag = 0.1f;
 				rb.centerOfMass = CenterOfMass.localPosition;
 				if (!airDrag)
 				{
-					rb.angularDamping = 0.1f;
+					rb.angularDrag = 0.1f;
 				}
 
 			}

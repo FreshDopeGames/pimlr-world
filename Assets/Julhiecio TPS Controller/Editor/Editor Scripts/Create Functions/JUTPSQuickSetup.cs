@@ -330,7 +330,7 @@ namespace JUTPSEditor
                 }
             }
             var col = (CapsuleCollider)Undo.AddComponent(CharacterGameObject, typeof(CapsuleCollider));
-            var noSlip = (PhysicsMaterial)(Resources.Load("NoSlip", typeof(PhysicsMaterial)));
+            var noSlip = (PhysicMaterial)(Resources.Load("NoSlip", typeof(PhysicMaterial)));
             col.material = noSlip;
 
             Undo.AddComponent(CharacterGameObject, typeof(ResizableCapsuleCollider));

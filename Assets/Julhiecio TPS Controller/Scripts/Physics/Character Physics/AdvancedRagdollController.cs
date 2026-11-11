@@ -112,7 +112,7 @@ namespace JUTPS.PhysicsScripts
 			character = this.gameObject;
 			animator = GetComponent<Animator>();
 			rigidBody = GetComponent<Rigidbody>();
-			isStartAnimatorUpdateInPhysics = (animator.updateMode == AnimatorUpdateMode.Fixed);
+			isStartAnimatorUpdateInPhysics = (animator.updateMode == AnimatorUpdateMode.AnimatePhysics);
 
 			//Stores Humanoid hips transform, hips parent and rigidbody of humanoid hips
 			if (animator == null || character == null) return;
@@ -192,7 +192,7 @@ namespace JUTPS.PhysicsScripts
 					Hips.parent = null;
 				}
 
-				if (HipsRigidbody.linearVelocity.magnitude < 0.01f && IsInvoking("SetWaitStablePositionInvoked") == false)
+				if (HipsRigidbody.velocity.magnitude < 0.01f && IsInvoking("SetWaitStablePositionInvoked") == false)
 				{
 					Invoke("SetWaitStablePositionInvoked", TimeToGetUp);
 				}
@@ -233,7 +233,7 @@ namespace JUTPS.PhysicsScripts
 			}
 			else if (isStartAnimatorUpdateInPhysics)
 			{
-				animator.updateMode = AnimatorUpdateMode.Fixed;
+				animator.updateMode = AnimatorUpdateMode.AnimatePhysics;
 			}
 
 			RaycastHit hit;
@@ -285,9 +285,9 @@ namespace JUTPS.PhysicsScripts
 			{
 				foreach (Rigidbody rb in RagdollBones)
 				{
-					rb.linearVelocity = GetComponent<Rigidbody>().linearVelocity;
+					rb.velocity = GetComponent<Rigidbody>().velocity;
 					rb.angularVelocity = Vector3.zero;
-					rb.angularDamping = RagdollDrag;
+					rb.angularDrag = RagdollDrag;
 				}
 			}
 			if (Enabled == true)

@@ -21,7 +21,7 @@ public class RCC_GroundMaterials : ScriptableObject {
     [System.Serializable]
     public class GroundMaterialFrictions {
 
-        public PhysicsMaterial groundMaterial;
+        public PhysicMaterial groundMaterial;
         public float forwardStiffness = 1f;
         public float sidewaysStiffness = 1f;
         public float slip = .25f;
@@ -39,7 +39,7 @@ public class RCC_GroundMaterials : ScriptableObject {
     [System.Serializable]
     public class TerrainFrictions {
 
-        public PhysicsMaterial groundMaterial;
+        public PhysicMaterial groundMaterial;
 
         [System.Serializable]
         public class SplatmapIndexes {

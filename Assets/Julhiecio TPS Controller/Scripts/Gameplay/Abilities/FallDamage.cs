@@ -34,7 +34,7 @@ namespace JUTPS.ActionScripts
                 //Falling
                 Falling();
 
-                float LocalUpSpeed = transform.InverseTransformDirection(rb.linearVelocity).y;
+                float LocalUpSpeed = transform.InverseTransformDirection(rb.velocity).y;
 
                 if (LocalUpSpeed > 0)
                 {

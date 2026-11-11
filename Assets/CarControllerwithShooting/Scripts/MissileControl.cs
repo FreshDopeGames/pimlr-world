@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections; // For coroutines
-using Unity.Cinemachine;
+using Cinemachine;
 
 public class MissileControl : MonoBehaviour
 {
@@ -183,7 +183,7 @@ public class MissileControl : MonoBehaviour
     {
         if ((playerID == SocketPlayerManager.Instance.player_Id || isAI) && rb != null)
         {
-            rb.linearVelocity = transform.forward * speed;
+            rb.velocity = transform.forward * speed;
             //Debug.Log("Speed:::::::::" + speed);
         }
 

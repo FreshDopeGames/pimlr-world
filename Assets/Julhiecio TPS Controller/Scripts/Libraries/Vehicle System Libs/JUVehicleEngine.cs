@@ -60,7 +60,7 @@ namespace JUTPS.VehicleSystem
 			}
 			else
 			{
-				_currentMagnitude = Mathf.Lerp(_currentMagnitude, rb.linearVelocity.magnitude, 10 * Time.deltaTime);
+				_currentMagnitude = Mathf.Lerp(_currentMagnitude, rb.velocity.magnitude, 10 * Time.deltaTime);
 			}
 		}
 		protected virtual void FixedUpdate()
@@ -199,21 +199,21 @@ namespace JUTPS.VehicleSystem
 		protected void LimitVehicleSpeed(bool IsGrounded = true, bool LimitGravity = false)
 		{
 			if (IsGrounded == false) return;
-			if (rb.linearVelocity.magnitude > VehicleEngine.MaxVelocity)
+			if (rb.velocity.magnitude > VehicleEngine.MaxVelocity)
 			{
 				//Get rb velocity
-				Vector3 RigidBodyVelocity = rb.linearVelocity;
+				Vector3 RigidBodyVelocity = rb.velocity;
 				//Clamp rb velocity magnitude
 				RigidBodyVelocity = Vector3.ClampMagnitude(RigidBodyVelocity, VehicleEngine.MaxVelocity);
 
 				if (LimitGravity == false)
 				{
 					//Restore fall speed
-					RigidBodyVelocity.y = rb.linearVelocity.y;
+					RigidBodyVelocity.y = rb.velocity.y;
 				}
 
 				//Apply Limitation
-				rb.linearVelocity = RigidBodyVelocity;
+				rb.velocity = RigidBodyVelocity;
 			}
 		}
 		protected void SimulateAntiRollBar(float AntiRollForce, WheelCollider LeftWheel, WheelCollider RightWheel)
@@ -274,8 +274,8 @@ namespace JUTPS.VehicleSystem
 			}
 
 			//Get Inclination Values
-			float ForwardInclination = GetForwardAxisPhysicalMovement() + (rb.linearVelocity.magnitude / 10) * -InclinationValue;
-			float BackwardInclination = (-GetForwardAxisPhysicalMovement() / 2) + (rb.linearVelocity.magnitude / 10) * -InclinationValue;
+			float ForwardInclination = GetForwardAxisPhysicalMovement() + (rb.velocity.magnitude / 10) * -InclinationValue;
+			float BackwardInclination = (-GetForwardAxisPhysicalMovement() / 2) + (rb.velocity.magnitude / 10) * -InclinationValue;
 
 			//Apply forward inclination
 			if (GetForwardAxisPhysicalMovement() > 0) _inclination = Mathf.Lerp(_inclination, ForwardInclination, 8f * Time.deltaTime);
@@ -310,12 +310,12 @@ namespace JUTPS.VehicleSystem
 
 			if (GroundCheck.IsGrounded)
 			{
-				rb.angularDamping = OnGroundRigidbodyDrag;
+				rb.angularDrag = OnGroundRigidbodyDrag;
 				rb.constraints = RigidbodyConstraints.FreezeRotationZ;
 			}
 			else
 			{
-				rb.angularDamping = OffGroundRigidbodyDrag;
+				rb.angularDrag = OffGroundRigidbodyDrag;
 				rb.constraints = RigidbodyConstraints.None;
 			}
 		}
@@ -340,7 +340,7 @@ namespace JUTPS.VehicleSystem
 			float dir = 0;
 			if (rb != null)
 			{
-				dir = Vector3.Dot(transform.forward, rb.linearVelocity.normalized);
+				dir = Vector3.Dot(transform.forward, rb.velocity.normalized);
 				return dir;
 			}
 			return dir;

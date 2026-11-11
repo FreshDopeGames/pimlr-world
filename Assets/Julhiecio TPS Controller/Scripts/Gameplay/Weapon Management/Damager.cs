@@ -89,7 +89,7 @@ namespace JUTPS
                 transform.localPosition = startedLocalPosition;
                 if (rb != null)
                 {
-                    rb.linearVelocity = Vector3.zero;
+                    rb.velocity = Vector3.zero;
                     rb.isKinematic = false;
                 }
             }

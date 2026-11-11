@@ -221,8 +221,7 @@ Shader "FORGE3D/WarpJumpTunnel"
 			#endif
 			CBUFFER_END
 			sampler2D _MainTex;
-			// PIMLR (Unity 6): _CameraDepthTexture_TexelSize is now declared by Unity\'s built-in shader includes.
-			// uniform float4 _CameraDepthTexture_TexelSize;
+			uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			float2 TwistCustom33( float2 UV, float Twist )

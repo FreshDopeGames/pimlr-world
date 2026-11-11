@@ -152,7 +152,7 @@ namespace JUTPS.ActionScripts
                 //Disable Gravity
                 rb.useGravity = false;
                 //Simulate Inert
-                rb.linearVelocity = VehicleToDrive.rb.linearVelocity;
+                rb.velocity = VehicleToDrive.rb.velocity;
             }
 
             //Set Position

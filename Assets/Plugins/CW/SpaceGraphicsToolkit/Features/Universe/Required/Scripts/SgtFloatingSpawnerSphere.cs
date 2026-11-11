@@ -52,7 +52,7 @@ namespace SpaceGraphicsToolkit
 						{
 							var cross = Vector3.Cross(direction, Random.onUnitSphere).normalized;
 
-							rigidbody.linearVelocity = (cross * velocityScale) / (distance * distance);
+							rigidbody.velocity = (cross * velocityScale) / (distance * distance);
 						}
 					}
 				}

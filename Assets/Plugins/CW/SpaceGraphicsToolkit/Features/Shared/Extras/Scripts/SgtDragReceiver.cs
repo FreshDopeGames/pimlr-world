@@ -27,7 +27,7 @@ namespace SpaceGraphicsToolkit
 
 		protected virtual void FixedUpdate()
 		{
-			cachedRigidbody.linearDamping = SgtDragSource.GetDrag(transform.position) + drag;
+			cachedRigidbody.drag = SgtDragSource.GetDrag(transform.position) + drag;
 		}
 	}
 }
