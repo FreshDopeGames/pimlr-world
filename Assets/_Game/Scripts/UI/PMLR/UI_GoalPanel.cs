@@ -23,8 +23,8 @@ public class UI_GoalPanel : MonoBehaviour
     /// </summary>
     public Image boosterPanel;
     public GameObject boosterPanelHolder;
-    public Text boosterTitleTxt;
-    public Text boosterInfoTxt;
+    public TMP_Text boosterTitleTxt; // PIMLR: TMP (Barlow-Bold SDF), was legacy Text
+    public TMP_Text boosterInfoTxt;
 
 
 

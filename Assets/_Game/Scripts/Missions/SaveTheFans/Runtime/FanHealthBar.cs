@@ -62,6 +62,8 @@ namespace PIMLR.Missions.SaveTheFans
             var t = new GameObject("Label", typeof(RectTransform)).AddComponent<TextMeshProUGUI>();
             t.transform.SetParent(visualRoot.transform, false);
             label = t;
+            var font = SaveTheFansStyle.Font; // PIMLR #STF: Barlow-Bold SDF
+            if (font) t.font = font;
             t.fontSize = 14f;
             t.alignment = TextAlignmentOptions.Center;
             t.color = Color.white;

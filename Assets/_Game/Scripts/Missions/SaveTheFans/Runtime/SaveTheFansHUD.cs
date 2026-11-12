@@ -55,8 +55,12 @@ namespace PIMLR.Missions.SaveTheFans
         public TMP_Text threatCountdownLabel;
         [Tooltip("Smoothing for the enemy icon's movement (higher = snappier).")]
         public float threatIconSharpness = 6f;
-        [Tooltip("Countdown turns red under this many seconds.")]
+        [Tooltip("Status turns red (IN DANGER) when the fan would be washed in under this many seconds at the current pace...")]
         public float threatUrgentSeconds = 10f;
+        [Tooltip("...or when the fan's health is at or under this share.")]
+        [Range(0f, 1f)] public float threatLowHealth = 0.3f;
+        [Tooltip("Seconds without a hit before the status calms back down.")]
+        public float threatCalmAfter = 2.5f;
 
         [Header("Intermission")]
         public TMP_Text timerLabel;
@@ -80,6 +84,7 @@ namespace PIMLR.Missions.SaveTheFans
         SaveTheFansMission.State lastState = SaveTheFansMission.State.Idle;
         int lastWave = -1;
         float threatShown;
+        int threatTier; float threatTierSince; // 0 calm, 1 under attack, 2 in danger (PIMLR #STF)
 
         static Gradient DefaultFreshGradient()
         {
@@ -102,8 +107,12 @@ namespace PIMLR.Missions.SaveTheFans
             var state = m.CurrentState;
             bool intermission = state == SaveTheFansMission.State.Intermission;
 
+            // PIMLR #STF: the Fan intro flyover (Cinematic) is clean - no wave meter / wave counter until the wave starts.
+            bool cinematic = state == SaveTheFansMission.State.Cinematic;
             SetActive(intermissionGroup, intermission);
-            SetActive(combatGroup, !intermission);
+            SetActive(combatGroup, !intermission && !cinematic);
+            if (waveLabel) SetActive(waveLabel.gameObject, !cinematic);
+            if (enemiesLabel) SetActive(enemiesLabel.gameObject, !cinematic);
 
             // --- banners on state changes
             if (state != lastState || m.CurrentWaveIndex != lastWave)
@@ -111,18 +120,19 @@ namespace PIMLR.Missions.SaveTheFans
                 switch (state)
                 {
                     case SaveTheFansMission.State.Wave: Banner($"WAVE {m.CurrentWaveIndex + 1}"); break;
-                    case SaveTheFansMission.State.HeatSaved: Banner($"{fanName.ToUpper()} SAVED!"); break;
+                    // HeatSaved: the mission plays the letterbox "<FAN> SAVED!" banner instead (PimlrVictorySequence).
                     case SaveTheFansMission.State.HeatFailed: Banner($"{fanName.ToUpper()} GOT WASHED — RUN IT BACK"); break;
                     case SaveTheFansMission.State.Intermission: Banner($"NEXT FAN: {fanName.ToUpper()}"); break;
                 }
-                if (state == SaveTheFansMission.State.Intermission || state == SaveTheFansMission.State.Cinematic) threatShown = 0f;
+                if (state == SaveTheFansMission.State.Intermission || state == SaveTheFansMission.State.Cinematic) { threatShown = 0f; threatTier = 0; }
                 lastState = state;
                 lastWave = m.CurrentWaveIndex;
             }
             if (bannerLabel) bannerLabel.gameObject.SetActive(Time.time < bannerUntil);
 
             // --- combat
-            if (heatLabel) heatLabel.text = $"FAN {m.CurrentHeatIndex + 1}/{m.HeatCount} · {fanName.ToUpper()}";
+            // PIMLR #STF: no "FAN 2/3 · NAME" header - the fan's name already sits over their health bar.
+            if (heatLabel) SetActive(heatLabel.gameObject, false);
             if (waveLabel) waveLabel.text = $"WAVE {Mathf.Max(1, m.CurrentWaveIndex + 1)}/{m.WaveCount}";
             if (enemiesLabel) enemiesLabel.text = $"{m.EnemiesRemaining} LEFT";
             if (fanFreshFill && fan)
@@ -178,17 +188,31 @@ namespace PIMLR.Missions.SaveTheFans
             if (state == SaveTheFansMission.State.HeatSaved) { threatCountdownLabel.text = $"{who} IS SAFE"; threatCountdownLabel.color = new Color(0.4f, 1f, 0.5f); return; }
             if (state == SaveTheFansMission.State.HeatFailed || fan.IsWashedOut) { threatCountdownLabel.text = $"{who} GOT WASHED"; threatCountdownLabel.color = new Color(1f, 0.3f, 0.2f); return; }
 
-            float t = fan.TimeToWashOut;
-            if (float.IsInfinity(t))
+            // PIMLR #STF: a status, not a clock. The old "WASHED IN m:ss" divided health by a 1.5 s average of
+            // bursty hits, so it jumped from 0:20 to 5:08 and back (and even counted up). Tiers rise at once and
+            // only fall after they've held for a moment, so the line doesn't flicker between hits.
+            bool underAttack = fan.SecondsSinceWashed < threatCalmAfter;
+            bool danger = fan.Health01 <= threatLowHealth || (underAttack && fan.TimeToWashOut <= threatUrgentSeconds);
+            int tier = danger ? 2 : underAttack ? 1 : 0;
+            if (tier > threatTier || Time.time - threatTierSince >= 1.5f)
             {
-                threatCountdownLabel.text = $"{who} {Mathf.CeilToInt(fan.Health)} HP · HOLD THEM OFF";
-                threatCountdownLabel.color = Color.white;
+                if (tier != threatTier) { threatTier = tier; threatTierSince = Time.time; }
             }
-            else
+
+            switch (threatTier)
             {
-                int secs = Mathf.CeilToInt(t);
-                threatCountdownLabel.text = $"{who} WASHED IN {secs / 60}:{secs % 60:00}";
-                threatCountdownLabel.color = t <= threatUrgentSeconds ? new Color(1f, 0.3f, 0.2f) : new Color(1f, 0.85f, 0.25f);
+                case 2:
+                    threatCountdownLabel.text = $"{who} IS IN DANGER!";
+                    threatCountdownLabel.color = new Color(1f, 0.3f, 0.2f);
+                    break;
+                case 1:
+                    threatCountdownLabel.text = $"{who} IS UNDER ATTACK";
+                    threatCountdownLabel.color = new Color(1f, 0.85f, 0.25f);
+                    break;
+                default:
+                    threatCountdownLabel.text = $"PROTECT {who}";
+                    threatCountdownLabel.color = Color.white;
+                    break;
             }
         }
 
@@ -242,8 +266,11 @@ namespace PIMLR.Missions.SaveTheFans
 
             // Header row (shared by both states)
             hud.heatLabel = Label("Heat", root, 24f, TextAlignmentOptions.Left, new Vector2(0f, 1f), new Vector2(0.6f, 1f), 30f, 0f);
-            hud.waveLabel = Label("Wave", root, 24f, TextAlignmentOptions.Right, new Vector2(0.6f, 1f), new Vector2(0.82f, 1f), 30f, 0f);
-            hud.enemiesLabel = Label("Left", root, 24f, TextAlignmentOptions.Right, new Vector2(0.82f, 1f), new Vector2(1f, 1f), 30f, 0f);
+            // PIMLR #STF: the fan-name header is gone, so "WAVE 1/2   5 LEFT" sits centred, meeting in the middle.
+            hud.waveLabel = Label("Wave", root, 24f, TextAlignmentOptions.Right, new Vector2(0f, 1f), new Vector2(0.5f, 1f), 30f, 0f);
+            hud.waveLabel.margin = new Vector4(0f, 0f, 14f, 0f);
+            hud.enemiesLabel = Label("Left", root, 24f, TextAlignmentOptions.Left, new Vector2(0.5f, 1f), new Vector2(1f, 1f), 30f, 0f);
+            hud.enemiesLabel.margin = new Vector4(14f, 0f, 0f, 0f);
 
             // ---- combat: threat bar
             var combat = Rect("Combat", root);
@@ -304,8 +331,10 @@ namespace PIMLR.Missions.SaveTheFans
             hud.distanceLabel = Label("Distance", inter, 20f, TextAlignmentOptions.Center, new Vector2(0f, 1f), new Vector2(1f, 1f), 26f, -112f);
 
             // ---- banner, screen centre-top
-            var banner = Label("Banner", canvasGo.transform, 44f, TextAlignmentOptions.Center, new Vector2(0f, 0.7f), new Vector2(1f, 0.7f), 60f, 0f);
-            banner.fontStyle = FontStyles.Bold;
+            // PIMLR #STF: 0.62 (was 0.7) - clears the intermission stack above (timer / instruction / distance end ~0.68)
+            // and sits just above the centred letterbox wave banner (PimlrVictorySequence).
+            var banner = Label("Banner", canvasGo.transform, 44f, TextAlignmentOptions.Center, new Vector2(0f, 0.62f), new Vector2(1f, 0.62f), 60f, 0f);
+            if (!SaveTheFansStyle.Font) banner.fontStyle = FontStyles.Bold;
             hud.bannerLabel = banner;
             banner.gameObject.SetActive(false);
 
@@ -344,7 +373,7 @@ namespace PIMLR.Missions.SaveTheFans
             var t = Label("Glyph", r, glyph.Length > 1 ? 13f : 24f, TextAlignmentOptions.Center, Vector2.zero, Vector2.one, 0f, 0f);
             Stretch(t.rectTransform);
             t.text = glyph;
-            t.fontStyle = FontStyles.Bold;
+            if (!SaveTheFansStyle.Font) t.fontStyle = FontStyles.Bold;
             return r;
         }
 
@@ -357,6 +386,8 @@ namespace PIMLR.Missions.SaveTheFans
             r.pivot = new Vector2(0.5f, 1f);
             r.sizeDelta = new Vector2(0f, height);
             r.anchoredPosition = new Vector2(0f, y);
+            var font = SaveTheFansStyle.Font; // PIMLR #STF: Barlow-Bold SDF
+            if (font) t.font = font;
             t.fontSize = size;
             t.alignment = align;
             t.color = Color.white;

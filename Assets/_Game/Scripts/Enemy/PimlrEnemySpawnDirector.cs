@@ -55,7 +55,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics() { runner = null; settings = null; settingsLoaded = false; recentSfx.Clear(); cutsceneRequest = null; }
+    static void ResetStatics() { runner = null; settings = null; settingsLoaded = false; recentSfx.Clear(); cutsceneRequest = null; arriving.Clear(); }
 
     // ---------- PIMLR: Story "first enemy" cutscene ----------
     static string cutsceneRequest;
@@ -84,6 +84,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         if (!enemy) return;
         PimlrRobotFX.Attach(enemy); // PIMLR: robots - glowing red eyes + electric short-circuit when they die
         enemy.SetActive(false);
+        arriving.Add(enemy);
         Runner.StartCoroutine(Runner.ArriveRoutine(enemy, relocate));
     }
 
@@ -136,8 +137,10 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         if (!enemy) yield break;
 
         // step out of the portal towards the player
+        spot = FindClearSpot(spot, enemy); // PIMLR: never step out inside another enemy (physics pops one onto the other's head)
         enemy.transform.SetPositionAndRotation(spot, facing);
         if (enemy.TryGetComponent(out NavMeshAgent agent) && agent.enabled) agent.Warp(spot);
+        arriving.Remove(enemy);
         enemy.SetActive(true);
 
         // Infinite Mode: every arrival comes for the player.
@@ -165,8 +168,48 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         }
         finally
         {
+            arriving.Remove(enemy);
             if (cutsceneHold) PimlrInterstitial.End();
         }
+    }
+
+    /// <summary>
+    /// PIMLR: if another character is standing on (or arriving at) this spot, slide out to the nearest free
+    /// NavMesh position on a small ring. Two capsules spawned on the same point get depenetrated straight up,
+    /// leaving one enemy standing on the other's head.
+    /// </summary>
+    public static Vector3 FindClearSpot(Vector3 spot, GameObject self, float clearRadius = 1.1f)
+    {
+        if (IsClear(spot, self, clearRadius)) return spot;
+        float startAng = Random.Range(0f, 360f);
+        for (float ring = 1.5f; ring <= 4.5f; ring += 1.5f)
+            for (int i = 0; i < 8; i++)
+            {
+                float a = (startAng + i * 45f) * Mathf.Deg2Rad;
+                Vector3 c = spot + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * ring;
+                if (!NavMesh.SamplePosition(c, out var hit, 1f, NavMesh.AllAreas)) continue;
+                if (Mathf.Abs(hit.position.y - spot.y) > 1f) continue; // stay on the same level (no rooftops/ledges)
+                if (IsClear(hit.position, self, clearRadius)) return hit.position;
+            }
+        return spot;
+    }
+
+    static readonly HashSet<GameObject> arriving = new HashSet<GameObject>(); // switched off, waiting to step out
+
+    static readonly Collider[] clearHits = new Collider[16];
+    static bool IsClear(Vector3 spot, GameObject self, float radius)
+    {
+        int n = Physics.OverlapCapsuleNonAlloc(spot + Vector3.up * 0.5f, spot + Vector3.up * 1.4f, radius, clearHits, ~0, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < n; i++)
+        {
+            var c = clearHits[i];
+            if (!c || (self && c.transform.IsChildOf(self.transform))) continue;
+            if (c.GetComponentInParent<JUTPS.CharacterBrain.JUCharacterBrain>()) return false;
+        }
+        // Enemies still inside their portal are switched off (no colliders) - check the STF/active roster by position too.
+        foreach (var other in arriving)
+            if (other && other != self && (Flat(other.transform.position) - Flat(spot)).sqrMagnitude < radius * radius) return false;
+        return true;
     }
 
     // The main intersection = where Sirihanna stands (cached: her object is switched off after the chat),

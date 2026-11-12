@@ -334,6 +334,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     IEnumerator MoveToTargetAndBack()
     {
         tpsCameraController.enabled = false;
+        PIMLR.Missions.SaveTheFans.PlayerControlLock.FreezeAim(); // PIMLR: the gun must not follow the camera to the car
         // PIMLR #CAM: cameraObj is the rig pivot; the lens sits 3 m behind it. Plan and move the lens itself.
         var lensRig = new PimlrCinematicCamera.LensRig(cameraObj.transform);
         originalPosition = lensRig.HomePosition;
@@ -364,6 +365,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
         lensRig.Restore();
         tpsCameraController.enabled = true;
+        PIMLR.Missions.SaveTheFans.PlayerControlLock.UnfreezeAim();
     }
 
     IEnumerator MoveAndRotate(Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot, float duration)

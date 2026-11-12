@@ -101,6 +101,8 @@ namespace PIMLR.Missions.SaveTheFans
 
         /// Seconds until the fan is washed out at the current rate; +Infinity when nobody is washing.
         public float TimeToWashOut => WashRate > 0.05f ? Health / WashRate : float.PositiveInfinity;
+        /// <summary>PIMLR #STF: seconds since the last wash hit landed (HUD threat status).</summary>
+        public float SecondsSinceWashed => Time.time - lastWashTime;
 
         float washAccumulated; // wash added since the last rate sample
 
@@ -248,6 +250,26 @@ namespace PIMLR.Missions.SaveTheFans
         {
             if (restockStations == null) return;
             foreach (var s in restockStations) if (s) s.SetActive(on);
+        }
+
+        /// PIMLR #STF: true while the greeting (Intro_0/1/2) is queued or playing.
+        public bool IsGreeting
+        {
+            get
+            {
+                if (!animator || !animator.isActiveAndEnabled) return false;
+                if (HasParam(introTrigger, AnimatorControllerParameterType.Trigger) && animator.GetBool(introTrigger)) return true; // fired, not entered yet
+                var cur = animator.GetCurrentAnimatorStateInfo(0);
+                if (IsIntro(cur)) return cur.normalizedTime < 0.97f;
+                return animator.IsInTransition(0) && IsIntro(animator.GetNextAnimatorStateInfo(0));
+            }
+        }
+        static bool IsIntro(AnimatorStateInfo s) => s.IsName("Intro_0") || s.IsName("Intro_1") || s.IsName("Intro_2");
+        bool HasParam(string n, AnimatorControllerParameterType type)
+        {
+            if (string.IsNullOrEmpty(n)) return false;
+            foreach (var p in animator.parameters) if (p.name == n && p.type == type) return true;
+            return false;
         }
 
         /// PIMLR #STF: greeting only (no heat-start event). Used at the start of each later wave.

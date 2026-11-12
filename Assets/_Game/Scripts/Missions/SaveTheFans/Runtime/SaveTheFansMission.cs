@@ -90,6 +90,8 @@ namespace PIMLR.Missions.SaveTheFans
         public bool preferSpawnsOutOfView = true;
         [Tooltip("Buildings are on the Default layer in YannicksWorld.")]
         public LayerMask lineOfSightBlockers = 1;
+        [Tooltip("PIMLR #STF: avoid spawn points with a live/arriving enemy this close (stacked enemies pop up onto each other's heads).")]
+        [Min(0f)] public float spawnPointClearRadius = 2.5f;
 
         [Header("Story integration")]
         [Tooltip("Holds GameExecutionManager.zombiesKilled steady while the mission runs so mission kills can't advance the Story zone. Coins and leaderboard kills still count.")]
@@ -186,6 +188,7 @@ namespace PIMLR.Missions.SaveTheFans
         bool heatFailed;
         bool lastHeatWon;
         int spawnCursor;
+        int lastSpawnPointIndex = -1;
         int pinnedStoryKills = -1;
         bool killCounterDirty;
 
@@ -484,7 +487,11 @@ namespace PIMLR.Missions.SaveTheFans
                     yield return null;
                 }
 
-                if (!heatFailed) onWaveCleared?.Invoke(CurrentHeatIndex, w);
+                if (!heatFailed)
+                {
+                    onWaveCleared?.Invoke(CurrentHeatIndex, w);
+                    ShowWaveClearBanner(fan, w, waves.Count); // PIMLR #STF
+                }
             }
 
             fan.WashedOut -= OnFanWashedOut;
@@ -511,6 +518,18 @@ namespace PIMLR.Missions.SaveTheFans
         }
 
         void OnFanWashedOut(FanHeat fan) => heatFailed = true;
+
+        // PIMLR #STF: letterbox banner like WASHED / HATER FREE, smaller and green, game keeps running at full speed.
+        void ShowWaveClearBanner(FanHeat fan, int wave, int waveCount)
+        {
+            var style = SaveTheFansStyle.Current;
+            string name = fan ? fan.fanDisplayName.ToUpper() : "FAN";
+            string word = wave >= waveCount - 1 ? $"{name} SAVED!" : $"WAVE {wave + 1} CLEARED";
+            Color c = style ? style.bannerColor : new Color(0.2f, 0.8f, 0.3f);
+            PimlrVictorySequence.FontOverride = SaveTheFansStyle.Font;
+            PimlrVictorySequence.Play(word, c, null, style ? style.bannerHoldSeconds : 1.2f, false, style ? style.bannerSize : 0.6f);
+            PimlrVictorySequence.FontOverride = null;
+        }
 
         // PIMLR #STF: fade-out / fade-in restart. Holds PimlrInterstitial so nothing arrives while the screen is black.
         IEnumerator RestartSequence()
@@ -639,6 +658,7 @@ namespace PIMLR.Missions.SaveTheFans
             var cam = Camera.main;
             Transform best = null;
             float bestScore = float.MinValue;
+            int bestIndex = -1;
 
             // Round-robin start so consecutive spawns spread across points.
             for (int k = 0; k < points.Length; k++)
@@ -649,12 +669,26 @@ namespace PIMLR.Missions.SaveTheFans
                 float score = Random.value * 0.5f;
                 if (!p || FlatDistance(sp.position, p.position) >= minSpawnDistanceFromPlayer) score += 2f;
                 if (preferSpawnsOutOfView && cam && !IsVisible(cam, sp.position + Vector3.up * 1.2f)) score += 1f;
-                if (score > bestScore) { bestScore = score; best = sp; }
+                // PIMLR #STF: never stack arrivals - an occupied point loses to any free one, and don't reuse the last point.
+                if (SpawnPointOccupied(sp.position)) score -= 4f;
+                if ((spawnCursor + k) % points.Length == lastSpawnPointIndex) score -= 0.75f;
+                if (score > bestScore) { bestScore = score; best = sp; bestIndex = (spawnCursor + k) % points.Length; }
             }
             spawnCursor = (spawnCursor + 1) % points.Length;
+            lastSpawnPointIndex = bestIndex;
 
             return SnapToNavMesh(best ? best.position : fallback);
         }
+
+        bool SpawnPointOccupied(Vector3 point)
+        {
+            float r2 = spawnPointClearRadius * spawnPointClearRadius;
+            foreach (var b in alive)
+                if (b && (Flat(b.transform.position) - Flat(point)).sqrMagnitude < r2) return true; // includes enemies still waiting in their portal
+            return false;
+        }
+
+        static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
 
         bool IsVisible(Camera cam, Vector3 point)
         {

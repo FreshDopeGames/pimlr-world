@@ -25,7 +25,7 @@ namespace PIMLR.Missions.SaveTheFans
 
         // Same convention as the rest of PIMLR: statics survive play sessions if domain reload is ever turned off.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetStatics() { locked = null; depth = 0; }
+        static void ResetStatics() { locked = null; depth = 0; aimFrozenOn = null; aimDepth = 0; }
 
         public static JUCharacterController ResolvePlayer()
         {
@@ -64,6 +64,38 @@ namespace PIMLR.Missions.SaveTheFans
             locked.CanRotate = false;
             locked.EnableRoll = false;
             locked.UseDefaultControllerInput = false;
+            FreezeAim(locked);
+        }
+
+        // PIMLR #STF: the player's arms / water gun aim at JUTPS's LookAtPosition, which (when zero) follows the
+        // camera's centre ray. During a fly-over the camera looks at the fan / the newest enemy, so the gun swung
+        // toward it and the arms twisted depending on where the player stood. While frozen, the aim point is fixed
+        // straight ahead of the player's body at chest height.
+        static JUCharacterController aimFrozenOn;
+        static Vector3 savedLookAt;
+        static int aimDepth;
+
+        public static void FreezeAim(JUCharacterController pc = null)
+        {
+            if (!pc) pc = ResolvePlayer();
+            if (!pc) return;
+            if (aimDepth > 0 && !aimFrozenOn) aimDepth = 0; // the frozen player was destroyed (scene reload)
+            aimDepth++;
+            if (aimDepth > 1) return;
+            aimFrozenOn = pc;
+            savedLookAt = pc.LookAtPosition;
+            Vector3 fwd = pc.transform.forward; fwd.y = 0f;
+            if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
+            pc.LookAtPosition = pc.transform.position + Vector3.up * 1.45f + fwd.normalized * 30f;
+        }
+
+        public static void UnfreezeAim()
+        {
+            if (aimDepth == 0) return;
+            aimDepth--;
+            if (aimDepth > 0) return;
+            if (aimFrozenOn) aimFrozenOn.LookAtPosition = savedLookAt; // normally zero = follow the camera again
+            aimFrozenOn = null;
         }
 
         public static void Unlock()
@@ -71,6 +103,7 @@ namespace PIMLR.Missions.SaveTheFans
             if (depth == 0) return;
             depth--;
             if (depth > 0 || !locked) return;
+            UnfreezeAim();
 
             locked.BlockHorizontalInput = saved.blockH;
             locked.BlockVerticalInput = saved.blockV;
@@ -86,6 +119,7 @@ namespace PIMLR.Missions.SaveTheFans
         /// Safety valve if something interrupts a cinematic (scene reload, exception).
         public static void ForceUnlock()
         {
+            if (aimDepth > 0) { aimDepth = 1; UnfreezeAim(); }
             if (depth == 0) return;
             depth = 1;
             Unlock();

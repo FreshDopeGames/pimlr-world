@@ -7,7 +7,7 @@
 //     GlowCircle uses a soft 0.18 alpha; forcing 1.0 would blow it out). New particles pick the
 //     color up within about a second, which is how the ring drifts gold -> red as the fan gets washed.
 //   * Mesh / sprite renderers (if you add any, e.g. a beacon): tinted with a MaterialPropertyBlock.
-//   * Pulse: the ring object's scale breathes, faster as danger rises. Scale works for any ring type.
+//   * Pulse: the ring object's scale breathes at a steady rate (danger only changes the colour - Craig, Nov 12).
 //
 // Unreal note: a Niagara ring with a "Danger" user parameter (0..1) lerping gold -> red, and the
 // pulse driven in the emitter. The beacon is a Niagara beam or a tall additive cylinder.
@@ -29,8 +29,8 @@ namespace PIMLR.Missions.SaveTheFans
         [Header("Pulse (scale)")]
         [Min(0f)] public float pulseSpeed = 0.8f;
         [Range(0f, 0.3f)] public float pulseAmount = 0.06f;
-        [Tooltip("Pulse gets this much faster at full danger.")]
-        [Min(1f)] public float dangerPulseMultiplier = 3f;
+        [Tooltip("(Unused since Nov 12: the pulse speed stays steady; low health only turns the ring red.)")]
+        [Min(1f)] public float dangerPulseMultiplier = 1f;
 
         [Header("Mesh / sprite renderers only")]
         [Tooltip("Shader color properties to tint on non-particle renderers.")]
@@ -105,7 +105,7 @@ namespace PIMLR.Missions.SaveTheFans
 
             Apply(Time.time < celebrateUntil ? celebrate : Color.Lerp(gold, danger, danger01));
 
-            float speed = pulseSpeed * Mathf.Lerp(1f, dangerPulseMultiplier, danger01);
+            float speed = pulseSpeed; // PIMLR #STF: steady pulse; changing the speed also made the phase jump (the frantic flicker)
             float s = 1f + pulseAmount * Mathf.Sin(Time.time * speed * Mathf.PI * 2f);
             transform.localScale = baseScale * s;
         }

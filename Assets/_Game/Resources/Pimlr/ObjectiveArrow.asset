@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f794ea437fcc614f9dc97b67f5706a2, type: 3}
+  m_Name: ObjectiveArrow
+  m_EditorClassIdentifier: Assembly-CSharp::PimlrObjectiveArrowSettings
+  fillMaterial: {fileID: 2100000, guid: 86d297e17898eef43a46d3872e3035c7, type: 2}
+  outlineMaterial: {fileID: 2100000, guid: bcca240a2d167de47985e9709d14dcbd, type: 2}
+  outlineThickness: 0.035
+  customMesh: {fileID: 7646893780703445508, guid: 9981bc599505e5a479fce51ce704196f, type: 3}
+  customOutlineMesh: {fileID: 5957731414035586532, guid: 9981bc599505e5a479fce51ce704196f, type: 3}
+  heightOnFoot: 2
+  heightInVehicle: 3.1
+  sizeOnFoot: 0.42
+  sizeInVehicle: 1.35
+  targetAimHeight: 1
+  maxPitch: 22
+  turnSpeed: 10
+  faceCamera: 0.7
+  bobHeight: 0.07
+  bobSpeed: 2.6
+  pulseAmount: 0.05
+  pulseSpeed: 4
+  popTime: 0.25
+  extraHideMargin: 1.5
+  policeHideDistance: 10

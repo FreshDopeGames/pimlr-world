@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9a87e65816847b41acd4d8f405a372c, type: 3}
+  m_Name: STFStyle
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.Missions.SaveTheFans.SaveTheFansStyle
+  font: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+  bannerColor: {r: 0.2, g: 0.8, b: 0.3, a: 1}
+  bannerSize: 0.6
+  bannerHoldSeconds: 1.2

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4dc46c4e984e0242a00233b3af2ca07, type: 3}
   m_Name: STF_Aggro_Bomber
   m_EditorClassIdentifier: Assembly-CSharp::PIMLR.Missions.SaveTheFans.FanAggroProfile
-  focusMode: 0
-  grudgeDamageThreshold: 1
+  focusMode: 1
+  grudgeDamageThreshold: 0.35
   damageWindow: 3
-  grudgeDuration: 1
+  grudgeDuration: 5
   grudgeBreakDistance: 25
   approach: 1
   moveSpeedMultiplier: 1
@@ -29,4 +29,9 @@ MonoBehaviour:
   faceFanWhileWashing: 1
   swingAtFan: 0
   swingInterval: 1.6
+  meleeReach: 0.85
+  shootAtFan: 0
+  shootBurstSeconds: 0.8
+  shootBurstInterval: 2.2
+  washPerHit: 2
   hypeValue: 3

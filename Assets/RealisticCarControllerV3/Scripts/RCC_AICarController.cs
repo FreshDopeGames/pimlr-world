@@ -130,12 +130,23 @@ public class RCC_AICarController : MonoBehaviour
     void OnEnable()
     {
         carController.externalController = true;
-        siren.BeginPursuit();               // where it flips into chase state
+        // PIMLR: the 'siren' reference was never assigned in the scene (NullReferenceException on every enable).
+        // It's the PoliceSirenController on this same cruiser; start the pursuit a frame later so the siren's own
+        // OnEnable (which re-arms it to Idle) has run first. If the cruiser is switched off again in the same frame
+        // (GameExecutionManager hides it at scene start) the coroutine never runs, so no siren blip on load.
+        if (!siren) siren = GetComponent<PoliceSirenController>();
+        if (siren) StartCoroutine(BeginPursuitNextFrame());
 
         // Calling this event when AI vehicle spawned.
         if (OnRCCAISpawned != null)
             OnRCCAISpawned(this);
 
+    }
+
+    System.Collections.IEnumerator BeginPursuitNextFrame()
+    {
+        yield return null;
+        if (siren) siren.BeginPursuit(); // where it flips into chase state
     }
 
     void Update()

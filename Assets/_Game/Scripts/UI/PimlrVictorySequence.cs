@@ -27,11 +27,15 @@ public class PimlrVictorySequence : MonoBehaviour
     public static float LetterboxHeight = 0.11f;   // share of the screen height, per bar
 
     static PimlrVictorySequence active;
+    /// <summary>PIMLR: font for the next Play (null = pick a heavy face from the scene). Save The Fans sets Barlow-Bold.</summary>
+    public static TMP_FontAsset FontOverride;
 
     string word;
     Color color;
     Action onComplete;
     float hold = -1f; // PIMLR: per-call hold length; < 0 = HoldSeconds
+    bool slowMotion = true;   // PIMLR (Nov 12): Save The Fans wave banners play at full speed
+    float sizeScale = 1f;     // PIMLR (Nov 12): word size relative to HATER FREE / WASHED
     CanvasGroup textGroup;
     RectTransform textRect;
     Image dim, barTop, barBottom;
@@ -40,6 +44,11 @@ public class PimlrVictorySequence : MonoBehaviour
 
     /// <summary>Plays the sequence, then invokes <paramref name="onComplete"/> with time back at 1x.</summary>
     public static void Play(string word, Color color, Action onComplete = null, float holdSeconds = -1f)
+        => Play(word, color, onComplete, holdSeconds, true, 1f);
+
+    /// <summary>PIMLR (Nov 12): slowMotion = false keeps the game at 1x (letterbox, dim and word only);
+    /// sizeScale shrinks the word (0.7 = 70% of HATER FREE).</summary>
+    public static void Play(string word, Color color, Action onComplete, float holdSeconds, bool slowMotion, float sizeScale)
     {
         if (active) { onComplete?.Invoke(); return; }
         var go = new GameObject("PIMLR_VictorySequence");
@@ -48,6 +57,10 @@ public class PimlrVictorySequence : MonoBehaviour
         active.color = color;
         active.onComplete = onComplete;
         active.hold = holdSeconds;
+        active.slowMotion = slowMotion;
+        active.sizeScale = Mathf.Clamp(sizeScale, 0.2f, 2f);
+        // JUTPS's slow-motion helper pushes timeScale back toward 1 every frame while enabled; keep it out of the way.
+        if (slowMotion && JUTPS.FX.JUSlowmotion.Instance != null) JUTPS.FX.JUSlowmotion.Instance.EnableSlowmotion = false;
         active.BuildUI();
     }
 
@@ -55,8 +68,6 @@ public class PimlrVictorySequence : MonoBehaviour
     {
         IsPlaying = true;
         baseFixedDelta = Time.fixedDeltaTime;
-        // JUTPS's slow-motion helper pushes timeScale back toward 1 every frame while enabled; keep it out of the way.
-        if (JUTPS.FX.JUSlowmotion.Instance != null) JUTPS.FX.JUSlowmotion.Instance.EnableSlowmotion = false;
     }
 
     void Start() => StartCoroutine(Run());
@@ -146,6 +157,7 @@ public class PimlrVictorySequence : MonoBehaviour
 
     void SetTimeScale(float scale)
     {
+        if (!slowMotion) return;  // PIMLR: full-speed banner
         if (PausedNow()) return; // let the pause menu own time while it's open
         Time.timeScale = scale;
         Time.fixedDeltaTime = baseFixedDelta * Mathf.Max(scale, 0.01f); // smooth physics in slow motion
@@ -200,13 +212,13 @@ public class PimlrVictorySequence : MonoBehaviour
         textGroup.interactable = false;
 
         var tmp = textGO.AddComponent<TextMeshProUGUI>();
-        TMP_FontAsset font = PickFont();
+        TMP_FontAsset font = FontOverride ? FontOverride : PickFont();
         if (font != null) tmp.font = font;
         tmp.text = word;
-        tmp.fontSize = 210f;
+        tmp.fontSize = 210f * sizeScale;
         tmp.enableAutoSizing = true;
-        tmp.fontSizeMin = 70f;
-        tmp.fontSizeMax = 210f;
+        tmp.fontSizeMin = 70f * sizeScale;
+        tmp.fontSizeMax = 210f * sizeScale;
         tmp.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
         tmp.characterSpacing = 10f;
         tmp.alignment = TextAlignmentOptions.Center;

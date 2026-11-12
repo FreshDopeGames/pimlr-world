@@ -45,8 +45,14 @@ namespace PIMLR.Missions.SaveTheFans
 
         [Header("Framing")]
         [Tooltip("How far back from the subject the camera sits.")]
-        [Min(1f)] public float shotDistance = 7f;
-        [Min(0f)] public float shotHeight = 3f;
+        [HideInInspector] public float shotDistance = 7f; // legacy (scene value kept, no longer used)
+        [HideInInspector] public float shotHeight = 3f;   // legacy
+        [Tooltip("PIMLR (Nov 12): 1/3 closer than the original 7 m.")]
+        [Min(1f)] public float introShotDistance = 4.7f;
+        [Tooltip("Metres above the subject's focus point (~1.5 m up), so the lens sits ~2.3 m off the ground - half the original height.")]
+        [Min(0f)] public float introShotHeight = 0.75f;
+        [Tooltip("The camera stays on the fan until its greeting animation has finished (up to this long).")]
+        [Min(0f)] public float maxGreetingWait = 6f;
         [Tooltip("Slow push-in during holds, in metres.")]
         [Min(0f)] public float holdPushIn = 1f;
         [Tooltip("Layers that block the camera. Buildings are on Default in YannicksWorld.")]
@@ -91,7 +97,7 @@ namespace PIMLR.Missions.SaveTheFans
             Vector3 fanFocus = fan ? fan.FocusPoint : enemySpot;
 
             if (fan)
-                yield return FlyTo(fanFocus, fan.transform.forward, travelTime, holdOnFan, null, fan.PlayGreeting); // PIMLR #STF: wave as the camera arrives
+                yield return FlyTo(fanFocus, fan.transform.forward, travelTime, holdOnFan, null, fan.PlayGreeting, () => fan.IsGreeting); // PIMLR #STF: wave as the camera arrives, stay until it's done
 
             if (!skipRequested)
             {
@@ -144,7 +150,7 @@ namespace PIMLR.Missions.SaveTheFans
             if (!fan || !Begin()) yield break;
             var pc = PlayerControlLock.ResolvePlayer();                // PIMLR #STF
             reachFrom = pc ? pc.transform.position : (Vector3?)null;
-            yield return FlyTo(fan.FocusPoint, fan.transform.forward, travelTime * 0.7f, holdOnFan * 0.5f, null, fan.PlayGreeting); // PIMLR #STF
+            yield return FlyTo(fan.FocusPoint, fan.transform.forward, travelTime * 0.7f, holdOnFan * 0.5f, null, fan.PlayGreeting, () => fan.IsGreeting); // PIMLR #STF
             yield return ReturnHome();
             End();
         }
@@ -222,7 +228,8 @@ namespace PIMLR.Missions.SaveTheFans
             hudGroup.alpha = visible ? hudAlphaBefore : 0f;
         }
 
-        IEnumerator FlyTo(Vector3 focus, Vector3 subjectForward, float travel, float hold, Vector3? lookAtOverride, System.Action onArrive)
+        IEnumerator FlyTo(Vector3 focus, Vector3 subjectForward, float travel, float hold, Vector3? lookAtOverride, System.Action onArrive,
+                          System.Func<bool> keepHolding = null)
         {
             Vector3 lookAt = lookAtOverride ?? focus;
             Vector3 shotPos = ComputeShotPosition(focus, subjectForward);
@@ -236,10 +243,11 @@ namespace PIMLR.Missions.SaveTheFans
             // Hold with a gentle push-in.
             Vector3 pushTarget = Vector3.MoveTowards(shotPos, focus, holdPushIn);
             float t = 0f;
-            while (t < hold && !skipRequested)
+            // PIMLR #STF: keepHolding (the fan's greeting still playing) extends the hold, up to maxGreetingWait.
+            while (!skipRequested && (t < hold || (keepHolding != null && t < hold + maxGreetingWait && keepHolding())))
             {
                 t += Time.deltaTime;
-                float k = hold <= 0f ? 1f : t / hold;
+                float k = hold <= 0f ? 1f : Mathf.Clamp01(t / Mathf.Max(hold, 0.01f));
                 Vector3 p = Vector3.Lerp(shotPos, pushTarget, k);
                 cameraTransform.SetPositionAndRotation(p, LookRotationSafe(lookAt - p));
                 yield return null;
@@ -267,7 +275,7 @@ namespace PIMLR.Missions.SaveTheFans
 
         Vector3 ComputeShotPosition(Vector3 focus, Vector3 subjectForward)
         {
-            return PimlrCinematicCamera.FindShot(focus, subjectForward, shotDistance, shotHeight, occlusionMask, reachFrom);
+            return PimlrCinematicCamera.FindShot(focus, subjectForward, introShotDistance, introShotHeight, occlusionMask, reachFrom);
         }
 
         static Quaternion LookRotationSafe(Vector3 dir)
