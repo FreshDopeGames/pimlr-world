@@ -86,6 +86,19 @@ namespace PIMLR.Missions.SaveTheFans
         [Tooltip("Seconds between swings at the fan.")]
         [Min(0.3f)] public float swingInterval = 1.6f;
 
+        [Tooltip("PIMLR #STF: swingers step in to this flat distance from the fan's centre so punches visibly land (JUTPS punch reach is about 1 m).")]
+        [Range(0.5f, 2f)] public float meleeReach = 0.85f;
+
+        // PIMLR #STF: gunners visibly fire water at the fan while washing it (the wash itself is still by range).
+        [Tooltip("Fire the enemy's gun at the fan in bursts while washing it. For shooters.")]
+        public bool shootAtFan = false;
+        [Tooltip("Seconds of each burst.")]
+        [Min(0.1f)] public float shootBurstSeconds = 0.8f;
+        [Tooltip("Seconds from the start of one burst to the next.")]
+        [Min(0.3f)] public float shootBurstInterval = 2.2f;
+        [Tooltip("With Shoot At Fan on, the fan is washed only by water that actually hits it (this much per hit), not by standing in range.")]
+        [Min(0f)] public float washPerHit = 2f;
+
         [Header("Score")]
         [Tooltip("Hype points toward the Fan Hype meter when this enemy is washed out.")]
         [Min(0)] public int hypeValue = 1;

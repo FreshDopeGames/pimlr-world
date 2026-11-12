@@ -14,6 +14,9 @@ using UnityEngine.AI;
 //   4. Only if that fails too, cut (never clip through a wall).
 // Every shot and every point of every route keeps at least CameraClearance metres from level geometry, so the near
 // plane never slides into a wall while the camera turns.
+// Shots also keep tree canopies and bushes out of the view line (they have no colliders, so physics can't see them):
+// a shot that would look through leaves first moves closer to the subject along the same angle, in front of the
+// tree, before another angle is tried (Craig, Nov 12).
 //
 //   FindShot       camera spot around a subject with a clear view, preferring open space over walkable ground
 //   FindOpenShot   same, but scored by how open each side is (the street side of a parked car)
@@ -115,11 +118,27 @@ public static class PimlrCinematicCamera
                 float angle = i * 22.5f;
                 if (angle > 180f) angle -= 360f;
                 Vector3 dir = Quaternion.AngleAxis(angle, Vector3.up) * fwd;
-                Vector3 p = focus + dir * distance * scale + Vector3.up * height;
-                if (!ShotValid(focus, p, mask, clearance)) continue;
+                // PIMLR #CAM: leaves in the way -> step in toward the subject on this same angle until the view is clear.
+                // If the canopy hangs over the subject, closer never clears it: then drop under the leaves instead.
+                Vector3 p = Vector3.zero;
+                float pulledIn = -1f, dropped = 0f;
+                foreach (float hgt in height > UnderCanopyHeight ? new[] { height, UnderCanopyHeight } : new[] { height })
+                {
+                    for (float d = distance * scale; d >= MinFoliagePullIn - 0.01f; d -= 0.75f)
+                    {
+                        Vector3 q = focus + dir * d + Vector3.up * hgt;
+                        if (!ShotValid(focus, q, mask, clearance)) break;      // a wall: closer won't help on this angle
+                        if (!FoliageBlocks(focus, q)) { p = q; pulledIn = distance * scale - d; break; }
+                    }
+                    if (pulledIn >= 0f) { dropped = height - hgt; break; }
+                }
+                if (pulledIn < 0f) continue;
 
                 float open = Mathf.Min(Openness(p, mask), 8f);
-                float score = open - Mathf.Abs(angle) / 30f + (OverWalkable(p) ? 2f : 0f);
+                // Craig: leaves in the way -> move closer rather than swing round, so the first 2 m of pulling in cost
+                // very little; past that the shot gets steep (camera stays at cinematic height), so it costs more.
+                float score = open - Mathf.Abs(angle) / 30f + (OverWalkable(p) ? 2f : 0f)
+                              - pulledIn * 0.1f - Mathf.Max(0f, pulledIn - 2f) * 0.8f - dropped * 0.5f;
                 if (haveStart && NavMesh.SamplePosition(p, out var gp, 8f, NavMesh.AllAreas) &&
                     NavMesh.CalculatePath(startHit.position, gp.position, NavMesh.AllAreas, reachPath) &&
                     reachPath.status == NavMeshPathStatus.PathComplete)
@@ -147,6 +166,14 @@ public static class PimlrCinematicCamera
                 Vector3 dir = Quaternion.AngleAxis(i * 22.5f, Vector3.up) * Vector3.forward;
                 Vector3 p = focus + dir * distance * scale + Vector3.up * height;
                 if (!ShotValid(focus, p, mask)) continue;
+                // PIMLR #CAM: no shots through leaves; step in on this side if a tree is between.
+                for (float d = distance * scale - 0.75f; FoliageBlocks(focus, p) && d >= MinFoliagePullIn; d -= 0.75f)
+                {
+                    Vector3 q = focus + dir * d + Vector3.up * height;
+                    if (!ShotValid(focus, q, mask)) break;
+                    p = q;
+                }
+                if (FoliageBlocks(focus, p)) continue;
 
                 // How far you can see past the subject on this side (street = long, wall = short).
                 Vector3 probeFrom = focus + dir * 2.5f;
@@ -459,6 +486,86 @@ public static class PimlrCinematicCamera
     public static RouteKind LastRoute { get; private set; }
 
     // ------------------------------------------------------------------ geometry helpers
+
+    // ------------------------------------------------------------------ foliage (PIMLR #CAM)
+    // Trees and bushes have no colliders on their leaves (only a thin trunk capsule), so Physics can't see them.
+    // Each one is modelled as an upright cylinder: trees = the canopy only (from ~30% of their height, measured on
+    // "Tree 1": leaves start 2.1 m up a 6.7 m tree), bushes = the whole bush. Built once per scene from the renderers.
+
+    /// <summary>Material names (lower case, "contains") that mark leaves. TreeUse = the street trees, Leaves = bushes.</summary>
+    public static readonly string[] FoliageMaterialKeywords = { "treeuse", "leaves", "leaf", "foliage" };
+    const float MinFoliagePullIn = 2.5f;     // never pull a shot closer than this to escape leaves
+    const float UnderCanopyHeight = 0.4f;    // camera height above the subject focus (~1.9 m above ground: under street-tree leaves, which start ~2.1 m up)
+    const float FoliageRadiusScale = 0.85f;  // canopy edges are sparse
+    const float TreeCanopyStart = 0.3f;      // fraction of tree height where the leaves begin
+
+    struct Foliage { public Vector2 xz; public float radius, bottom, top; }
+    static List<Foliage> foliage;
+    static UnityEngine.SceneManagement.Scene foliageScene;
+
+    static List<Foliage> FoliageCache()
+    {
+        var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        if (foliage != null && foliageScene == scene) return foliage;
+        foliageScene = scene;
+        foliage = new List<Foliage>();
+        var done = new HashSet<Transform>();
+        foreach (var r in UnityEngine.Object.FindObjectsByType<MeshRenderer>())
+        {
+            if (!r.enabled || !IsFoliage(r)) continue;
+            var lod = r.GetComponentInParent<LODGroup>();
+            Transform key = lod ? lod.transform : r.transform;
+            if (!done.Add(key)) continue;                                // one cylinder per tree, not per LOD
+            Bounds b = r.bounds;
+            if (lod) foreach (var lr in lod.GetComponentsInChildren<MeshRenderer>()) if (IsFoliage(lr)) b.Encapsulate(lr.bounds);
+            float h = b.size.y;
+            bool tree = h > 3f;
+            foliage.Add(new Foliage
+            {
+                xz = new Vector2(b.center.x, b.center.z),
+                radius = Mathf.Max(b.extents.x, b.extents.z) * FoliageRadiusScale,
+                bottom = b.min.y + (tree ? h * TreeCanopyStart : 0f),
+                top = b.max.y,
+            });
+        }
+        return foliage;
+    }
+
+    static bool IsFoliage(Renderer r)
+    {
+        foreach (var m in r.sharedMaterials)
+        {
+            if (!m) continue;
+            string n = m.name.ToLowerInvariant();
+            foreach (var k in FoliageMaterialKeywords) if (n.Contains(k)) return true;
+        }
+        return false;
+    }
+
+    /// <summary>True if the straight view from a to b passes through (or starts inside) a tree canopy or a bush.</summary>
+    public static bool FoliageBlocks(Vector3 a, Vector3 b)
+    {
+        var list = FoliageCache();
+        if (list.Count == 0) return false;
+        Vector2 a2 = new Vector2(a.x, a.z), b2 = new Vector2(b.x, b.z);
+        float minX = Mathf.Min(a.x, b.x), maxX = Mathf.Max(a.x, b.x), minZ = Mathf.Min(a.z, b.z), maxZ = Mathf.Max(a.z, b.z);
+        float len = Vector3.Distance(a, b);
+        int steps = Mathf.Max(2, Mathf.CeilToInt(len / 0.4f));
+        foreach (var f in list)
+        {
+            if (f.xz.x + f.radius < minX || f.xz.x - f.radius > maxX || f.xz.y + f.radius < minZ || f.xz.y - f.radius > maxZ) continue;
+            // The subject's own end is skipped (0.6 m) so a fan standing at a bush's edge isn't "blocked" by it.
+            for (int i = 0; i <= steps; i++)
+            {
+                float t = (float)i / steps;
+                if (t * len < 0.6f) continue;
+                Vector3 p = Vector3.Lerp(a, b, t);
+                if (p.y < f.bottom || p.y > f.top) continue;
+                if ((new Vector2(p.x, p.z) - f.xz).sqrMagnitude <= f.radius * f.radius) return true;
+            }
+        }
+        return false;
+    }
 
     public static bool LineClear(Vector3 a, Vector3 b, int mask = DefaultMask)
     {

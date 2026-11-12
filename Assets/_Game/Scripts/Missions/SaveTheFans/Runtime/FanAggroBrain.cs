@@ -83,9 +83,13 @@ namespace PIMLR.Missions.SaveTheFans
         float lastHealth = -1f;
         bool tookDamageThisFrame;
         float nextRepath, nextSwing, swingUntil;
+        float nextBurst, burstUntil; // PIMLR #STF: shooting at the fan
         bool refreshRateSet;
         Vector3 walkTarget;
         readonly Queue<(float time, float amount)> damageLog = new Queue<(float, float)>();
+
+        /// PIMLR #STF: wash dealt to the fan by one of this enemy's bullets (FanHitbox). 0 while it holds a grudge.
+        public float WashPerHit => profile && profile.shootAtFan && !grudgeActive ? profile.washPerHit * washMultiplier : 0f;
 
         public static bool IsMissionEnemy(GameObject go) => go && go.GetComponent<FanAggroBrain>() != null;
 
@@ -185,7 +189,21 @@ namespace PIMLR.Missions.SaveTheFans
                 if (!grudgeActive && patrol) DrivePatrolTowardFan();
             }
 
-            if (!grudgeActive && !Orbits) WashFanIfInRange();
+            if (!grudgeActive && !Orbits) { CloseInForMelee(); WashFanIfInRange(); }
+        }
+
+        // PIMLR #STF: ZombieAI stops about 2 m short of its destination, so thugs punched the air in front of the fan.
+        // Once near, take over the last couple of metres: step in to meleeReach, then stand and swing.
+        void CloseInForMelee()
+        {
+            if (!Fan || !profile || !profile.swingAtFan || !brain || !brain.character) return;
+            float d = FlatDistance(transform.position, Fan.transform.position);
+            if (d > profile.washRange + 1.5f) return;                    // still on the way: ZombieAI's pathing
+            if (brain.character.IsPunching) return;                      // let the punch play out
+            if (d > profile.meleeReach + 0.1f)
+                brain.GoToPosition(OnNavMesh(Fan.transform.position + (transform.position - Fan.transform.position).normalized * profile.meleeReach, Fan.transform.position), 0.2f, false);
+            else
+                brain.IdleState();
         }
 
         void HoldStill()
@@ -264,7 +282,9 @@ namespace PIMLR.Missions.SaveTheFans
             fromFan.y = 0f;
             if (fromFan.sqrMagnitude < 0.01f) fromFan = Vector3.forward;
 
-            float standOff = Mathf.Max(1.2f, (profile ? profile.washRange : 2.5f) * 0.7f);
+            float standOff = profile && profile.swingAtFan
+                ? profile.meleeReach                                      // PIMLR #STF: punch range, not wash range
+                : Mathf.Max(1.2f, (profile ? profile.washRange : 2.5f) * 0.7f);
             Vector3 dir = Quaternion.AngleAxis(slotAngleOffset, Vector3.up) * fromFan.normalized;
             return OnNavMesh(fanPos + dir * standOff, fanPos);
         }
@@ -394,12 +414,30 @@ namespace PIMLR.Missions.SaveTheFans
             if (!Fan || !profile) return;
             if (FlatDistance(transform.position, Fan.transform.position) > profile.washRange) return;
 
-            Fan.AddWash(profile.washPerSecond * washMultiplier * Time.deltaTime);
+            // PIMLR #STF: shooters wash only with water that actually hits the fan (FanHitbox), not by being in range.
+            if (!profile.shootAtFan) Fan.AddWash(profile.washPerSecond * washMultiplier * Time.deltaTime);
 
             var character = brain ? brain.character : null;
             if (!character) return;
 
             if (profile.faceFanWhileWashing) character.DoLookAt(Fan.FocusPoint, 5f);
+
+            // PIMLR #STF: shooters fire water at the fan in bursts so the wash reads on screen.
+            if (profile.shootAtFan && character.WeaponInUseRightHand)
+            {
+                var w = character.WeaponInUseRightHand;
+                if (w.TotalBullets < w.BulletsPerMagazine) w.TotalBullets = w.BulletsPerMagazine * 4; // never runs dry mid-heat
+                character.FiringMode = true;
+                character.FiringModeIK = true;
+                character.LookAtPosition = Fan.FocusPoint;
+                if (Time.time >= nextBurst)
+                {
+                    nextBurst = Time.time + profile.shootBurstInterval;
+                    burstUntil = Time.time + profile.shootBurstSeconds;
+                }
+                bool firing = Time.time < burstUntil;
+                character.DefaultUseOfAllItems(firing, firing, false, false, false, true);
+            }
 
             if (profile.swingAtFan)
             {
@@ -410,7 +448,11 @@ namespace PIMLR.Missions.SaveTheFans
                     swingUntil = Time.time + 0.25f;
                 }
                 bool swinging = Time.time < swingUntil;
-                character.DefaultUseOfAllItems(swinging, swinging, false, false, false, true);
+                // PIMLR #STF: the last argument is the punch input; passing true every frame re-punched every frame
+                // (endless punching that walked the thug back out of reach). Punch once per swing, only within reach.
+                bool inReach = FlatDistance(transform.position, Fan.transform.position) <= profile.meleeReach + 0.45f;
+                bool punchNow = swinging && inReach && !character.IsPunching;
+                character.DefaultUseOfAllItems(swinging && inReach, punchNow, false, false, false, punchNow);
             }
         }
 

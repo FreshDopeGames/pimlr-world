@@ -10,6 +10,8 @@ public class SceneManagerScript : Singleton<SceneManagerScript>
 {
     // Runtime guard that prevents overlapping scene loads; do not assign in the Inspector.
     private bool loadSceneInProgress;
+    /// <summary>PIMLR: true while the loading screen is up for a scene load (PimlrInterstitial reads it).</summary>
+    public bool IsLoading => loadSceneInProgress;
 
     // Required: the UIManager whose UIMenus list contains the exact "Loading Screen" entry.
     [Tooltip("Required for scene transitions. Assign the UIManager that registers a menu named exactly 'Loading Screen'.")]

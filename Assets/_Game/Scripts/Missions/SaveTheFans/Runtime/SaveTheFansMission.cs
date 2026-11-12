@@ -98,7 +98,17 @@ namespace PIMLR.Missions.SaveTheFans
         public bool useGoalPanelKillCounter = true;
 
         [Header("Failure / retry")]
+        [Tooltip("PIMLR #STF: a washed fan fails the whole run: every fan resets and the player starts again from wave 1 of the first fan. Off = retry only the fan that was washed (old behaviour).")]
+        public bool restartFromFirstFanOnWashout = true;
         [Min(0f)] public float retryDelay = 4f;
+        [Tooltip("PIMLR #STF: where a restart puts the player (near Sirihanna). Empty = found at runtime (the AI Chat Interaction / 'Sirihanna' object).")]
+        public Transform restartSpot;
+        [Tooltip("Distance in front of the restart spot the player is placed.")]
+        [Min(0f)] public float restartSpotOffset = 3f;
+        [Min(0.05f)] public float restartFadeOut = 0.6f;
+        [Tooltip("Seconds held on black after the teleport (lets the gameplay camera settle behind the player).")]
+        [Min(0f)] public float restartBlackHold = 0.8f;
+        [Min(0.05f)] public float restartFadeIn = 0.8f;
         [Min(0f)] public float celebrateSeconds = 3f;
 
         [Header("Fan Hype (Music Boost)")]
@@ -125,6 +135,8 @@ namespace PIMLR.Missions.SaveTheFans
         public WaveEvent onWaveCleared;
         public HeatEvent onHeatSaved;
         public HeatEvent onHeatFailed;
+        [Tooltip("PIMLR #STF: a fan was washed and the run went back to the first fan.")]
+        public UnityEvent onMissionRestarted;
         public UnityEvent onMissionCompleted;
         public UnityEvent onBoostReady;
         public UnityEvent onBoostStarted;
@@ -150,6 +162,8 @@ namespace PIMLR.Missions.SaveTheFans
         public bool BoostActive { get; private set; }
         public float BoostTimeLeft { get; private set; }
         public int RetriesThisHeat { get; private set; }
+        /// PIMLR #STF: how many times this run went back to the first fan.
+        public int RunRestarts { get; private set; }
         public bool IsRunning => CurrentState != State.Idle && CurrentState != State.Complete;
 
         /// True while a purchased track with a boost is playing.
@@ -319,13 +333,28 @@ namespace PIMLR.Missions.SaveTheFans
 
                 RetriesThisHeat = 0;
                 bool firstAttempt = true;
+                bool restart = false;
                 while (true)
                 {
                     yield return RunHeat(fan, firstAttempt);
                     if (lastHeatWon) break;
                     firstAttempt = false;
                     RetriesThisHeat++;
-                    yield return new WaitForSeconds(retryDelay);
+                    yield return new WaitForSeconds(retryDelay); // the washed fan stays down for a beat
+                    if (restartFromFirstFanOnWashout) { restart = true; break; }
+                }
+
+                if (restart)
+                {
+                    // PIMLR #STF: washed fan = run failed. Fade out, every fan back to full and standing, progress
+                    // forgotten, player put back near Sirihanna, fade in; then the walk to the first fan (untimed) for wave 1.
+                    RunRestarts++;
+                    yield return RestartSequence();
+                    ClearSavedProgress();
+                    startHeat = 0;
+                    onMissionRestarted?.Invoke();
+                    i = -1; // the loop's i++ makes this 0
+                    continue;
                 }
 
                 PlayerPrefs.SetInt(PrefNextHeat, i + 1);
@@ -420,6 +449,7 @@ namespace PIMLR.Missions.SaveTheFans
                         if (first) first.SetHeld(true);
                     };
 
+                    if (!cameraDirector || PimlrInput.PlayerInVehicle) fan.PlayGreeting(); // PIMLR #STF: no intro camera
                     if (cameraDirector && !PimlrInput.PlayerInVehicle)
                         yield return firstAttempt
                             ? cameraDirector.PlayHeatIntro(fan, firstSpot, spawnFirst, PlayerTransform)
@@ -439,6 +469,7 @@ namespace PIMLR.Missions.SaveTheFans
                 }
 
                 CurrentState = State.Wave;
+                if (w > 0) fan.PlayGreeting(); // PIMLR #STF: the fan greets the player again at every new wave
                 onWaveStarted?.Invoke(CurrentHeatIndex, w);
 
                 float nextSpawnAt = Time.time + (w == 0 ? wave.spawnInterval : 0f);
@@ -480,6 +511,64 @@ namespace PIMLR.Missions.SaveTheFans
         }
 
         void OnFanWashedOut(FanHeat fan) => heatFailed = true;
+
+        // PIMLR #STF: fade-out / fade-in restart. Holds PimlrInterstitial so nothing arrives while the screen is black.
+        IEnumerator RestartSequence()
+        {
+            PimlrInterstitial.Begin();
+            bool locked = false;
+            try
+            {
+                yield return ScreenFader.FadeToBlack(restartFadeOut);
+
+                var pc = PlayerControlLock.ResolvePlayer();
+                if (pc && pc.IsDriving)
+                {
+                    JUTPS.ActionScripts.DriveVehicles.ExitVehicle(pc.gameObject);
+                    yield return new WaitForSecondsRealtime(0.3f); // exit animation / re-enable the character
+                }
+                PlayerControlLock.Lock(); // after leaving the vehicle, so the exit isn't blocked
+                locked = true;
+
+                DespawnAll();
+                foreach (var h in heats) if (h) { h.ResetWash(); h.SetHighlighted(false); h.SetRestockActive(false); h.Invulnerable = false; }
+                TeleportPlayerToRestartSpot(pc);
+
+                yield return new WaitForSecondsRealtime(restartBlackHold);
+                yield return ScreenFader.FadeFromBlack(restartFadeIn);
+            }
+            finally
+            {
+                if (locked) PlayerControlLock.Unlock();
+                PimlrInterstitial.End();
+            }
+        }
+
+        void TeleportPlayerToRestartSpot(JUCharacterController pc)
+        {
+            if (!pc) return;
+            Transform spot = restartSpot;
+            if (!spot)
+            {
+                var chats = FindObjectsByType<AiChatInteraction>(FindObjectsInactive.Include);
+                if (chats.Length > 0) spot = chats[0].transform;
+                if (!spot) { var go = GameObject.Find("Sirihanna"); if (go) spot = go.transform; }
+            }
+            if (!spot) { Debug.LogWarning("[SaveTheFans] Restart: no Sirihanna / restart spot found, player left where they are.", this); return; }
+
+            Vector3 fwd = spot.forward; fwd.y = 0f;
+            if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
+            Vector3 target = spot.position + fwd.normalized * restartSpotOffset;
+            if (NavMesh.SamplePosition(target, out var hit, 4f, NavMesh.AllAreas)) target = hit.position;
+            else if (NavMesh.SamplePosition(spot.position, out hit, 6f, NavMesh.AllAreas)) target = hit.position;
+
+            Vector3 look = spot.position - target; look.y = 0f;
+            Quaternion rot = look.sqrMagnitude > 0.01f ? Quaternion.LookRotation(look) : pc.transform.rotation;
+            var rb = pc.GetComponent<Rigidbody>();
+            if (rb) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; rb.position = target; rb.rotation = rot; }
+            pc.transform.SetPositionAndRotation(target, rot);
+            Physics.SyncTransforms();
+        }
 
         IEnumerator RunBoost()
         {

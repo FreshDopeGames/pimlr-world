@@ -91,7 +91,7 @@ namespace PIMLR.Missions.SaveTheFans
             Vector3 fanFocus = fan ? fan.FocusPoint : enemySpot;
 
             if (fan)
-                yield return FlyTo(fanFocus, fan.transform.forward, travelTime, holdOnFan, null, null);
+                yield return FlyTo(fanFocus, fan.transform.forward, travelTime, holdOnFan, null, fan.PlayGreeting); // PIMLR #STF: wave as the camera arrives
 
             if (!skipRequested)
             {
@@ -108,13 +108,43 @@ namespace PIMLR.Missions.SaveTheFans
             End();
         }
 
+        /// PIMLR (Story first-enemy cutscene): fly to where an enemy is about to arrive, invoke onShotReached
+        /// (open the portal there), hold while it steps out, then fly straight back behind the player.
+        /// onShotReached is NOT called if the move is skipped or the cutscene can't start; callers check IsPlaying.
+        public IEnumerator PlayEnemyArrival(Vector3 spot, Transform player, System.Action onShotReached)
+        {
+            if (!Begin()) yield break;
+            reachFrom = player ? player.position : (Vector3?)null;
+            Vector3 focus = spot + Vector3.up * 1.5f;
+            // Camera on the player's side of the portal, so the enemy steps out toward the lens.
+            Vector3 towardPlayer = player ? player.position - spot : Vector3.forward;
+            yield return FlyTo(focus, towardPlayer, travelTime, holdOnEnemy, null, onShotReached);
+            yield return ReturnHome();
+            End();
+        }
+
+        /// PIMLR: the scene's director (Save The Fans' one in YannicksWorld), or a runtime one with default settings.
+        public static MissionCameraDirector Shared
+        {
+            get
+            {
+                if (shared) return shared;
+                var m = SaveTheFansMission.Instance;
+                if (m && m.cameraDirector) return shared = m.cameraDirector;
+                shared = FindFirstObjectByType<MissionCameraDirector>();
+                if (!shared) shared = new GameObject("PIMLR_CameraDirector").AddComponent<MissionCameraDirector>();
+                return shared;
+            }
+        }
+        static MissionCameraDirector shared;
+
         /// Short version for retries: just a quick look at the fan.
         public IEnumerator PlayQuickFanShot(FanHeat fan)
         {
             if (!fan || !Begin()) yield break;
             var pc = PlayerControlLock.ResolvePlayer();                // PIMLR #STF
             reachFrom = pc ? pc.transform.position : (Vector3?)null;
-            yield return FlyTo(fan.FocusPoint, fan.transform.forward, travelTime * 0.7f, holdOnFan * 0.5f, null, null);
+            yield return FlyTo(fan.FocusPoint, fan.transform.forward, travelTime * 0.7f, holdOnFan * 0.5f, null, fan.PlayGreeting); // PIMLR #STF
             yield return ReturnHome();
             End();
         }

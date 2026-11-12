@@ -67,6 +67,18 @@ namespace PIMLR.Missions.SaveTheFans
         public string cowerTrigger = "Cower";
         public string cheerTrigger = "Cheer";
         public string washedTrigger = "Washed";
+        // PIMLR #STF: the PIMLR_Fan animator (Assets/_Game/Characters/PIMLR_Animations/PIMLR_Fan.controller).
+        [Tooltip("Trigger: greeting when this fan's heat starts (camera arrives on the fan).")]
+        public string introTrigger = "Intro";
+        [Tooltip("Trigger: back to idle when a heat is retried after this fan was washed.")]
+        public string resetTrigger = "Reset";
+        [Tooltip("Bool: true while enemies are washing this fan (cower loop).")]
+        public string scaredBool = "Scared";
+        [Tooltip("Int 0-99, randomised before each reaction so the animator can pick a variant.")]
+        public string variantInt = "Variant";
+        [Tooltip("Seconds after the last wash before the fan stops cowering.")]
+        [Min(0.2f)] public float scaredHoldSeconds = 1.2f;
+        bool lastScared;
 
         [Header("Events")]
         public UnityEvent onHighlighted;
@@ -119,6 +131,7 @@ namespace PIMLR.Missions.SaveTheFans
             SetHighlighted(false);
             SetRestockActive(false);
             if (showHealthBar && !GetComponentInChildren<FanHealthBar>(true)) FanHealthBar.Create(this); // PIMLR #STF
+            if (!GetComponentInChildren<FanHitbox>(true)) FanHitbox.Create(this);                         // PIMLR #STF: water hits the fan
         }
 
         void OnEnable() => Grenade.Exploded += OnBalloonBurst;   // PIMLR #STF
@@ -141,9 +154,17 @@ namespace PIMLR.Missions.SaveTheFans
 
         public void ResetWash()
         {
+            bool wasWashedOut = IsWashedOut;
             Wash = 0f;
             WashRate = 0f;
             washAccumulated = 0f;
+            lastScared = false;
+            SetBool(scaredBool, false);
+            // PIMLR #STF: clear any latched reaction, then stand back up only if the fan was lying washed out
+            // (a Reset left latched on an idle fan would yank it out of its next cower).
+            ClearTrigger(introTrigger); ClearTrigger(cheerTrigger); ClearTrigger(washedTrigger);
+            // (Reset is not cleared: ResetWash is often called twice in one frame and the second call would cancel the stand-up.)
+            if (wasWashedOut) FireTrigger(resetTrigger);
             WashResistance = 0f;
             WashChanged?.Invoke(this, Wash01);
             if (ring) ring.SetDanger(0f);
@@ -187,6 +208,15 @@ namespace PIMLR.Missions.SaveTheFans
                 if (WashRate < 0.01f) WashRate = 0f;
             }
 
+            // PIMLR #STF: cower while being washed (a held state, not a one-shot that restarts every few seconds).
+            bool scared = !IsWashedOut && Time.time - lastWashTime < scaredHoldSeconds;
+            if (scared != lastScared)
+            {
+                if (scared) { SetVariant(); ClearTrigger(introTrigger); }
+                SetBool(scaredBool, scared);
+                lastScared = scared;
+            }
+
             if (!washFx) return;
             bool beingWashed = Time.time - lastWashTime < 0.4f && !IsWashedOut;
             if (beingWashed && !washFx.isPlaying) washFx.Play(true);
@@ -220,7 +250,15 @@ namespace PIMLR.Missions.SaveTheFans
             foreach (var s in restockStations) if (s) s.SetActive(on);
         }
 
-        public void NotifyHeatStarted() => onHeatStarted?.Invoke();
+        /// PIMLR #STF: greeting only (no heat-start event). Used at the start of each later wave.
+        public void PlayGreeting() => FireTrigger(introTrigger);
+
+        public void NotifyHeatStarted()
+        {
+            // PIMLR #STF: the greeting is fired by the intro camera when it reaches the fan (MissionCameraDirector),
+            // or by the mission when no camera plays, so it isn't over before anyone sees it.
+            onHeatStarted?.Invoke();
+        }
 
         public void NotifySaved()
         {
@@ -233,7 +271,29 @@ namespace PIMLR.Missions.SaveTheFans
         {
             if (!animator || string.IsNullOrEmpty(param) || !animator.isActiveAndEnabled) return;
             foreach (var p in animator.parameters)
-                if (p.name == param && p.type == AnimatorControllerParameterType.Trigger) { animator.SetTrigger(param); return; }
+                if (p.name == param && p.type == AnimatorControllerParameterType.Trigger) { SetVariant(); animator.SetTrigger(param); return; }
+        }
+
+        // PIMLR #STF
+        void ClearTrigger(string param)
+        {
+            if (!animator || string.IsNullOrEmpty(param) || !animator.isActiveAndEnabled) return;
+            foreach (var p in animator.parameters)
+                if (p.name == param && p.type == AnimatorControllerParameterType.Trigger) { animator.ResetTrigger(param); return; }
+        }
+
+        void SetVariant()
+        {
+            if (!animator || string.IsNullOrEmpty(variantInt) || !animator.isActiveAndEnabled) return;
+            foreach (var p in animator.parameters)
+                if (p.name == variantInt && p.type == AnimatorControllerParameterType.Int) { animator.SetInteger(variantInt, UnityEngine.Random.Range(0, 100)); return; }
+        }
+
+        void SetBool(string param, bool value)
+        {
+            if (!animator || string.IsNullOrEmpty(param) || !animator.isActiveAndEnabled) return;
+            foreach (var p in animator.parameters)
+                if (p.name == param && p.type == AnimatorControllerParameterType.Bool) { animator.SetBool(param, value); return; }
         }
 
 #if UNITY_EDITOR

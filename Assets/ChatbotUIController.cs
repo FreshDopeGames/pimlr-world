@@ -93,7 +93,7 @@ public class ChatbotUIController : MonoBehaviour
     void ShowCurrentLine()
     {
         if (bakedLines != null && currentLine >= 0 && currentLine < bakedLines.Length)
-            AppendToChat($"<color=yellow>Sirihanna: {bakedLines[currentLine]} </color>\n");
+            AppendToChat($"<color=yellow>{bakedLines[currentLine]} </color>\n"); // PIMLR: no "Sirihanna:" prefix - her name label sits above the chat window
     }
 
     // Advance to the next scripted line; unlock the water gun after the last one.
@@ -144,7 +144,7 @@ public class ChatbotUIController : MonoBehaviour
     // Legacy Flowise response handler (no longer subscribed).
     private void HandleResponse(string response)
     {
-        AppendToChat($"<color=yellow>Sirihanna:{response} </color>\n");
+        AppendToChat($"<color=yellow>{response} </color>\n"); // PIMLR: name label already shown above the chat
         Speak(response);
         AnswerCountNumber++;
         if (AnswerCountNumber == 4)

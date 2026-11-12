@@ -30,7 +30,7 @@ public class MusicInputHandler : MonoBehaviour
     [SerializeField] private MusicSystem musicSystem; // PIMLR #8: scene ref hook (TODO: assign in Editor, or leave null for auto-resolve).
 
     [Header("Behaviour")]
-    [Tooltip("If true, also reads keyboard Q/E (Previous/Next) and Space-on-nothing-else mappings for desktop testing.")]
+    [Tooltip("If true, also reads the keyboard: [ = Previous track, ] = Next track, P = Play / Pause. (Q / E are weapon switch only.)")]
     [SerializeField] private bool enableKeyboardFallback = true;
 
     private MusicSystem Music
@@ -62,14 +62,14 @@ public class MusicInputHandler : MonoBehaviour
             if (pad.buttonNorth.wasPressedThisFrame) playPause = true;
         }
 
-        // --- Keyboard fallback for desktop testing (mirrors existing map Q=Previous, E=Next) ---
+        // --- Keyboard: PIMLR (Nov 12) tracks moved off Q / E (those also switched weapons) to [ and ] ---
         if (enableKeyboardFallback)
         {
             Keyboard kb = Keyboard.current;
             if (kb != null)
             {
-                if (kb.eKey.wasPressedThisFrame) next = true;
-                if (kb.qKey.wasPressedThisFrame) previous = true;
+                if (kb.rightBracketKey.wasPressedThisFrame) next = true;
+                if (kb.leftBracketKey.wasPressedThisFrame) previous = true;
                 // PIMLR #8: no existing keyboard PlayPause binding; expose P for parity/testing only.
                 if (kb.pKey.wasPressedThisFrame) playPause = true;
             }

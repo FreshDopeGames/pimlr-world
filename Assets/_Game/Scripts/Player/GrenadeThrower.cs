@@ -100,6 +100,8 @@ public class GrenadeThrower : MonoBehaviour
         while (true)
         {
             if (health != null && health.IsDead) yield break;
+            // PIMLR: no throwing while the Freeze Ray (Cold Shoulders) holds this bomber.
+            while (IsFrozen()) { yield return null; if (health != null && health.IsDead) yield break; }
             yield return ThrowRoutine();
             // retry in a second when nothing was thrown (no player yet, out of range)
             yield return new WaitForSeconds(throwSucceeded ? Random.Range(minInterval, maxInterval) : 1f);
@@ -129,7 +131,7 @@ public class GrenadeThrower : MonoBehaviour
     private IEnumerator ThrowRoutine()
     {
         throwSucceeded = false;
-        if (isThrowing || grenadePrefab == null) yield break;
+        if (isThrowing || grenadePrefab == null || IsFrozen()) yield break;
 
         Transform player = ResolveTarget();
         if (player == null) yield break;
@@ -154,6 +156,7 @@ public class GrenadeThrower : MonoBehaviour
             }
 
             if (health != null && health.IsDead) yield break;   // died during the wind-up
+            if (IsFrozen()) yield break;                         // PIMLR: frozen mid wind-up -> the throw is cancelled (finally drops the held balloon)
             ReleaseBalloon(player);
             throwSucceeded = true;
         }
@@ -164,6 +167,9 @@ public class GrenadeThrower : MonoBehaviour
             if (held != null) { Destroy(held); held = null; }   // interrupted before release (died / disabled)
         }
     }
+
+    // PIMLR: Freeze Ray / Cold Shoulders boost.
+    private bool IsFrozen() => health != null && health.IsFrozenByRay;
 
     private bool CanAnimate()
     {
@@ -196,6 +202,7 @@ public class GrenadeThrower : MonoBehaviour
         while (elapsed < 3f)
         {
             if (health != null && health.IsDead) yield break;
+            if (IsFrozen()) yield break; // PIMLR: frozen mid wind-up; ThrowRoutine cancels the throw
             if (faceTargetWhileThrowing) FaceTarget(player);
 
             if (TryGetThrowProgress(out float progress))

@@ -24,6 +24,10 @@ public class PimlrSpawnFXSettings : ScriptableObject
     public AudioClip arrivalSfx;
     [Range(0f, 1f)] public float sfxVolume = 0.85f;
     public float sfxMaxDistance = 60f;
+    [Tooltip("PIMLR: full volume within this distance of the listener; beyond it the sound drops off steeply.")]
+    [Min(0.5f)] public float sfxFullVolumeRadius = 5f;
+    [Tooltip("PIMLR: how steep the drop past the full-volume radius is. 1 = natural (half volume at double the distance), 1.5 = stronger.")]
+    [Range(0.5f, 3f)] public float sfxFalloffPower = 1.2f;
 
     [Header("Timing")]
     [Tooltip("Seconds between the portal opening and the enemy stepping out.")]

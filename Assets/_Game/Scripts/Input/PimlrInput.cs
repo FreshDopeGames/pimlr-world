@@ -229,9 +229,9 @@ public static class PimlrInput
                     case PimlrButton.Jump: return "Space";
                     case PimlrButton.Reload: return "R";
                     case PimlrButton.Stance: return "C / Z";
-                    case PimlrButton.PlayTrack: return "";
-                    case PimlrButton.PrevTrack: return "";
-                    case PimlrButton.NextTrack: return "";
+                    case PimlrButton.PlayTrack: return "P";
+                    case PimlrButton.PrevTrack: return "[";
+                    case PimlrButton.NextTrack: return "]";
                     case PimlrButton.Fire: return "Left Mouse";
                     case PimlrButton.Aim: return "Right Mouse";
                     case PimlrButton.Run: return "Shift";

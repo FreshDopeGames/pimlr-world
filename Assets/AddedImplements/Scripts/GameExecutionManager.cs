@@ -118,23 +118,20 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         else if (currentZoneMode == Zone.Zone1)
         {
             playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = true;
-            StartCoroutine(WaitForscreenfadeOut("0/10"));
-
-            Invoke("Zone1Start", 3);
+            // PIMLR: the zone card plays all the way through (after the loading screen) before the spawner starts.
+            StartCoroutine(AfterZoneCard("0/10", Zone1Start));
 
         }
         else if (currentZoneMode == Zone.ZoneBoss1)
         {
             playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = true;
-            StartCoroutine(WaitForscreenfadeOut("0/1"));
-            Invoke("SpawnBoss", 4.5f); // PIMLR: right as the zone card closes (was 3 s, under the card)
+            StartCoroutine(AfterZoneCard("0/1", SpawnBoss)); // PIMLR: boss arrives once the zone card has closed
 
         }
         else if (currentZoneMode == Zone.Zone2)
         {
             playerInventory.GetComponent<ItemSwitchManager>().IsPlayer = true;
-            StartCoroutine(WaitForscreenfadeOut("0/10"));
-            StartCoroutine(Zone2Start());
+            StartCoroutine(AfterZoneCard("0/10", () => StartCoroutine(Zone2Start()))); // PIMLR: card first
         }
         else if (currentZoneMode == Zone.ZoneBoss2)
         {
@@ -227,9 +224,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
                 RunStats.SetZone(currentZoneMode);
                 SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.Zone1_Enemy_Battle);
                 //SpawnBoss();
-                StartCoroutine(WaitForscreenfadeOut("0/1"));
-                // PIMLR: was 10 s - left ~6 s of empty street after the "0/1" zone card (1 s fade + 3 s card).
-                Invoke("SpawnBoss", 4.5f);
+                // PIMLR: the boss arrives as soon as the "0/1" zone card has finished (was a fixed 4.5 s timer).
+                StartCoroutine(AfterZoneCard("0/1", SpawnBoss));
             }
             if (zone2Start)
             {
@@ -282,6 +278,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
     // PIMLR #STF: stage card, then the mission takes over.
     IEnumerator SaveTheFansStart()
     {
+        yield return PimlrInterstitial.WaitUntilClear(0f); // PIMLR: after the loading screen
         yield return StartCoroutine(WaitForscreenfadeOut(""));
         playerInventory.EquipItem(playerInventory.AllHoldableItems[0].ItemSwitchID); // PIMLR #STF: equip like every other stage
         SceneManagerScript.Instance.goalPanel.enemyInfoHolder.SetActive(false);
@@ -304,8 +301,16 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         // PIMLR (playtest): persist zone progression through its typed owner.
         ZoneProgress.Current = currentZoneMode;
         RunStats.SetZone(currentZoneMode);
-        StartCoroutine(WaitForscreenfadeOut("0/10"));
-        StartCoroutine(Zone2Start());
+        StartCoroutine(AfterZoneCard("0/10", () => StartCoroutine(Zone2Start()))); // PIMLR: card first, then spawns
+    }
+
+    // PIMLR: wait out any loading screen, play the zone card in full, then start the zone.
+    IEnumerator AfterZoneCard(string infodata, System.Action then)
+    {
+        yield return PimlrInterstitial.WaitUntilClear(0f);
+        yield return StartCoroutine(WaitForscreenfadeOut(infodata));
+        yield return PimlrInterstitial.WaitUntilClear();
+        then?.Invoke();
     }
 
     [ContextMenu("aaaaa")]
@@ -433,7 +438,8 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
             Debug.LogError("GameExecutionManager: 'Zombie Boss' must reference the boss object in the scene (e.g. 'Big Boss'), not a prefab asset. No boss spawned.", this);
             return;
         }
-        // PIMLR: the boss steps out of a portal where it's placed instead of popping in.
+        // PIMLR: the boss steps out of a portal where it's placed instead of popping in, on camera.
+        PimlrEnemySpawnDirector.RequestFirstEnemyCutscene("Boss 1");
         PimlrEnemySpawnDirector.Arrive(zombieBoss, relocate: false);
     }
 
@@ -460,6 +466,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         Debug.Log("::::>>>>>" + playerInventory.AllHoldableItems.Length);
         SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.ChatWithSirihanna);
         playerInventory.EquipItem(playerInventory.AllHoldableItems[0].ItemSwitchID);
+        PimlrEnemySpawnDirector.RequestFirstEnemyCutscene("Zone 1"); // PIMLR: show the first enemy arriving
         zombieSpawner.gameObject.SetActive(true);
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(zombiesKilled.ToString() + " / 10");
     }
@@ -476,6 +483,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         zombieSpawner.EmptyInstantiatePorcentage = 0;
         // PIMLR: Level 3 needs 10 washes - spawn exactly 10 bombers in total, not an endless stream.
         zombieSpawner.ResetTotalSpawnCap(10);
+        PimlrEnemySpawnDirector.RequestFirstEnemyCutscene("Zone 2"); // PIMLR: show the first bomber arriving
         zombieSpawner.gameObject.SetActive(true);
         zone2Start = true;
     }
@@ -494,14 +502,19 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
     public IEnumerator WaitForscreenfadeOut(string infodata)
     {
-        //fadeOut
-        UIFader fader = SceneManagerScript.Instance.uiManager.UI_fader;
-        if (fader != null) fader.Fade(UIFader.FADE.FadeOut, 0.4f, 0.4f);
-        yield return new WaitForSeconds(1f);
-        SceneManagerScript.Instance.uiManager.ShowMenu("Zone Panel",false);
-        yield return new WaitForSeconds(3f);
-        SceneManagerScript.Instance.uiManager.CloseMenu("Zone Panel");
-        SceneManagerScript.Instance.uiManager.ShowMenu("JUTPS Interface",false);
-        SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(infodata);
+        PimlrInterstitial.Begin(); // PIMLR: enemy arrivals wait until the zone card is done
+        try
+        {
+            //fadeOut
+            UIFader fader = SceneManagerScript.Instance.uiManager.UI_fader;
+            if (fader != null) fader.Fade(UIFader.FADE.FadeOut, 0.4f, 0.4f);
+            yield return new WaitForSeconds(1f);
+            SceneManagerScript.Instance.uiManager.ShowMenu("Zone Panel",false);
+            yield return new WaitForSeconds(3f);
+            SceneManagerScript.Instance.uiManager.CloseMenu("Zone Panel");
+            SceneManagerScript.Instance.uiManager.ShowMenu("JUTPS Interface",false);
+            SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(infodata);
+        }
+        finally { PimlrInterstitial.End(); }
     }
 }

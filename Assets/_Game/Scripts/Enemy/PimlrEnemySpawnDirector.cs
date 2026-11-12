@@ -55,7 +55,25 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics() { runner = null; settings = null; settingsLoaded = false; recentSfx.Clear(); }
+    static void ResetStatics() { runner = null; settings = null; settingsLoaded = false; recentSfx.Clear(); cutsceneRequest = null; }
+
+    // ---------- PIMLR: Story "first enemy" cutscene ----------
+    static string cutsceneRequest;
+
+    /// <summary>The next enemy to arrive (outside Save The Fans, which has its own intro) gets a short cutscene: the
+    /// camera flies to its portal, it steps out, the camera flies back and the player gets control again.
+    /// Other arrivals wait until the cutscene is over. stage = a label for the log.</summary>
+    public static void RequestFirstEnemyCutscene(string stage) { cutsceneRequest = stage; }
+    public static void CancelFirstEnemyCutscene() { cutsceneRequest = null; }
+
+    static bool TakeCutsceneRequest()
+    {
+        if (cutsceneRequest == null) return false;
+        var stf = PIMLR.Missions.SaveTheFans.SaveTheFansMission.Instance;
+        if (stf && stf.IsRunning) return false; // STF enemies come in through the heat intro instead
+        cutsceneRequest = null;
+        return true;
+    }
 
     /// <summary>
     /// Bring an already-instantiated enemy in through a portal. The enemy is deactivated until it steps out.
@@ -78,6 +96,14 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     IEnumerator ArriveRoutine(GameObject enemy, bool relocate)
     {
         var s = Settings;
+
+        // PIMLR: never arrive behind a loading screen, death sequence, zone card or fade. The enemy stays switched
+        // off until the interstitial has played all the way through.
+        if (PimlrInterstitial.Playing)
+        {
+            yield return PimlrInterstitial.WaitUntilClear(0.4f);
+            if (!enemy) yield break;
+        }
         ResolvePlayer();
 
         Vector3 spot = enemy.transform.position;
@@ -87,6 +113,21 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         toPlayer.y = 0f;
         Quaternion facing = toPlayer.sqrMagnitude > 0.01f ? Quaternion.LookRotation(toPlayer) : enemy.transform.rotation;
 
+        // PIMLR: Story stage's first enemy -> camera goes to the portal before it opens.
+        PIMLR.Missions.SaveTheFans.MissionCameraDirector cutscene = null;
+        bool cutsceneHold = false;
+        if (player && TakeCutsceneRequest())
+        {
+            cutscene = PIMLR.Missions.SaveTheFans.MissionCameraDirector.Shared;
+            bool reached = false;
+            PimlrInterstitial.Begin(); // everyone else waits for the cutscene
+            cutsceneHold = true;
+            Runner.StartCoroutine(cutscene.PlayEnemyArrival(spot, player, () => reached = true));
+            while (!reached && cutscene.IsPlaying) yield return null;
+        }
+
+        try
+        {
         // portal + sound
         if (!Spawn(s.portalPrefab, spot + Vector3.up * s.portalHeight, facing, s.portalScale, s.portalLifetime, s))
             PlaySfx(s.portalOpenSfx, spot, s);
@@ -118,6 +159,14 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         // The burst prefab may carry its own sound; only add ours if it doesn't.
         if (!Spawn(s.arrivalBurstPrefab, spot + Vector3.up * 0.1f, facing, s.burstScale, s.burstLifetime, s))
             PlaySfx(s.arrivalSfx, spot, s);
+
+        // PIMLR: release the other arrivals once the camera is back with the player.
+        while (cutscene && cutscene.IsPlaying) yield return null;
+        }
+        finally
+        {
+            if (cutsceneHold) PimlrInterstitial.End();
+        }
     }
 
     // The main intersection = where Sirihanna stands (cached: her object is switched off after the chat),
@@ -254,13 +303,42 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         recentSfx.Add(Time.time);
 
         src.spatialBlend = 1f;
-        src.rolloffMode = AudioRolloffMode.Linear;
-        src.minDistance = 4f;
+        // PIMLR: full volume within sfxFullVolumeRadius (~5 m), then a steep drop, so a portal down the street sounds
+        // down the street (the old linear 4-60 m rolloff was still at ~55% volume 30 m away).
+        src.rolloffMode = AudioRolloffMode.Custom;
+        src.minDistance = 1f;
         src.maxDistance = s.sfxMaxDistance;
+        src.SetCustomCurve(AudioSourceCurveType.CustomRolloff, RolloffCurve(s));
         src.dopplerLevel = 0f;
         src.spread = 0f;
         src.volume *= s.sfxVolume * crowd;
         if (src.isPlaying) { src.Stop(); src.Play(); } // played on Awake as 2D - restart with the new settings
+    }
+
+    static AnimationCurve rolloffCurve;
+    static float rolloffKey = -1f;
+
+    /// <summary>Volume vs. distance (normalised to maxDistance): 1 inside the full-volume radius, then (r/d)^power,
+    /// fading to 0 at maxDistance.</summary>
+    static AnimationCurve RolloffCurve(PimlrSpawnFXSettings s)
+    {
+        float key = s.sfxFullVolumeRadius * 1000f + s.sfxFalloffPower + s.sfxMaxDistance * 0.001f;
+        if (rolloffCurve != null && Mathf.Approximately(key, rolloffKey)) return rolloffCurve;
+        rolloffKey = key;
+        float max = Mathf.Max(1f, s.sfxMaxDistance), r = Mathf.Clamp(s.sfxFullVolumeRadius, 0.5f, max);
+        var keys = new System.Collections.Generic.List<Keyframe> { new Keyframe(0f, 1f), new Keyframe(r / max, 1f) };
+        for (int i = 1; i <= 16; i++)
+        {
+            float d = Mathf.Lerp(r, max, i / 16f);
+            float v = Mathf.Pow(r / d, s.sfxFalloffPower);
+            v *= Mathf.Clamp01((max - d) / (max * 0.15f)); // ease to silence over the last 15%
+            keys.Add(new Keyframe(d / max, v));
+        }
+        rolloffCurve = new AnimationCurve(keys.ToArray());
+        for (int i = 2; i < rolloffCurve.length; i++) rolloffCurve.SmoothTangents(i, 0f);
+        // Flat (no overshoot above 1) across the full-volume radius.
+        for (int i = 0; i < 2; i++) { var k = rolloffCurve[i]; k.inTangent = k.outTangent = 0f; rolloffCurve.MoveKey(i, k); }
+        return rolloffCurve;
     }
 
     static IEnumerator StopAndDestroy(GameObject fx, float lifetime)

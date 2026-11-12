@@ -27,6 +27,11 @@ public class Grenade : MonoBehaviour
     [SerializeField] private AudioClip explosionSound;
     [SerializeField] private AudioClip impactSound;
 
+    [Header("PIMLR: owner")]
+    [Tooltip("PIMLR: thrown by the player (PimlrPlayerGrenades). Player balloons never wash Save The Fans fans and never push the player; their splash prefab damages enemies instead (WaterSplashDamage target = Enemies).")]
+    [SerializeField] private bool playerOwned;
+    public bool PlayerOwned { get => playerOwned; set => playerOwned = value; }
+
     private float age;
     private bool hasExploded;
 
@@ -61,7 +66,8 @@ public class Grenade : MonoBehaviour
     {
         if (hasExploded) return;
         hasExploded = true;
-        Exploded?.Invoke(point, explosionRadius); // PIMLR #STF: Save The Fans fans take splash wash
+        if (!playerOwned) Exploded?.Invoke(point, explosionRadius); // PIMLR #STF: Save The Fans fans take splash wash (enemy balloons only)
+        PimlrRumbleNearPlayer(point);
 
         bool zone2Done = GameExecutionManager.Instance != null && GameExecutionManager.Instance.zone2Finish;
         if (!zone2Done)
@@ -91,8 +97,21 @@ public class Grenade : MonoBehaviour
         Destroy(effect, effectLifetime);
     }
 
+    // PIMLR #SET: a balloon bursting near the player rumbles the controller (closer = stronger).
+    private void PimlrRumbleNearPlayer(Vector3 point)
+    {
+        var p = GameObject.FindGameObjectWithTag("Player");
+        if (!p) return;
+        float d = Vector3.Distance(p.transform.position, point);
+        float reach = explosionRadius * 2.5f;
+        if (d > reach) return;
+        float k = 1f - d / reach;
+        PimlrRumble.Pulse(0.5f * k, 0.3f * k, 0.15f + 0.15f * k);
+    }
+
     private void NearbyForceApply(Vector3 point)
     {
+        if (playerOwned) return; // PIMLR: the player's own balloons don't knock the player around
         Collider[] colliders = Physics.OverlapSphere(point, explosionRadius);
         foreach (Collider nearbyObject in colliders)
         {

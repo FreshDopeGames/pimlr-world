@@ -221,11 +221,25 @@ namespace JUTPS.WeaponSystem
                 }
 
                 //Set a new final point
-                if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1))
+                // PIMLR: use the real contact. FinalPoint starts as the crosshair raycast point (a straight line from the
+                // muzzle), so a dropping water bullet that landed short and missed the 1 m forward ray spawned its splash
+                // on the wall straight ahead instead of where the water actually hit.
+                if (col.contactCount > 0)
+                {
+                    ContactPoint contact = col.GetContact(0);
+                    FinalPoint = contact.point;
+                    FinalPointNormal = contact.normal;
+                }
+                else if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1))
                 {
                     FinalPoint = hit.point;
                     FinalPointNormal = hit.normal;
                     //Debug.Log("Bullet Finded new final point");
+                }
+                else
+                {
+                    FinalPoint = transform.position; // PIMLR: never fall back to the stale crosshair point
+                    FinalPointNormal = -transform.forward;
                 }
 
                 //Get hitted gameobject tag

@@ -4,8 +4,13 @@ using JUTPS;
 
 // PIMLR (playtest): one-shot splash damage that only ever hurts the player.
 // Put it on the root of the Water_Explosion prefab. It applies damage once, when the effect spawns.
+// PIMLR (Nov 12): Target = Enemies for the player's own balloons (Water_Explosion_Player): hurts AI characters only
+// (never the player, fans or vehicles).
 public class WaterSplashDamage : MonoBehaviour
 {
+    public enum Target { Player, Enemies }
+    [SerializeField] private Target target = Target.Player;
+
     [SerializeField] private float damage = 20f;
     [SerializeField] private float radius = 4f;
     [Tooltip("Damage at the edge of the radius as a fraction of full damage. 1 = no falloff.")]
@@ -25,7 +30,9 @@ public class WaterSplashDamage : MonoBehaviour
         {
             JUHealth health = col.GetComponentInParent<JUHealth>();
             if (health == null || health.IsDead) continue;
-            if (!health.CompareTag(playerTag) && !col.CompareTag(playerTag)) continue;   // player only
+            bool isPlayer = health.CompareTag(playerTag) || col.CompareTag(playerTag);
+            if (target == Target.Player && !isPlayer) continue;   // player only
+            if (target == Target.Enemies && (isPlayer || health.GetComponent<JUTPS.AI.JUCharacterArtificialInteligenceBrain>() == null)) continue; // AI enemies only
 
             float distance = Vector3.Distance(center, col.ClosestPoint(center));
             if (!closest.TryGetValue(health, out float best) || distance < best)

@@ -20,6 +20,10 @@ using UnityEngine.UI;
 ///   - a pulsing green ring is drawn around the selected button.
 /// While active, JUInputManager mutes gameplay buttons so A doesn't also jump, etc.
 /// </summary>
+// PIMLR (Nov 12): runs in LateUpdate, after every camera has moved for the frame. In Update the gameplay camera
+// still has last frame's follow pose, so a world-space menu (Sirihanna's chat) projected off screen, failed the
+// "is it on screen and clickable" test, and the controller could never reach her Next button.
+[DefaultExecutionOrder(10000)]
 public class PimlrMenuNavigator : MonoBehaviour
 {
     public static bool IsNavigating { get; private set; }
@@ -46,7 +50,7 @@ public class PimlrMenuNavigator : MonoBehaviour
     InputSystemUIInputModule mutedModule;
     InputActionReference mutedMove;
 
-    void Update()
+    void LateUpdate()
     {
         var es = EventSystem.current;
         bool menuUp = es != null && PimlrInput.UsingGamepad && Cursor.visible;

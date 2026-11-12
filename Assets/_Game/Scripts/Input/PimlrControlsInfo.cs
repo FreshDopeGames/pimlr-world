@@ -29,6 +29,8 @@ public class PimlrControlsInfo : MonoBehaviour
         new Row("R", "Reload"),
         new Row("F", "Interact / Ride"),
         new Row("Q / E", "Switch Weapon"),
+        new Row("P", "Play / Pause Track"),
+        new Row("[ / ]", "Previous / Next Track"),
         new Row("Tab", "Inventory"),
     };
 

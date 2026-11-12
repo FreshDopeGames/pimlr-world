@@ -29,4 +29,8 @@ MonoBehaviour:
   faceFanWhileWashing: 1
   swingAtFan: 0
   swingInterval: 1.6
+  shootAtFan: 1
+  shootBurstSeconds: 0.8
+  shootBurstInterval: 2.2
+  washPerHit: 2
   hypeValue: 2

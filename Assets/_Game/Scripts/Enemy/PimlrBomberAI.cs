@@ -71,6 +71,7 @@ public class PimlrBomberAI : MonoBehaviour
 
     void Awake()
     {
+        frozenHealth = GetComponent<JUHealth>(); // PIMLR: Freeze Ray check
         character = GetComponent<JUCharacterController>();
         brain = GetComponent<JUCharacterArtificialInteligenceBrain>();
         patrol = brain as PatrolAI;
@@ -91,6 +92,11 @@ public class PimlrBomberAI : MonoBehaviour
     {
         if (character.IsDead) { SetEngaged(false); enabled = false; return; }
         if (brain == null) return;
+
+        // PIMLR: frozen by the Freeze Ray (Cold Shoulders) -> do nothing (no turning, no moving, don't touch PatrolAI).
+        // On thaw JUHealth re-enables PatrolAI, so put back whichever of PatrolAI / this script should be driving.
+        if (frozenHealth && frozenHealth.IsFrozenByRay) { wasFrozen = true; facePlayerThisFrame = false; return; }
+        if (wasFrozen) { wasFrozen = false; SetEngaged(state != State.Patrol); }
 
         if (!player)
         {
@@ -228,8 +234,12 @@ public class PimlrBomberAI : MonoBehaviour
     /// Keep facing the player while engaged. Runs after animation and every other script, so nothing that
     /// briefly drops firing mode (a hit reaction, the throw clip, a stumble) can swing its back to you.
     /// </summary>
+    JUHealth frozenHealth;
+    bool wasFrozen;
+
     void LateUpdate()
     {
+        if (frozenHealth && frozenHealth.IsFrozenByRay) return; // PIMLR: frozen
         if (!facePlayerThisFrame || !player || character.IsDead || character.IsRagdolled) return;
         character.FiringMode = true;
         Vector3 flat = player.position - transform.position; flat.y = 0f;

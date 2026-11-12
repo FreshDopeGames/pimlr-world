@@ -28,6 +28,8 @@ namespace JUTPS
 
         public Slider healthSlider;
         private bool frozenByRay; // PIMLR (playtest): true while the Freeze Ray holds this character
+        /// <summary>PIMLR: true while the Freeze Ray (Cold Shoulders boost) holds this character. Scripts that act on their own (GrenadeThrower, PimlrBomberAI) check it.</summary>
+        public bool IsFrozenByRay => frozenByRay;
 
         Rigidbody rb;
         Animator animator;
@@ -120,6 +122,12 @@ namespace JUTPS
             if (frozenByRay && rcc_CarControllerV3 == null && Health - damage <= 0f) ReleaseFreezeForDeath();
             float pimlrHealthBefore = Health; // PIMLR #ANL
             Health -= damage;
+            // PIMLR #SET: the player feels hits on a controller (scaled by damage, respects the Rumble setting).
+            if (damage > 0f && CompareTag("Player"))
+            {
+                float k = Mathf.Clamp01(damage / 40f);
+                PimlrRumble.Pulse(0.25f + 0.55f * k, 0.35f + 0.45f * k, 0.12f + 0.2f * k);
+            }
             if (healthSlider != null)
                 healthSlider.value = Health;
 
