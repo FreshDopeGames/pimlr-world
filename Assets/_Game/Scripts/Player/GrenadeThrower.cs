@@ -1,7 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-// PIMLR (playtest): water balloon bomber. Plays the Throw animation, then releases the balloon at the player.
+// PIMLR (playtest): water balloon bomber. Plays a throw animation, then releases the balloon at the player.
+// PIMLR #GREN (Nov 2026): two throw clips (Throw Object / Goalie Throw, see PimlrThrowAnimation), picked by distance;
+// the balloon sits in the right palm (PimlrThrowAnimation.Grip) during the wind-up and leaves it at the clip's measured
+// release frame; PimlrThrowLock keeps the bomber planted (no translate / slide) until the throw clip ends.
 public class GrenadeThrower : MonoBehaviour
 {
     [Header("Thrown Object")]
@@ -13,8 +16,10 @@ public class GrenadeThrower : MonoBehaviour
     [Header("Throw Animation")]
     [SerializeField] private bool useThrowAnimation = true;
     [SerializeField] private string throwTriggerName = "Throw";
-    [Tooltip("Name of the Animator state that plays Throw.anim (Base Layer).")]
+    [Tooltip("(Legacy) The throw states are now found by their Animator tag 'Throw'.")]
     [SerializeField] private string throwStateName = "Throw";
+    [Tooltip("PIMLR #GREN: which throw clip to play. ByDistance = Goalie Throw up close, Throw Object (lunge) for long throws.")]
+    [SerializeField] private PimlrThrowVariantMode throwVariantMode = PimlrThrowVariantMode.ByDistance;
     [Range(0f, 1f)]
     [Tooltip("How far through the clip the balloon leaves the hand. The stock throw event fires at 0.48.")]
     [SerializeField] private float releaseNormalizedTime = 0.48f;
@@ -37,7 +42,7 @@ public class GrenadeThrower : MonoBehaviour
     [SerializeField] private float maxFlightTime = 1.6f;
     [Tooltip("PIMLR: 0 = aim where the player is, 1 = full lead on where they're running to.")]
     [Range(0f, 1f)] [SerializeField] private float leadFactor = 0.5f;
-    [Tooltip("PIMLR: release when the hand's forward swing peaks (synced to the animation). Off = fixed releaseNormalizedTime.")]
+    [Tooltip("(Legacy, unused) Release is now the measured frame per throw clip, see PimlrThrowAnimation.")]
     [SerializeField] private bool releaseAtSwingPeak = true;
     [Tooltip("Aims this many metres above the player's pivot.")]
     [SerializeField] private float aimHeightOffset = 1f;
@@ -66,6 +71,8 @@ public class GrenadeThrower : MonoBehaviour
         animator = GetComponent<Animator>();
         ownColliders = GetComponentsInChildren<Collider>();
         throwTriggerHash = Animator.StringToHash(throwTriggerName);
+        grip = PimlrThrowAnimation.Grip(animator, throwPosition);   // PIMLR #GREN: palm point, not the wrist pivot
+        throwLock = PimlrThrowLock.For(this);
 
         // PIMLR: bombers keep their distance (face + back away, random pushes in). Added here so every bomber
         // prefab/spawn gets it without editing prefabs; add it in the Inspector yourself to tune per prefab.
@@ -85,7 +92,12 @@ public class GrenadeThrower : MonoBehaviour
         isThrowing = false;
         if (heldBalloonVisual != null) heldBalloonVisual.SetActive(false);
         if (held != null) { Destroy(held); held = null; } // PIMLR: don't leave a frozen balloon in the hand
+        if (throwLock != null) throwLock.Release(this);
     }
+
+    private Transform grip;
+    private PimlrThrowLock throwLock;
+    private PimlrThrowVariant variant;
 
     private IEnumerator ThrowLoop()
     {
@@ -140,16 +152,19 @@ public class GrenadeThrower : MonoBehaviour
             yield break;
 
         isThrowing = true;
+        bool animated = false;
         try
         {
             if (CanAnimate())
             {
+                animated = true;
+                variant = PimlrThrowAnimation.Pick(throwVariantMode, Vector3.Distance(transform.position, player.position), range > 0f ? range : 30f);
+                if (throwLock != null) throwLock.Hold(this);   // PIMLR #GREN: planted for the whole clip
                 // PIMLR: the real balloon sits in the hand for the wind-up (physics/fuse off), so it visibly
                 // leaves the hand at release instead of popping into existence somewhere near the bomber.
                 if (heldBalloonVisual != null) heldBalloonVisual.SetActive(true);
                 else held = SpawnHeld();
-                animator.ResetTrigger(throwTriggerHash);
-                animator.SetTrigger(throwTriggerHash);
+                PimlrThrowAnimation.Play(animator, variant);
                 yield return WaitForRelease(player);
                 animator.ResetTrigger(throwTriggerHash);   // never leave a stale trigger for later
                 if (heldBalloonVisual != null) heldBalloonVisual.SetActive(false);
@@ -165,7 +180,26 @@ public class GrenadeThrower : MonoBehaviour
             isThrowing = false;
             if (heldBalloonVisual != null) heldBalloonVisual.SetActive(false);
             if (held != null) { Destroy(held); held = null; }   // interrupted before release (died / disabled)
+            if (throwLock != null)
+            {
+                if (animated && throwSucceeded && isActiveAndEnabled) StartCoroutine(UnlockWhenThrowEnds());
+                else throwLock.Release(this);
+            }
         }
+    }
+
+    // PIMLR #GREN: stay planted through the follow-through, until the Animator blends out of the throw state.
+    private IEnumerator UnlockWhenThrowEnds()
+    {
+        float t = 0f;
+        yield return null;
+        while (t < 3f && animator != null && PimlrThrowAnimation.TryGetProgress(animator, out _))
+        {
+            if (health != null && health.IsDead) break;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        if (throwLock != null) throwLock.Release(this);
     }
 
     // PIMLR: Freeze Ray / Cold Shoulders boost.
@@ -178,26 +212,22 @@ public class GrenadeThrower : MonoBehaviour
         if (!checkedTrigger)
         {
             checkedTrigger = true;
-            foreach (AnimatorControllerParameter p in animator.parameters)
-                if (p.nameHash == throwTriggerHash && p.type == AnimatorControllerParameterType.Trigger)
-                    hasThrowTrigger = true;
+            hasThrowTrigger = PimlrThrowAnimation.CanPlay(animator);
             if (!hasThrowTrigger)
                 Debug.LogWarning("GrenadeThrower: Animator has no trigger '" + throwTriggerName + "', throwing without animation.", this);
         }
         return hasThrowTrigger;
     }
 
-    // Waits until the balloon should leave the hand. PIMLR: by default that's the moment the throwing hand's
-    // forward swing peaks (measured on the actual rig, so it stays in sync whatever the clip or avatar);
-    // releaseNormalizedTime is the fallback if no clear peak is seen. Falls back to a timer if the Animator
-    // never enters the Throw state.
+    // Waits until the balloon should leave the hand. PIMLR #GREN: each throw clip has a measured release frame (the
+    // moment the palm's speed peaks, PimlrThrowAnimation.ReleaseNormalized), so the balloon leaves the hand in sync with
+    // the swing on every rig that uses the MasculineAnimationAvatar. Falls back to a timer if the Animator never enters
+    // a throw state, and releases at once if it leaves the state early.
     private IEnumerator WaitForRelease(Transform player)
     {
         float elapsed = 0f;
         bool sawState = false;
-        Transform hand = throwPosition;
-        Vector3 lastLocal = hand ? transform.InverseTransformPoint(hand.position) : Vector3.zero;
-        float lastSpeed = 0f;
+        float releaseAt = PimlrThrowAnimation.ReleaseNormalized(variant);
 
         while (elapsed < 3f)
         {
@@ -205,50 +235,17 @@ public class GrenadeThrower : MonoBehaviour
             if (IsFrozen()) yield break; // PIMLR: frozen mid wind-up; ThrowRoutine cancels the throw
             if (faceTargetWhileThrowing) FaceTarget(player);
 
-            if (TryGetThrowProgress(out float progress))
+            if (PimlrThrowAnimation.TryGetProgress(animator, out float progress))
             {
                 sawState = true;
-                if (releaseAtSwingPeak && hand != null && Time.deltaTime > 0f)
-                {
-                    // Forward speed of the hand in the bomber's own space (body turning doesn't count).
-                    Vector3 local = transform.InverseTransformPoint(hand.position);
-                    float speed = (local.z - lastLocal.z) / Time.deltaTime;
-                    lastLocal = local;
-                    if (progress > 0.2f && lastSpeed > 1.5f && speed < lastSpeed) yield break; // swing just peaked
-                    lastSpeed = speed;
-                    if (progress >= 0.85f) yield break;                                      // no clear peak: let go
-                }
-                else if (progress >= releaseNormalizedTime) yield break;
+                if (progress >= releaseAt) yield break;
             }
-            else if (sawState) yield break;                       // left the Throw state early: release now
+            else if (sawState) yield break;                       // left the throw state early: release now
             else if (elapsed >= fallbackReleaseDelay) yield break; // never entered it: release anyway
 
             elapsed += Time.deltaTime;
             yield return null;
         }
-    }
-
-    private bool TryGetThrowProgress(out float progress)
-    {
-        AnimatorStateInfo current = animator.GetCurrentAnimatorStateInfo(0);
-        if (current.IsName(throwStateName))
-        {
-            progress = current.normalizedTime;
-            return true;
-        }
-
-        if (animator.IsInTransition(0))
-        {
-            AnimatorStateInfo next = animator.GetNextAnimatorStateInfo(0);
-            if (next.IsName(throwStateName))
-            {
-                progress = next.normalizedTime;
-                return true;
-            }
-        }
-
-        progress = 0f;
-        return false;
     }
 
     private void FaceTarget(Transform player)
@@ -264,8 +261,9 @@ public class GrenadeThrower : MonoBehaviour
     /// <summary>The real balloon, parented to the hand with physics, colliders and fuse switched off.</summary>
     private GameObject SpawnHeld()
     {
-        if (throwPosition == null) return null;
-        GameObject b = Instantiate(grenadePrefab, throwPosition.position, throwPosition.rotation, throwPosition);
+        Transform hold = grip != null ? grip : throwPosition;
+        if (hold == null) return null;
+        GameObject b = Instantiate(grenadePrefab, hold.position, hold.rotation, hold);
         if (b.TryGetComponent(out Rigidbody rb)) rb.isKinematic = true;
         foreach (Collider c in b.GetComponentsInChildren<Collider>()) c.enabled = false;
         foreach (Grenade g in b.GetComponentsInChildren<Grenade>()) g.enabled = false;   // fuse doesn't tick in the hand
@@ -274,7 +272,8 @@ public class GrenadeThrower : MonoBehaviour
 
     private void ReleaseBalloon(Transform player)
     {
-        Vector3 origin = throwPosition != null ? throwPosition.position : transform.position + Vector3.up * 1.5f;
+        Transform hold = grip != null ? grip : throwPosition;
+        Vector3 origin = hold != null ? hold.position : transform.position + Vector3.up * 1.5f;
 
         GameObject balloon = held;
         held = null;

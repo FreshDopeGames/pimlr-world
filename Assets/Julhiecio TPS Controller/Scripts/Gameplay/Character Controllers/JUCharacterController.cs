@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using JUTPS.ItemSystem;
 using JUTPS.PhysicsScripts;
 using JUTPS.CharacterBrain;
@@ -705,6 +705,15 @@ namespace JUTPS
                 if (HoldableItemInUseLeftHand.BlockFireMode) { FiringMode = false; FiringModeIK = false; }
             }
         }
+        // PIMLR #GREN: true while the Base Layer is in (or blending into) a state tagged "Throw" (PimlrThrowAnimation).
+        static readonly int PimlrThrowTag = Animator.StringToHash("Throw");
+        private bool PimlrIsThrowing()
+        {
+            if (anim == null || !anim.isActiveAndEnabled) return false;
+            if (anim.GetCurrentAnimatorStateInfo(0).tagHash == PimlrThrowTag) return true;
+            return anim.IsInTransition(0) && anim.GetNextAnimatorStateInfo(0).tagHash == PimlrThrowTag;
+        }
+
         private void WieldingIKWeightController()
         {
             //Disable FireMode IK when isn't in FireMode
@@ -718,7 +727,13 @@ namespace JUTPS
             }
 
             //Look IK Weight Control (Head, Spine)
-            if (FiringMode && IsReloading == false)
+            // PIMLR #GREN: no head/spine look-at while a throw clip plays (Animator tag "Throw"). The look-at pins the
+            // head to the crosshair, so the body swung through the throw while the head stayed put (looked twisted).
+            if (PimlrIsThrowing())
+            {
+                LookWeightIK = Mathf.Lerp(LookWeightIK, 0f, 14f * Time.deltaTime);
+            }
+            else if (FiringMode && IsReloading == false)
             {
                 LookWeightIK = Mathf.Lerp(LookWeightIK, 1f, 5f * Time.deltaTime);
             }

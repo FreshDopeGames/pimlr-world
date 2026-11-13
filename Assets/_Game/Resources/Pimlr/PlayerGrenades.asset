@@ -15,12 +15,20 @@ MonoBehaviour:
   balloonPrefab: {fileID: 328302593721395996, guid: 617799ab36e828249bb06fc214650ccb, type: 3}
   startCount: 0
   maxCount: 5
-  cooldown: 0.9
-  maxRange: 28
+  cooldown: 0.4
+  maxRange: 33
+  minRange: 4
+  startRange: 15
+  rangeAdjustSpeed: 14
   arcHorizontalSpeed: 16
   minFlightTime: 0.35
-  maxFlightTime: 1.4
-  useThrowAnimation: 1
-  releaseDelay: 0.3
-  keyboardKey: 21
-  gamepadButton: 1
+  maxFlightTime: 1.7
+  throwVariant: 0
+  fallbackReleaseDelay: 0.45
+  arcFillMaterial: {fileID: 2100000, guid: a900462f405ee4749a6d00c4b80ead8e, type: 2}
+  arcOutlineMaterial: {fileID: 2100000, guid: 64dcbbfabe9091f419d38025365d0534, type: 2}
+  arrowLengthFraction: 0.5
+  arrowWidth: 0.16
+  arrowHeadWidth: 0.44
+  arrowHeadLength: 0.55
+  arrowOutlineWidth: 0.035
