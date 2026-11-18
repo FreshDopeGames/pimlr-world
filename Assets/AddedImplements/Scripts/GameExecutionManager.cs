@@ -468,7 +468,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
         Debug.Log("::::>>>>>" + playerInventory.AllHoldableItems.Length);
         SceneManagerScript.Instance.goalPanel.OnCompleteGoal(GoalList.ChatWithSirihanna);
         playerInventory.EquipItem(playerInventory.AllHoldableItems[0].ItemSwitchID);
-        PimlrEnemySpawnDirector.RequestFirstEnemyCutscene("Zone 1"); // PIMLR: show the first enemy arriving
+        PimlrEnemySpawnDirector.RequestFirstEnemyCutscene("Zone 1", revealPlayer: true); // PIMLR: reveal the player (ground-to-face boom), then show the first enemy arriving
         zombieSpawner.gameObject.SetActive(true);
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(zombiesKilled.ToString() + " / 10");
     }

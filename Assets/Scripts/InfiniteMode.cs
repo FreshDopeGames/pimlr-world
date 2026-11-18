@@ -1,4 +1,4 @@
-﻿using JUTPS;
+using JUTPS;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,6 +45,9 @@ public class InfiniteMode : Singleton<InfiniteMode>
     // PIMLR (playtest): track the player's death event and prevent duplicate run submission.
     private JUHealth playerHealth;
     private bool runEnded;
+    private bool playerRevealed; // PIMLR: the wave-1 player reveal plays once per run
+    /// <summary>PIMLR (Nov 18): longest the run waits for the player to equip before wave 1's reveal (then it goes anyway).</summary>
+    public static float EquipPromptMaxWait = 8f;
 
     void Start()
     {
@@ -179,6 +182,32 @@ public class InfiniteMode : Singleton<InfiniteMode>
         currentEnemyCount = 0;
         Debug.Log(currentWave % 2);
         yield return StartCoroutine(GameExecutionManager.Instance.WaitForscreenfadeOut("0/" + TargetCount()));
+
+        // PIMLR (Nov 16): before the first wave, reveal the player - a close-up boom from the ground up to the face.
+        if (currentWave == 1 && !playerRevealed)
+        {
+            playerRevealed = true;
+            var revealTarget = GameObject.FindGameObjectWithTag("Player");
+
+            // PIMLR (Nov 18): first, prompt the player to pull out the water gun, so the reveal shows it in hand.
+            var revealPc = revealTarget ? revealTarget.GetComponent<JUCharacterController>() : null;
+            if (revealPc && !revealPc.IsItemEquiped)
+            {
+                PimlrTooltip.ShowOverPlayer($"Press {PimlrTooltip.Key(PimlrTooltip.NextWeaponLabel)} to equip your water gun", EquipPromptMaxWait,
+                    () => revealPc == null || revealPc.IsItemEquiped);
+                float waitUntil = Time.time + EquipPromptMaxWait;
+                while (revealPc && !revealPc.IsItemEquiped && Time.time < waitUntil) yield return null;
+                PimlrTooltip.Hide();
+                if (revealPc && revealPc.IsItemEquiped) yield return new WaitForSeconds(0.6f); // let the draw animation finish
+            }
+            var revealCam = PIMLR.Missions.SaveTheFans.MissionCameraDirector.Shared;
+            if (revealTarget && revealCam)
+            {
+                revealCam.StartCoroutine(revealCam.PlayPlayerReveal(revealTarget.transform)); // on the director, so ending the run can't strand the camera
+                yield return null;
+                while (revealCam && revealCam.IsPlaying) yield return null;
+            }
+        }
      
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(currentEnemyCount.ToString() + "/" + TargetCount());
        

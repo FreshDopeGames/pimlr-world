@@ -153,6 +153,13 @@ public class LeaderboardUI : MonoBehaviour
     // PIMLR (playtest): preserve the existing public navigation entry point.
     public void OnBackButton()
     {
+        // PIMLR #CAM (Nov 16): camera is outside the window -> close the board, fly back in, then re-open the menu.
+        if (PimlrLeaderboardCamera.TryClose(this, ReopenMenuAfterCamera)) return;
+        ReopenMenuAfterCamera();
+    }
+
+    void ReopenMenuAfterCamera()
+    {
         gameObject.SetActive(false);
 
         if (mainMenuPanel != null)

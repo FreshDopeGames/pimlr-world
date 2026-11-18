@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using JUTPS.ItemSystem;
 using UnityEngine.SceneManagement; // Add this line at the top of your script
@@ -437,6 +437,11 @@ namespace JUTPS.WeaponSystem
 			//Reset Fire Rate
 			CurrentFireRateToShoot = 0;
 			CanUseItem = false;
+			// PIMLR (Nov 16): a faint haptic tick for every shot the PLAYER fires (water gun). PimlrRumble respects the
+			// Rumble setting and only runs on a gamepad. Strength: PimlrPlayerFeel.ShotRumble* (low motor, high motor, seconds).
+			if (TPSControllerUser != null && TPSControllerUser.CompareTag("Player"))
+				PimlrRumble.Pulse(PimlrPlayerFeel.ShotRumbleLow, PimlrPlayerFeel.ShotRumbleHigh, PimlrPlayerFeel.ShotRumbleSeconds);
+
 
 			//Subtracts Ammunition
 			if(!InfiniteAmmo)BulletsAmounts -= 1;

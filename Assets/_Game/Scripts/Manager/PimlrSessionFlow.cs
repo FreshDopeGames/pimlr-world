@@ -18,6 +18,10 @@ public static class PimlrSessionFlow
     /// <summary>True for this hub visit when the intro dialogue should be skipped.</summary>
     public static bool SkipHubIntro { get; private set; }
 
+    /// <summary>PIMLR (Nov 18): Select Your Artist runs on this hub visit (arrived from the splash screen / first boot,
+    /// not back from YannicksWorld).</summary>
+    public static bool ShowArtistSelect { get; private set; }
+
     public static void RequestContinue() => continueRequested = true;
     public static void RequestNewGame() => continueRequested = false;
 
@@ -27,6 +31,7 @@ public static class PimlrSessionFlow
         continueRequested = false;
         previousScene = null;
         SkipHubIntro = false;
+        ShowArtistSelect = false;
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -45,6 +50,7 @@ public static class PimlrSessionFlow
         if (to.name != HubScene) return;
 
         SkipHubIntro = cameFrom == GameplayScene || (cameFrom == MainMenuScene && continueRequested);
+        ShowArtistSelect = cameFrom != GameplayScene;
         continueRequested = false;
         Debug.Log($"PIMLR Session: entered {HubScene} from '{cameFrom ?? "(start)"}' - intro dialogue {(SkipHubIntro ? "skipped" : "plays")}.");
     }

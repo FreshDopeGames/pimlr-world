@@ -13,7 +13,41 @@ public class changeColor : MonoBehaviour
     public Renderer[] renderers;
     public Material[] colourableMaterials; // Materials for each car
     public Material selectedMaterial;
+
+    // PIMLR: palette index each part shows before the player has saved a pick (parallel to `renderers`:
+    // 0 Shirt, 1 Hair, 2 Pants, 3 Shoes). Part textures are authored white-based, so the tint IS the
+    // default look; leaving an entry missing falls back to 0 (White).
+    [Tooltip("Default PimlrPalette index per renderer (same order as Renderers). Used until the player saves a color.")]
+    public int[] defaultColorIndices = { 9, 3, 6, 9 };
     #endregion
+
+    /// <summary>Saved palette index for renderer slot i, or that slot's default if nothing is saved yet.</summary>
+    /// <summary>PIMLR: tint a renderer's first material and its distance-LOD twin ("&lt;name&gt;_LOD1" under the same parent).</summary>
+    public static void TintRenderer(Renderer r, Color c)
+    {
+        if (r == null) return;
+        r.materials[0].color = c;
+        var parent = r.transform.parent;
+        if (parent == null) return;
+        var lod = parent.Find(r.name + "_LOD1");
+        if (lod != null && lod.TryGetComponent<Renderer>(out var lr)) lr.materials[0].color = c;
+        // PIMLR (Thurz v4): the hair colour also drives the head renderer. Its tint mask covers only hair-coloured
+        // texels (hairline, beard, brows), so skin is untouched and the hairline follows the painted texture
+        // instead of the mesh split between Renderer_Hair and Renderer_Head.
+        if (r.name.EndsWith("Hair"))
+        {
+            var head = parent.Find(r.name.Substring(0, r.name.Length - 4) + "Head");
+            if (head != null && head != r.transform) TintRenderer(head.GetComponent<Renderer>(), c);
+        }
+    }
+
+    protected int SavedOrDefaultIndex(int i)
+    {
+        if (renderers == null || i < 0 || i >= renderers.Length || renderers[i] == null) return -1;
+        int fallback = (defaultColorIndices != null && i < defaultColorIndices.Length) ? defaultColorIndices[i] : 0;
+        int index = PlayerPrefs.GetInt(renderers[i].name, fallback);
+        return (colors != null && index >= 0 && index < colors.Length) ? index : 0;
+    }
 
     // PIMLR: every scene uses the shared 12-color palette, so saved indices mean the same color everywhere
     // (the per-scene serialized `colors` arrays had drifted and only held 9 entries).
@@ -34,21 +68,17 @@ public class changeColor : MonoBehaviour
     public void ApplySavedColors()
     {
         if (renderers == null || colors == null || colors.Length == 0) return;
-        foreach (var r in renderers)
+        for (int i = 0; i < renderers.Length; i++)
         {
-            if (r == null) continue;
-            int index = PlayerPrefs.GetInt(r.name, 0);
-            if (index < 0 || index >= colors.Length) index = 0;
-            r.materials[0].color = colors[index];
+            if (renderers[i] == null) continue;
+            TintRenderer(renderers[i], colors[SavedOrDefaultIndex(i)]);
         }
     }
 
     /// <summary>Saved palette index for a part (0 Shirt, 1 Hair, 2 Pants, 3 Shoes), or -1 if unknown.</summary>
     public int GetSavedColorIndex(int clothIndex)
     {
-        if (renderers == null || clothIndex < 0 || clothIndex >= renderers.Length || renderers[clothIndex] == null) return -1;
-        int index = PlayerPrefs.GetInt(renderers[clothIndex].name, 0);
-        return (colors != null && index >= 0 && index < colors.Length) ? index : 0;
+        return SavedOrDefaultIndex(clothIndex);
     }
     private void UpdateActiveCar()
     {
@@ -88,7 +118,7 @@ public class changeColor : MonoBehaviour
         if (colors == null || i < 0 || i >= colors.Length) return;
         if (renderers == null || selectedRenderedInt < 0 || selectedRenderedInt >= renderers.Length || renderers[selectedRenderedInt] == null) return;
 
-        renderers[selectedRenderedInt].materials[0].color = colors[i];
+        TintRenderer(renderers[selectedRenderedInt], colors[i]);
         string rendererName = renderers[selectedRenderedInt].name;
         PlayerPrefs.SetInt(rendererName, i);
         PlayerPrefs.Save();

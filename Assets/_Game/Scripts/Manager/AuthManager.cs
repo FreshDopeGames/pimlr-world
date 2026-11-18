@@ -602,6 +602,7 @@ public class AuthManager : Singleton<AuthManager>
     {
         AchievementReward previousReward = achievementReward; // PIMLR #ANL
         achievementReward = newAchievementReward;
+        if (newAchievementReward == AchievementReward.Nothing) PimlrBoostHUD.Clear(); // PIMLR (Nov 18): boost stopped / scene left
         ResetPowerups();
         if (newAchievementReward == AchievementReward.MovementSpeed)
         {

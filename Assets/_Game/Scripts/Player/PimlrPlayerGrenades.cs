@@ -5,19 +5,22 @@
 //   - Once you carry any, D-pad Left / Right (Q / E) cycles  [empty hands] -> water gun -> BALLOONS -> other guns...
 //     (the balloon slot sits right after the first gun, i.e. the secondary slot). This script takes over JUTPS's
 //     next/previous switching while you carry balloons, and hands it back when you run out.
-//   - Balloons equipped: one sits in the right palm. Hold LT (right mouse) to aim: you stop moving, turn with the
-//     camera, and the left stick (W / S) sets the throw distance, shown by the blue trajectory arrow (PimlrThrowArc).
-//     RT (left mouse) throws, aimed or not, at that distance in the camera's direction.
-//   - The throw plays Throw Object (long throws) or Goalie Throw (short / medium), the same clips the bombers use
-//     (PimlrThrowAnimation); the balloon leaves the palm on the clip's measured release frame, and PimlrThrowLock keeps
-//     the player planted until the clip ends.
+//   - COOK TO THROW (Nov 16): with balloons equipped, press and HOLD RT / R2 / left mouse. The throw animation winds
+//     up and holds at the top of the wind-up while the button is held; the blue arrow (PimlrThrowArc) grows as the
+//     throw "cooks". Release to finish the animation and let go. Distance = minRange (tap) -> maxRange (fullCookTime).
+//     LT (right mouse) still plants the player and turns them with the camera to line the throw up.
+//   - The balloon leaves the palm on the clip's measured release frame (PimlrThrowAnimation); PimlrThrowLock keeps
+//     the player planted from the press until the clip ends.
 //   - The burst damages enemies only (Water_Explosion_Player -> WaterSplashDamage, Target = Enemies).
+//   - HUD weapon panel + the pause menu's Secondary slot are driven by PimlrSecondaryItemUI (added alongside this).
 // Tuning: Assets/_Game/Resources/PIMLR/PlayerGrenades.asset.
 //
 // Unreal note: an ActorComponent on the player Character registered as an inventory slot; Enhanced Input actions for
-// NextWeapon / PreviousWeapon / Aim / Fire / AimDistance (1D axis). The arc preview is PredictProjectilePath; the
-// throw is an Anim Montage with a Release notify that spawns the balloon Actor (ProjectileMovementComponent velocity
-// from SuggestProjectileVelocity_CustomArc).
+// NextWeapon / PreviousWeapon / Aim / Fire. Fire uses a Hold trigger: Started -> play the throw Anim Montage, a
+// "WindupHold" notify pauses it (Montage_Pause) while the action is Ongoing, Completed -> Montage_Resume; the
+// "Release" notify spawns the balloon Actor with ProjectileMovementComponent velocity from
+// SuggestProjectileVelocity_CustomArc. Elapsed hold time (FInputActionInstance::GetElapsedTime) maps through a
+// UCurveFloat to the throw distance; the arc preview is PredictProjectilePath.
 
 using System;
 using System.Collections;
@@ -25,10 +28,8 @@ using System.Collections.Generic;
 using JUTPS;
 using JUTPS.ItemSystem;
 using JUTPS.JUInputSystem;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class PimlrPlayerGrenades : MonoBehaviour
@@ -39,15 +40,21 @@ public class PimlrPlayerGrenades : MonoBehaviour
     public static event Action<bool> EquippedChanged;
 
     public int Count { get; private set; }
+    /// <summary>How long the 'cycle weapons' hint stays over the player's head after a pickup.</summary>
+    public static float PickupTooltipSeconds = 3.5f;
     public int MaxCount => S ? S.maxCount : 5;
     public bool IsEquipped => equipped;
     public bool IsAiming => aiming;
+    /// <summary>True from the throw press until the balloon leaves the hand.</summary>
+    public bool IsCooking => cooking;
     public bool IsFull => Count >= MaxCount;
-    /// <summary>Current throw distance (metres), set with the left stick while aiming.</summary>
+    /// <summary>Current throw distance (metres): grows while cooking, minRange otherwise.</summary>
     public float AimDistance => aimDistance;
+    /// <summary>0-1 share of a full cook (for UI).</summary>
+    public float CookFraction => cooking ? cookFraction : 0f;
 
     static PimlrPlayerGrenadeSettings settings;
-    static PimlrPlayerGrenadeSettings S
+    internal static PimlrPlayerGrenadeSettings S
     {
         get
         {
@@ -68,16 +75,15 @@ public class PimlrPlayerGrenades : MonoBehaviour
     PimlrThrowArc arc;
     GameObject held;
 
-    bool equipped, aiming, throwing;
-    float nextThrow, aimDistance;
+    bool equipped, aiming, throwing, cooking;
+    float nextThrow, aimDistance, cookFraction;
     int itemBeforeBalloons = -1;
     bool tookOverSwitching, savedSwitching, savedPunch;
     readonly List<int> slots = new List<int>(8);
 
-    TMP_Text hudLabel;
-    Image hudBg;
-    CanvasGroup hudGroup;
-    float hudFlash;
+    // Animator speed while the wind-up pose is held (restored on release / interruption).
+    bool animFrozen;
+    float animSpeedBefore = 1f;
 
     // ------------------------------------------------------------------ auto-attach
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -111,17 +117,18 @@ public class PimlrPlayerGrenades : MonoBehaviour
         grip = PimlrThrowAnimation.Grip(animator);
         throwLock = PimlrThrowLock.For(this);
         Count = S ? Mathf.Min(S.startCount, S.maxCount) : 0;
-        aimDistance = S ? Mathf.Clamp(S.startRange, S.minRange, S.maxRange) : 15f;
+        aimDistance = S ? S.minRange : 4f;
         if (!S) Debug.LogWarning("[PIMLR Grenades] Resources/PIMLR/PlayerGrenades.asset is missing - balloons are disabled.");
         else arc = PimlrThrowArc.Create(S.arcFillMaterial, S.arcOutlineMaterial);
-        BuildHud();
+        if (!GetComponent<PimlrSecondaryItemUI>()) gameObject.AddComponent<PimlrSecondaryItemUI>(); // HUD icon/ammo + pause slot
     }
 
     void OnDisable()
     {
+        UnfreezeAnimator();
         if (throwLock) throwLock.Release(this);
         if (throwLock) throwLock.Release(arcHolder);
-        throwing = false; aiming = false;
+        throwing = false; aiming = false; cooking = false;
         if (arc) arc.Hide();
         SetHeldVisible(false);
         GiveBackSwitching();
@@ -130,7 +137,6 @@ public class PimlrPlayerGrenades : MonoBehaviour
     void OnDestroy()
     {
         if (Instance == this) Instance = null;
-        if (hudGroup) Destroy(hudGroup.gameObject);
         if (arc) Destroy(arc.gameObject);
         if (held) Destroy(held);
     }
@@ -141,7 +147,12 @@ public class PimlrPlayerGrenades : MonoBehaviour
     {
         int before = Count;
         Count = Mathf.Clamp(Count + amount, 0, MaxCount);
-        if (Count != before) { hudFlash = 3f; CountChanged?.Invoke(Count); }
+        if (Count != before)
+        {
+            CountChanged?.Invoke(Count);
+            // PIMLR (Nov 18): remind the player how to get to the balloons.
+            PimlrTooltip.ShowOverPlayer($"Use {PimlrTooltip.Key(PimlrTooltip.PrevWeaponLabel)} and {PimlrTooltip.Key(PimlrTooltip.NextWeaponLabel)} to cycle weapons", PickupTooltipSeconds);
+        }
         return Count - before;
     }
 
@@ -150,7 +161,6 @@ public class PimlrPlayerGrenades : MonoBehaviour
 
     void Update()
     {
-        UpdateHud();
         if (!S || !pc) return;
 
         ManageSwitching();
@@ -170,7 +180,6 @@ public class PimlrPlayerGrenades : MonoBehaviour
             aiming = wantAim;
             if (aiming) throwLock.Hold(arcHolder); else throwLock.Release(arcHolder);
         }
-        if (aiming) AdjustDistance();
 
         if (canAct && !throwing && Count > 0 && Time.time >= nextThrow && ThrowPressed())
             StartCoroutine(Throw());
@@ -185,7 +194,8 @@ public class PimlrPlayerGrenades : MonoBehaviour
 
         if (arc)
         {
-            if (aiming && !throwing) DrawArc();
+            // While cooking the arrow grows with the cook; LT on its own previews a quick (tap) throw.
+            if (cooking || (aiming && !throwing)) DrawArc(cooking ? aimDistance : S.minRange);
             else arc.Hide();
         }
     }
@@ -273,7 +283,6 @@ public class PimlrPlayerGrenades : MonoBehaviour
         equipped = true;
         savedPunch = pc.EnablePunchAttacks;
         pc.EnablePunchAttacks = false;   // RT throws instead of punching while balloons are out
-        hudFlash = 3f;
         EquippedChanged?.Invoke(true);
     }
 
@@ -297,10 +306,17 @@ public class PimlrPlayerGrenades : MonoBehaviour
     }
 
     // ------------------------------------------------------------------ input
-    /// <summary>Scripted aim / throw (tutorials, automated tests): AimOverride holds the aim; RequestThrow() presses RT once.</summary>
+    /// <summary>Scripted aim (tutorials, automated tests): holds LT while true.</summary>
     [NonSerialized] public bool AimOverride;
     bool throwRequested;
-    public void RequestThrow() => throwRequested = true;
+    float scriptedCookUntil = -1f;
+
+    /// <summary>Scripted throw (tutorials, automated tests): presses RT and keeps it held for cookSeconds.</summary>
+    public void RequestThrow(float cookSeconds = 0f)
+    {
+        throwRequested = true;
+        scriptedCookUntil = Time.time + Mathf.Max(0f, cookSeconds);
+    }
 
     bool AimHeld()
     {
@@ -316,15 +332,11 @@ public class PimlrPlayerGrenades : MonoBehaviour
         return (Gamepad.current != null && Gamepad.current.rightTrigger.wasPressedThisFrame) || (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame);
     }
 
-    void AdjustDistance()
+    bool ThrowHeld()
     {
-        float y = 0f;
-        var pad = Gamepad.current;
-        if (pad != null) { float v = pad.leftStick.ReadValue().y; if (Mathf.Abs(v) > 0.2f) y += (Mathf.Abs(v) - 0.2f) / 0.8f * Mathf.Sign(v); }
-        var kb = Keyboard.current;
-        if (kb != null) { if (kb.wKey.isPressed || kb.upArrowKey.isPressed) y += 1f; if (kb.sKey.isPressed || kb.downArrowKey.isPressed) y -= 1f; }
-        y = Mathf.Clamp(y, -1f, 1f);
-        aimDistance = Mathf.Clamp(aimDistance + y * S.rangeAdjustSpeed * Time.deltaTime, S.minRange, S.maxRange);
+        if (Time.time < scriptedCookUntil) return true;
+        if (JUInput.Instance() != null) return JUInput.GetButton(JUInput.Buttons.ShotButton);
+        return (Gamepad.current != null && Gamepad.current.rightTrigger.isPressed) || (Mouse.current != null && Mouse.current.leftButton.isPressed);
     }
 
     bool CanThrow()
@@ -334,6 +346,15 @@ public class PimlrPlayerGrenades : MonoBehaviour
         if (PimlrInterstitial.Playing || PimlrSettingsMenu.IsOpen || JUPauseGame.Paused) return false;
         if (Time.timeScale == 0f) return false;
         return true;
+    }
+
+    // Hold time -> throw distance.
+    float CookDistance(float heldSeconds)
+    {
+        float k = Mathf.Clamp01(heldSeconds / Mathf.Max(0.05f, S.fullCookTime));
+        float shaped = S.cookResponse != null && S.cookResponse.length > 0 ? Mathf.Clamp01(S.cookResponse.Evaluate(k)) : k;
+        cookFraction = k;
+        return Mathf.Lerp(S.minRange, S.maxRange, shaped);
     }
 
     // ------------------------------------------------------------------ aiming helpers
@@ -355,7 +376,7 @@ public class PimlrPlayerGrenades : MonoBehaviour
         if (dirT) dirT.rotation = keep;
     }
 
-    // Landing point: aimDistance along the aim direction from the player's feet, dropped onto whatever is below.
+    // Landing point: distance along the aim direction from the player's feet, dropped onto whatever is below.
     Vector3 TargetPoint(Vector3 dir, float distance)
     {
         Vector3 flat = transform.position + dir * distance;
@@ -369,55 +390,111 @@ public class PimlrPlayerGrenades : MonoBehaviour
         return point;
     }
 
-    void DrawArc()
+    void DrawArc(float distance)
     {
         Vector3 dir = AimDirection(transform);
-        var variant = PimlrThrowAnimation.Pick(S.throwVariant == PimlrThrowVariantMode.Random ? PimlrThrowVariantMode.ByDistance : S.throwVariant, aimDistance, S.maxRange);
+        var variant = S.cookedThrowVariant;
         Vector3 p0 = transform.position + Quaternion.LookRotation(dir) * Vector3.Scale(PimlrThrowAnimation.ReleaseLocal(variant), transform.lossyScale);
-        Vector3 target = TargetPoint(dir, aimDistance);
+        Vector3 target = TargetPoint(dir, distance);
         float t = PimlrThrowAnimation.FlightTime(p0, target, S.arcHorizontalSpeed, S.minFlightTime, S.maxFlightTime);
         arc.Show(p0, PimlrThrowAnimation.SolveVelocity(p0, target, t, Physics.gravity), Physics.gravity, t, S);
     }
 
-    // ------------------------------------------------------------------ throw
+    // ------------------------------------------------------------------ throw (cook to throw)
+    bool Interrupted() => pc.IsDead || pc.IsRagdolled || pc.IsDriving || (health && health.IsDead);
+
+    void FreezeAnimator()
+    {
+        if (animFrozen || !animator) return;
+        animSpeedBefore = animator.speed > 0f ? animator.speed : 1f;
+        animator.speed = 0f;
+        animFrozen = true;
+    }
+
+    void UnfreezeAnimator()
+    {
+        if (!animFrozen) return;
+        if (animator) animator.speed = animSpeedBefore;
+        animFrozen = false;
+    }
+
     IEnumerator Throw()
     {
         throwing = true;
+        cooking = true;
         throwLock.Hold(this);
-        Vector3 dir = AimDirection(transform);
-        float distance = aimDistance;
-        var variant = PimlrThrowAnimation.Pick(S.throwVariant, distance, S.maxRange);
-        if (arc) arc.Hide();
+        var variant = S.cookedThrowVariant;
+        float cookStart = Time.time;
+        aimDistance = CookDistance(0f);
 
-        // The balloon already in the palm becomes the thrown one.
+        // The balloon already in the palm becomes the thrown one (it stays parented to the hand while cooking).
         GameObject balloon = TakeHeld();
         bool animated = PimlrThrowAnimation.CanPlay(animator);
         if (animated) PimlrThrowAnimation.Play(animator, variant);
 
-        float elapsed = 0f; bool sawState = false; float releaseAt = PimlrThrowAnimation.ReleaseNormalized(variant);
-        while (animated && elapsed < 3f)
+        float releaseAt = PimlrThrowAnimation.ReleaseNormalized(variant);
+        float holdAt = releaseAt * S.windupHoldShare;
+        bool released = false;          // the player let go of the button
+        float elapsed = 0f, nextRumble = Time.time + S.cookRumbleInterval;
+        bool sawState = false;
+
+        // Phase 1: wind up, hold the pose while the button is held, then play on to the release frame.
+        while (true)
         {
-            if (pc.IsDead || pc.IsRagdolled || pc.IsDriving) break;
-            if (PimlrThrowAnimation.TryGetProgress(animator, out float p)) { sawState = true; if (p >= releaseAt) break; }
-            else if (sawState || elapsed >= S.fallbackReleaseDelay) break;
+            if (Interrupted()) break;
+
+            if (!released)
+            {
+                if (ThrowHeld())
+                {
+                    aimDistance = CookDistance(Time.time - cookStart);
+                    if (S.cookRumbleInterval > 0f && Time.time >= nextRumble && cookFraction < 1f)
+                    {
+                        nextRumble = Time.time + S.cookRumbleInterval;
+                        PimlrRumble.Pulse(0.03f + 0.07f * cookFraction, 0.05f + 0.15f * cookFraction, 0.05f);
+                    }
+                }
+                else
+                {
+                    released = true;
+                    aimDistance = CookDistance(Time.time - cookStart); // locked in at the moment of release
+                    UnfreezeAnimator();
+                }
+            }
+
+            if (animated)
+            {
+                if (PimlrThrowAnimation.TryGetProgress(animator, out float p))
+                {
+                    sawState = true;
+                    if (!released && p >= holdAt) FreezeAnimator();       // top of the wind-up: hold here
+                    if (released && p >= releaseAt) break;                 // the arm is coming through: let go
+                }
+                else if (released && (sawState || elapsed >= S.fallbackReleaseDelay)) break; // never reached / already left the throw state
+            }
+            else if (released) break;
+
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        if (pc.IsDead || pc.IsDriving || pc.IsRagdolled)
+        UnfreezeAnimator();
+        cooking = false;
+        Vector3 dir = AimDirection(transform);
+
+        if (Interrupted())
         {
             if (balloon) Destroy(balloon);       // interrupted: the balloon is lost with the throw
         }
         else
         {
             Count--;
-            hudFlash = 3f;
             CountChanged?.Invoke(Count);
-            Release(balloon, TargetPoint(dir, distance));
+            Release(balloon, TargetPoint(dir, aimDistance));
             PimlrRumble.Pulse(0.15f, 0.35f, 0.1f);
         }
 
-        // Stay planted through the follow-through, until the Animator blends out of the throw.
+        // Phase 2: stay planted through the follow-through, until the Animator blends out of the throw.
         elapsed = 0f;
         yield return null;
         while (animated && elapsed < 3f && PimlrThrowAnimation.TryGetProgress(animator, out _))
@@ -429,6 +506,7 @@ public class PimlrPlayerGrenades : MonoBehaviour
         PimlrThrowAnimation.ClearTrigger(animator);
         throwLock.Release(this);
         nextThrow = Time.time + S.cooldown;
+        aimDistance = S.minRange;
         throwing = false;
     }
 
@@ -481,54 +559,5 @@ public class PimlrPlayerGrenades : MonoBehaviour
         held = null;
         if (b) b.SetActive(true);
         return b;
-    }
-
-    // ------------------------------------------------------------------ HUD (placeholder: reskin later)
-    void BuildHud()
-    {
-        var go = new GameObject("PIMLR Balloon Counter", typeof(RectTransform));
-        var canvas = go.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 40;
-        var scaler = go.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920, 1080);
-        scaler.matchWidthOrHeight = 0.5f;
-        hudGroup = go.AddComponent<CanvasGroup>();
-        hudGroup.interactable = false; hudGroup.blocksRaycasts = false;
-
-        hudBg = new GameObject("BG", typeof(RectTransform)).AddComponent<Image>();
-        hudBg.transform.SetParent(go.transform, false);
-        hudBg.color = new Color(0f, 0.12f, 0.3f, 0.75f);
-        hudBg.raycastTarget = false;
-        var rt = hudBg.rectTransform;
-        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
-        rt.pivot = new Vector2(0.5f, 0f);
-        rt.anchoredPosition = new Vector2(470f, 138f); // right of the water-drop ammo icons
-        rt.sizeDelta = new Vector2(330f, 46f);
-
-        hudLabel = new GameObject("Label", typeof(RectTransform)).AddComponent<TextMeshProUGUI>();
-        hudLabel.transform.SetParent(hudBg.transform, false);
-        var lrt = hudLabel.rectTransform;
-        lrt.anchorMin = Vector2.zero; lrt.anchorMax = Vector2.one; lrt.offsetMin = lrt.offsetMax = Vector2.zero;
-        hudLabel.fontSize = 22; hudLabel.alignment = TextAlignmentOptions.Center; hudLabel.color = Color.white;
-        hudLabel.raycastTarget = false;
-        UpdateHud();
-    }
-
-    void UpdateHud()
-    {
-        if (!hudLabel) return;
-        bool pad = PimlrInput.UsingGamepad;
-        string hint;
-        if (!equipped) hint = pad ? "D-PAD L / R" : "Q / E";
-        else if (aiming) hint = $"{Mathf.RoundToInt(aimDistance)} m  " + (pad ? "RT THROW" : "LMB THROW");
-        else hint = pad ? "LT AIM · RT THROW" : "RMB AIM · LMB THROW";
-        hudLabel.text = $"BALLOONS  {Count}/{MaxCount}   <size=70%><color=#FFD21A>[{hint}]</color></size>";
-        if (hudBg) hudBg.color = equipped ? new Color(0.05f, 0.35f, 0.8f, 0.85f) : new Color(0f, 0.12f, 0.3f, 0.75f);
-        hudFlash -= Time.unscaledDeltaTime;
-        // Shown while you carry any (and briefly after the last one goes), hidden behind menus and cutscenes.
-        bool show = (Count > 0 || equipped || hudFlash > 0f) && !Cursor.visible && !PimlrInterstitial.Playing && pc && pc.CanMove;
-        hudGroup.alpha = Mathf.MoveTowards(hudGroup.alpha, show ? 1f : 0f, Time.unscaledDeltaTime * 4f);
     }
 }

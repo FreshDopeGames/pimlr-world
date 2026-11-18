@@ -38,13 +38,11 @@ public class Customization_Applier : changeColor
             for (int i = 0; i < renderers.Length; i++)
             {
                 if (renderers[i] == null) continue;
-                string rendererName = renderers[i].name;
-                // PIMLR: guard against saved indices outside the palette (e.g. from an older/newer build).
-                int index = PlayerPrefs.GetInt(rendererName, 0);
-                if (index < 0 || index >= colors.Length) index = 0;
+                // PIMLR: saved index, else this part's default (defaultColorIndices); out-of-range saves fall back to 0.
+                int index = SavedOrDefaultIndex(i);
                 // PIMLR: per-renderer material instance only. Writing to colourableMaterials changed the shared
                 // Wolf3D_*.mat assets on disk every play session (git churn) and leaked colors between scenes.
-                renderers[i].materials[0].color = colors[index];
+                TintRenderer(renderers[i], colors[index]);
             }
         }
     }

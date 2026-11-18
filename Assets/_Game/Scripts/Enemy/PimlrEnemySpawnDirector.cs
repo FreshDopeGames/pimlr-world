@@ -55,7 +55,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatics() { runner = null; settings = null; settingsLoaded = false; recentSfx.Clear(); cutsceneRequest = null; arriving.Clear(); }
+    static void ResetStatics() { runner = null; settings = null; settingsLoaded = false; recentSfx.Clear(); cutsceneRequest = null; revealRequest = false; revealTaken = false; arriving.Clear(); }
 
     // ---------- PIMLR: Story "first enemy" cutscene ----------
     static string cutsceneRequest;
@@ -63,8 +63,10 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     /// <summary>The next enemy to arrive (outside Save The Fans, which has its own intro) gets a short cutscene: the
     /// camera flies to its portal, it steps out, the camera flies back and the player gets control again.
     /// Other arrivals wait until the cutscene is over. stage = a label for the log.</summary>
-    public static void RequestFirstEnemyCutscene(string stage) { cutsceneRequest = stage; }
-    public static void CancelFirstEnemyCutscene() { cutsceneRequest = null; }
+    /// revealPlayer (PIMLR Nov 16): open the cutscene with the ground-to-face boom on the player (Story Level 1).
+    public static void RequestFirstEnemyCutscene(string stage, bool revealPlayer = false) { cutsceneRequest = stage; revealRequest = revealPlayer; }
+    public static void CancelFirstEnemyCutscene() { cutsceneRequest = null; revealRequest = false; }
+    static bool revealRequest, revealTaken;
 
     static bool TakeCutsceneRequest()
     {
@@ -72,6 +74,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
         var stf = PIMLR.Missions.SaveTheFans.SaveTheFansMission.Instance;
         if (stf && stf.IsRunning) return false; // STF enemies come in through the heat intro instead
         cutsceneRequest = null;
+        revealTaken = revealRequest; revealRequest = false;
         return true;
     }
 
@@ -83,6 +86,8 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
     {
         if (!enemy) return;
         PimlrRobotFX.Attach(enemy); // PIMLR: robots - glowing red eyes + electric short-circuit when they die
+        PimlrMeleeAttackPlant.Attach(enemy);
+        PimlrArmedArrival.Attach(enemy);    // PIMLR (Nov 18): gunners step out already holding their gun // PIMLR: no sliding during punches / melee swings
         enemy.SetActive(false);
         arriving.Add(enemy);
         Runner.StartCoroutine(Runner.ArriveRoutine(enemy, relocate));
@@ -123,7 +128,7 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
             bool reached = false;
             PimlrInterstitial.Begin(); // everyone else waits for the cutscene
             cutsceneHold = true;
-            Runner.StartCoroutine(cutscene.PlayEnemyArrival(spot, player, () => reached = true));
+            Runner.StartCoroutine(cutscene.PlayEnemyArrival(spot, player, () => reached = true, revealTaken));
             while (!reached && cutscene.IsPlaying) yield return null;
         }
 
@@ -158,6 +163,14 @@ public class PimlrEnemySpawnDirector : MonoBehaviour
             PimlrHuntPlayer.Attach(enemy);
         else if (relocate && TryGetIntersection(out Vector3 hub) && (Flat(spot) - Flat(hub)).sqrMagnitude > 20f * 20f)
             PimlrSeekIntersection.Attach(enemy, hub);
+
+        // PIMLR #CAM (Nov 16): the cutscene is an introduction - stand in place (no aggro) until the cinematic
+        // camera has handed back to the gameplay camera. Applied after the drivers above are attached so they're held too.
+        if (cutscene && cutscene.IsPlaying)
+        {
+            var introCam = cutscene;
+            PimlrEnemyIntroHold.Hold(enemy, () => introCam && introCam.IsPlaying);
+        }
 
         // The burst prefab may carry its own sound; only add ours if it doesn't.
         if (!Spawn(s.arrivalBurstPrefab, spot + Vector3.up * 0.1f, facing, s.burstScale, s.burstLifetime, s))

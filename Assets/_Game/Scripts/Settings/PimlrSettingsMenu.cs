@@ -133,6 +133,9 @@ public class PimlrSettingsMenu : MonoBehaviour
             label.alignment = TextAlignmentOptions.Center;
         }
 
+        // PIMLR (Nov 18): the Living Room SETTINGS button is green (it was a purple copy of FIT CHECK).
+        if (place == Placement.RightOfLeaderboards && copy.TryGetComponent(out Image bg)) bg.color = Fill;
+
         var b = copy.GetComponent<Button>();
         b.onClick = new Button.ButtonClickedEvent(); // drop the original button's persistent (Inspector) calls
         GameObject hostGo = host.gameObject;

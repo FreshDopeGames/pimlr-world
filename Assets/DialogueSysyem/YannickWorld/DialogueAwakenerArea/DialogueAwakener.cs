@@ -34,6 +34,15 @@ public class DialogueAwakener : MonoBehaviour
         if (uILevelCompletePopUp == null)
             Debug.LogWarning("DialogueAwakener: UIManager could not find UILevelCompletePopUp on 'Zone Panel'.", this);
 
+        // PIMLR (Nov 18): Select Your Artist first (arrivals from the splash screen). The intro dialogue / menu waits for
+        // the pick, so the dialogue can use the chosen artist's version.
+        if (SceneManager.GetActiveScene().name == PimlrSessionFlow.HubScene && PimlrSessionFlow.ShowArtistSelect)
+        {
+            isInteracted = true; // the player spawns inside this trigger - hold the dialogue until an artist is picked
+            StartCoroutine(ArtistSelectThenContinue());
+            return;
+        }
+
         // PIMLR: continuing players (back from YannicksWorld, or Keep Playing on the main menu) already know the
         // exposition - skip the intro dialogue and bring the main menu up 1 s after the scene fades in.
         if (SceneManager.GetActiveScene().name == PimlrSessionFlow.HubScene && PimlrSessionFlow.SkipHubIntro)
@@ -208,6 +217,45 @@ public class DialogueAwakener : MonoBehaviour
         GameExecutionManager.Instance.zombieSpawner.gameObject.SetActive(true);
         CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() - 40);
         
+    }
+
+    // PIMLR (Nov 18): carousel after the loading screen, then the intro dialogue (new game) or the menu (continue).
+    private IEnumerator ArtistSelectThenContinue()
+    {
+        yield return null;
+        while (PimlrInterstitial.Playing) yield return null;
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        if (characterController == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) characterController = player.GetComponent<JUCharacterController>();
+        }
+        if (characterController != null) PlayerControllerStop();
+
+        bool picked = false;
+        PimlrArtistSelect.Open(() => picked = true);
+        while (!picked) yield return null;
+
+        if (PimlrSessionFlow.SkipHubIntro)
+        {
+            StartCoroutine(ShowHubMenuAfterFadeIn());
+            yield break;
+        }
+
+        // New game: the intro, in the picked artist's version if the roster has one.
+        var artist = PimlrArtists.Selected;
+        if (artist != null && artist.hubIntroDialogue != null) dialogueScript = artist.hubIntroDialogue;
+        if (DialogueManager.instance == null || DialogueManager.instance.ScreenDialogue == null || dialogueScript == null)
+        {
+            Debug.LogWarning("DialogueAwakener: can't start the intro dialogue after artist select - showing the menu.", this);
+            StartCoroutine(ShowHubMenuAfterFadeIn());
+            yield break;
+        }
+        PlayerPoints = 0;
+        if (characterController != null) PlayerControllerStop();
+        uIManager = GameObject.FindObjectOfType<UIManager>();
+        DialogueManager.instance.StartDialogue(dialogueScript);
     }
 
     // PIMLR: same end state as finishing the intro (EndDialogBox), minus the dialogue.

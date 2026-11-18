@@ -117,16 +117,92 @@ namespace PIMLR.Missions.SaveTheFans
         /// PIMLR (Story first-enemy cutscene): fly to where an enemy is about to arrive, invoke onShotReached
         /// (open the portal there), hold while it steps out, then fly straight back behind the player.
         /// onShotReached is NOT called if the move is skipped or the cutscene can't start; callers check IsPlaying.
-        public IEnumerator PlayEnemyArrival(Vector3 spot, Transform player, System.Action onShotReached)
+        /// revealPlayerFirst (PIMLR Nov 16): open with the ground-to-face boom on the player, then go to the enemy.
+        public IEnumerator PlayEnemyArrival(Vector3 spot, Transform player, System.Action onShotReached, bool revealPlayerFirst = false)
         {
             if (!Begin()) yield break;
             reachFrom = player ? player.position : (Vector3?)null;
+            if (revealPlayerFirst && player) yield return RevealBoom(player);
+            if (skipRequested) { yield return ReturnHome(); End(); yield break; }
             Vector3 focus = spot + Vector3.up * 1.5f;
             // Camera on the player's side of the portal, so the enemy steps out toward the lens.
             Vector3 towardPlayer = player ? player.position - spot : Vector3.forward;
             yield return FlyTo(focus, towardPlayer, travelTime, holdOnEnemy, null, onShotReached);
             yield return ReturnHome();
             End();
+        }
+
+        // ------------------------------------------------------------------ player reveal boom (PIMLR #CAM, Nov 16)
+        // A close-up that starts at the ground in front of the player and booms straight up the body, slowing to a
+        // stop on the face. Plays before the Level 1 enemy introduction (Story) and before wave 1 (Infinite Mode).
+        // It films whatever object is tagged Player, so it works for any selected artist.
+        // Unreal: a short Level Sequence with a CineCameraActor on a crane rig bound to the player pawn at runtime
+        // (or a spline + timeline with an ease-out curve); look-at tracking on the head socket.
+        [Header("Player reveal boom")]
+        [Tooltip("Seconds for the rise from the ground to the face.")]
+        [Min(0.5f)] public float revealRiseTime = 3.2f;
+        [Tooltip("Seconds held on the face once the rise has stopped.")]
+        [Min(0f)] public float revealFaceHold = 1.1f;
+        [Tooltip("Lens distance from the player at the feet.")]
+        [Min(0.4f)] public float revealStartDistance = 1.5f;
+        [Tooltip("Lens distance from the face at the end.")]
+        [Min(0.4f)] public float revealFaceDistance = 0.85f;
+        [Tooltip("Degrees off straight-on. A slight three-quarter angle reads better than dead centre.")]
+        [Range(-60f, 60f)] public float revealAngle = 14f;
+        [Tooltip("Lens height above the ground at the start.")]
+        [Min(0.05f)] public float revealStartHeight = 0.16f;
+
+        /// Stand-alone reveal (Infinite Mode wave 1): boom up the player, hold on the face, fly back behind them.
+        public IEnumerator PlayPlayerReveal(Transform player)
+        {
+            if (!player || !Begin()) yield break;
+            yield return RevealBoom(player);
+            yield return ReturnHome();
+            End();
+        }
+
+        IEnumerator RevealBoom(Transform player)
+        {
+            var anim = player.GetComponentInChildren<Animator>();
+            Transform head = anim && anim.isHuman ? anim.GetBoneTransform(HumanBodyBones.Head) : null;
+            Vector3 feet = player.position;
+            Vector3 face = head ? head.position + Vector3.up * 0.05f : feet + Vector3.up * 1.65f;
+            Vector3 fwd = player.forward; fwd.y = 0f;
+            fwd = fwd.sqrMagnitude > 0.001f ? fwd.normalized : Vector3.forward;
+            Vector3 dir = PickRevealDirection(feet, face, fwd);
+
+            float t = 0f;
+            while (!skipRequested)
+            {
+                t += Time.deltaTime;
+                float k = Mathf.Clamp01(t / revealRiseTime);
+                float e = 1f - Mathf.Pow(1f - k, 2.6f);                 // ease-out: quick off the ground, slowing to a stop at the face
+                if (head) face = head.position + Vector3.up * 0.05f;    // the idle pose sways: keep the face centred
+                Vector3 axis = Vector3.Lerp(feet, face, e);
+                axis.y = Mathf.Lerp(feet.y + revealStartHeight, face.y, e);
+                Vector3 p = axis + dir * Mathf.Lerp(revealStartDistance, revealFaceDistance, e);
+                cameraTransform.SetPositionAndRotation(p, LookRotationSafe(axis - p));
+                if (t >= revealRiseTime + revealFaceHold) break;
+                yield return null;
+            }
+        }
+
+        // In front of the player at the reveal angle; swings round if a wall or prop is in the way of the lens.
+        Vector3 PickRevealDirection(Vector3 feet, Vector3 face, Vector3 fwd)
+        {
+            float a = revealAngle;
+            foreach (float yaw in new[] { a, -a, a + 35f, -(a + 35f), 75f, -75f, 115f, -115f, 180f })
+            {
+                Vector3 d = Quaternion.AngleAxis(yaw, Vector3.up) * fwd;
+                Vector3 low = feet + Vector3.up * revealStartHeight;
+                Vector3 start = low + d * revealStartDistance, end = face + d * revealFaceDistance;
+                if (Physics.CheckSphere(start + Vector3.up * 0.15f, 0.2f, occlusionMask, QueryTriggerInteraction.Ignore)) continue;
+                if (Physics.CheckSphere(end, 0.25f, occlusionMask, QueryTriggerInteraction.Ignore)) continue;
+                if (Physics.Linecast(face, end, occlusionMask, QueryTriggerInteraction.Ignore)) continue;
+                if (Physics.Linecast(low + Vector3.up * 0.3f, start + Vector3.up * 0.3f, occlusionMask, QueryTriggerInteraction.Ignore)) continue;
+                return d;
+            }
+            return Quaternion.AngleAxis(a, Vector3.up) * fwd;
         }
 
         /// PIMLR: the scene's director (Save The Fans' one in YannicksWorld), or a runtime one with default settings.

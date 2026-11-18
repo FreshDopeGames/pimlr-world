@@ -51,6 +51,9 @@ public class UI_GoalPanel : MonoBehaviour
     public void StartBoost(string title, string info, AchievementReward achievementReward)
     {
         AuthManager.Instance.PowerChange(achievementReward);
+        // PIMLR (Nov 18): keep the active boost on screen (top-left) once this popup is gone.
+        if (achievementReward == AchievementReward.Nothing) PimlrBoostHUD.Clear();
+        else PimlrBoostHUD.Show(title, info, boosterTitleTxt ? boosterTitleTxt.font : null, boosterInfoTxt ? boosterInfoTxt.font : null);
         boosterPanel.gameObject.SetActive(false);
         boosterPanelHolder.transform.DOPause();
         boosterPanel.transform.DOPause();

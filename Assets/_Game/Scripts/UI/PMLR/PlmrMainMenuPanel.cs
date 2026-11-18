@@ -86,6 +86,9 @@ public class PlmrMainMenuPanel : MonoBehaviour
             return;
         }
 
+        // PIMLR #CAM (Nov 16): fly out through the window first, then open the board (falls back to instant).
+        if (PimlrLeaderboardCamera.Open(gameObject, leaderboard)) return;
+
         gameObject.SetActive(false);
         leaderboard.gameObject.SetActive(true);
     }
