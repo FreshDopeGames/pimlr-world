@@ -54,11 +54,11 @@ MonoBehaviour:
   cookRumbleInterval: 0.3
   arcFillMaterial: {fileID: 2100000, guid: a900462f405ee4749a6d00c4b80ead8e, type: 2}
   arcOutlineMaterial: {fileID: 2100000, guid: 64dcbbfabe9091f419d38025365d0534, type: 2}
-  arrowLengthFraction: 0.5
-  arrowWidth: 0.16
-  arrowHeadWidth: 0.44
-  arrowHeadLength: 0.55
-  arrowOutlineWidth: 0.035
+  arrowLengthFraction: 0.4
+  arrowWidth: 0.08
+  arrowHeadWidth: 0.26
+  arrowHeadLength: 0.34
+  arrowOutlineWidth: 0.025
   startRange: 15
   rangeAdjustSpeed: 14
   throwVariant: 0
