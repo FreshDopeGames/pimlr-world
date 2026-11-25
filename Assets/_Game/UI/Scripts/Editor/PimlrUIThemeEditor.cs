@@ -88,7 +88,7 @@ public static class PimlrUIThemeTools
             case TypeRole.Heading:
                 return new PimlrUITheme.TypeEntry { role = r, font = FontOf(TypeRole.Display), size = 36f, upperCase = true, tracking = 4f, color = ColorToken.TextPrimary };
             case TypeRole.Caption:
-                return new PimlrUITheme.TypeEntry { role = r, font = FontOf(TypeRole.Body), size = 18f, upperCase = true, tracking = 6f, color = ColorToken.TextSecondary };
+                return new PimlrUITheme.TypeEntry { role = r, font = FontOf(TypeRole.Body), size = 21f, upperCase = true, tracking = 5f, color = ColorToken.TextSecondary };
             case TypeRole.Utility:
                 return new PimlrUITheme.TypeEntry { role = r, font = FontOf(TypeRole.Body), size = 24f, upperCase = false, tracking = 1f, color = ColorToken.TextPrimary };
             default:

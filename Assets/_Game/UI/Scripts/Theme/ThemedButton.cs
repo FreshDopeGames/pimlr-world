@@ -21,7 +21,7 @@ namespace PIMLR.UI
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Button))]
     [AddComponentMenu("PIMLR/UI/Themed Button")]
-    public class ThemedButton : ThemedBehaviour,
+    public class ThemedButton : ThemedBehaviour, IPimlrFocusVisual,
         IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, ISelectHandler, IDeselectHandler
     {
         public enum TransitionMode { ThemeColorTint = 0, KeepExisting = 1 }
@@ -41,6 +41,9 @@ namespace PIMLR.UI
         public Graphic focusRing;
 
         public ButtonMotion motion = ButtonMotion.Theme;
+
+        /// <summary>With a focus ring assigned, this button draws its own cursor and PimlrMenuNavigator skips its generic ring.</summary>
+        public bool DrawsOwnFocus => focusRing != null && isActiveAndEnabled;
 
         Button button;
         bool hovered, selected, pressed;

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using PIMLR.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,8 +20,14 @@ public class PlayerNameEntryController : MonoBehaviour
     [SerializeField] private TMP_InputField handleInput;
     [SerializeField] private TMP_InputField pinInput;
 
+    // #UI: names may only use characters every name-display font can draw (otherwise they render blank).
+    [Header("Name characters (#UI)")]
+    [Tooltip("Fonts that display player names elsewhere (leaderboard rows, hub badge). The input field's font and the theme's PlayerName font are always checked.")]
+    [SerializeField] private TMP_FontAsset[] nameDisplayFonts;
+
     private bool wired;
     private bool busy;
+    private List<TMP_FontAsset> nameFonts;
 
     private void Awake()
     {
@@ -53,6 +61,8 @@ public class PlayerNameEntryController : MonoBehaviour
         if (randomizeButton) randomizeButton.onClick.AddListener(() => input.text = PlayerSession.SuggestName());
         if (cancelButton) cancelButton.onClick.AddListener(Cancel);
         input.characterLimit = PlayerSession.MaxLength;
+        // #UI: block characters the fonts can't draw as they're typed or pasted (TMP runs this per character).
+        input.onValidateInput = ValidateNameChar;
         root.SetActive(false);
     }
 
@@ -89,6 +99,30 @@ public class PlayerNameEntryController : MonoBehaviour
         input.caretPosition = input.text.Length;
     }
 
+    // #UI: built lazily so the theme and fonts are loaded; covers typing and paste.
+    private List<TMP_FontAsset> NameFonts()
+    {
+        if (nameFonts != null) return nameFonts;
+        var extras = new List<TMP_FontAsset>();
+        if (input && input.textComponent) extras.Add(input.textComponent.font);
+        if (nameDisplayFonts != null) extras.AddRange(nameDisplayFonts);
+        nameFonts = PimlrNameCharset.Fonts(extras.ToArray());
+        return nameFonts;
+    }
+
+    private char ValidateNameChar(string text, int charIndex, char added)
+    {
+        if (added == '<' || added == '>') return '\0';
+        string folded = PimlrNameCharset.Normalize(added.ToString());
+        if (folded.Length == 1 && PimlrNameCharset.CanDraw(folded[0], NameFonts()))
+        {
+            if (errorText && errorText.text.StartsWith("Can't use")) ShowMessage("");
+            return folded[0];
+        }
+        ShowMessage(char.IsSurrogate(added) ? "Can't use emoji in names yet." : $"Can't use \"{added}\" in names yet. Letters, numbers and common symbols work.");
+        return '\0';
+    }
+
     private void NextOrConfirm(TMP_InputField next)
     {
         if (next) { next.Select(); next.ActivateInputField(); }
@@ -100,7 +134,10 @@ public class PlayerNameEntryController : MonoBehaviour
         if (busy) return;
 
         // Same cleaning/limits PlayerSession.TrySetName applies, checked before asking the server.
-        string clean = (input.text ?? "").Replace("<", "").Replace(">", "").Trim();
+        string clean = PimlrNameCharset.Normalize(input.text ?? "").Replace("<", "").Replace(">", "").Trim();
+        // #UI: last line of defense (text set from code, IME composition): every character must be drawable.
+        string unsupported = PimlrNameCharset.Unsupported(clean, NameFonts());
+        if (unsupported.Length > 0) { ShowMessage($"Can't use \"{unsupported}\" in names yet. Letters, numbers and common symbols work."); input.Select(); return; }
         if (clean.Length < PlayerProfile.MinNameLength) { ShowMessage($"Name needs at least {PlayerProfile.MinNameLength} characters."); return; }
         if (clean.Length > PlayerProfile.MaxNameLength) { ShowMessage($"Name cannot exceed {PlayerProfile.MaxNameLength} characters."); return; }
 

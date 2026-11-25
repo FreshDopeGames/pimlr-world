@@ -18,6 +18,9 @@ namespace PIMLR.UI
         public ColorToken color = ColorToken.SurfaceBase;
         [Range(0f, 1f)] public float alpha = 1f;
 
+        [Tooltip("Pattern slot only: use the theme's patternOpacity instead of Alpha, so all pattern layers change together.")]
+        public bool followPatternOpacity = true;
+
         [Tooltip("Leave the Image's color alone (sprite only).")]
         public bool keepColor;
 
@@ -36,7 +39,8 @@ namespace PIMLR.UI
 
             if (!keepColor)
             {
-                var c = theme.Color(color, alpha);
+                float a = sprite == SpriteSlot.Pattern && followPatternOpacity ? theme.patternOpacity : alpha;
+                var c = theme.Color(color, a);
                 if (!Same(image.color, c)) image.color = c;
             }
 

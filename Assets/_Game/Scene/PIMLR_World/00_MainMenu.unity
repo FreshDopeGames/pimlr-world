@@ -3742,6 +3742,8 @@ MonoBehaviour:
   newSessionButton: {fileID: 0}
   handleInput: {fileID: 2121797979}
   pinInput: {fileID: 986052090}
+  nameDisplayFonts:
+  - {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
 --- !u!1 &1585745672
 GameObject:
   m_ObjectHideFlags: 0

@@ -63,6 +63,10 @@ namespace PIMLR.UI
         public SpriteEntry[] sprites = Array.Empty<SpriteEntry>();
         public ButtonStyle[] buttons = Array.Empty<ButtonStyle>();
 
+        [Header("Textures")]
+        [Tooltip("Opacity of every brand-pattern layer (ThemedImage with the Pattern slot). 0.07 keeps carbon surfaces from reading green.")]
+        [Range(0f, 1f)] public float patternOpacity = 0.07f;
+
         [Header("Focus")]
         public ColorToken focusColor = ColorToken.BrandLime;
 
@@ -80,6 +84,8 @@ namespace PIMLR.UI
         public Vector2 referenceResolution = new Vector2(1920f, 1080f);
         [Range(0f, 1f)] public float matchWidthOrHeight = 0.5f;
         public float spacingUnit = 8f;
+        [Tooltip("Smallest allowed text size in px at the 1920x1080 reference. 21 = 14 px on a 720p screen. ThemedText never renders below it.")]
+        public float minTextSize = 21f;
 
         // ---------------- change notification ----------------
 
@@ -200,9 +206,9 @@ namespace PIMLR.UI
         {
             switch (t)
             {
-                case ColorToken.SurfaceBase: return Hex(0x22, 0x22, 0x20);
-                case ColorToken.SurfaceRaised: return Hex(0x2E, 0x2E, 0x2B);
-                case ColorToken.SurfaceScrim: return Hex(0x0E, 0x0E, 0x0D, 0.7f);
+                case ColorToken.SurfaceBase: return Hex(0x12, 0x12, 0x11);   // carbon (brand charcoal #222220 now lives in TextOnLime)
+                case ColorToken.SurfaceRaised: return Hex(0x1E, 0x1E, 0x1C);
+                case ColorToken.SurfaceScrim: return Hex(0x07, 0x07, 0x07, 0.75f);
                 case ColorToken.BrandForest: return Hex(0x3C, 0x6C, 0x1A);
                 case ColorToken.BrandBrick: return Hex(0x87, 0x28, 0x18);
                 case ColorToken.BrandLime: return Hex(0xCD, 0xF9, 0x52);
@@ -310,6 +316,7 @@ namespace PIMLR.UI
                 {
                     if (!t.font) { Add(Severity.Error, $"Type role {t.role} has no font assigned."); continue; }
                     if (t.size <= 0f) Add(Severity.Warning, $"Type role {t.role} has size {t.size}.");
+                    else if (t.size < minTextSize) Add(Severity.Warning, $"Type role {t.role} is {t.size}px, below the {minTextSize}px floor (it will be raised to the floor on screen).");
                     if (t.preset && t.font.atlasTexture && t.preset.mainTexture != t.font.atlasTexture)
                         Add(Severity.Error, $"Type role {t.role}: preset '{t.preset.name}' was made from a different font than '{t.font.name}' (text will render garbled).");
                     if (t.font.atlasPopulationMode == AtlasPopulationMode.Dynamic && !t.font.sourceFontFile)

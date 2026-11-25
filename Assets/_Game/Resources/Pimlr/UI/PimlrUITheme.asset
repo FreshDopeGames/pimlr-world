@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.PimlrUITheme
   colors:
   - token: 0
-    color: {r: 0.13333334, g: 0.13333334, b: 0.1254902, a: 1}
+    color: {r: 0.07058824, g: 0.07058824, b: 0.06666667, a: 1}
   - token: 1
-    color: {r: 0.18039216, g: 0.18039216, b: 0.16862746, a: 1}
+    color: {r: 0.11764706, g: 0.11764706, b: 0.10980392, a: 1}
   - token: 2
-    color: {r: 0.05490196, g: 0.05490196, b: 0.050980393, a: 0.7}
+    color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.75}
   - token: 3
     color: {r: 0.23529412, g: 0.42352942, b: 0.101960786, a: 1}
   - token: 4
@@ -75,9 +75,9 @@ MonoBehaviour:
   - role: 4
     font: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
     preset: {fileID: 0}
-    size: 18
+    size: 21
     upperCase: 1
-    tracking: 6
+    tracking: 5
     color: 7
   - role: 5
     font: {fileID: 11400000, guid: 75b675882c947ed4a9ca596320a81de8, type: 2}
@@ -140,6 +140,7 @@ MonoBehaviour:
     fillAlpha: 1
     hoverLift: 0.12
     pressDrop: 0.2
+  patternOpacity: 0.07
   focusColor: 5
   hoverScale: 1.04
   compactHoverScale: 1.02
@@ -151,3 +152,4 @@ MonoBehaviour:
   referenceResolution: {x: 1920, y: 1080}
   matchWidthOrHeight: 0.5
   spacingUnit: 8
+  minTextSize: 21

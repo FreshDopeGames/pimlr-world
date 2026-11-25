@@ -228,7 +228,7 @@ public static class PimlrUIThemeSetup
         {
             theme.colors = new[]
             {
-                CE(ColorToken.SurfaceBase, "#222220"), CE(ColorToken.SurfaceRaised, "#2E2E2B"), CE(ColorToken.SurfaceScrim, "#0E0E0D", 0.7f),
+                CE(ColorToken.SurfaceBase, "#121211"), CE(ColorToken.SurfaceRaised, "#1E1E1C"), CE(ColorToken.SurfaceScrim, "#070707", 0.75f),
                 CE(ColorToken.BrandForest, "#3C6C1A"), CE(ColorToken.BrandBrick, "#872818"), CE(ColorToken.BrandLime, "#CDF952"),
                 CE(ColorToken.TextPrimary, "#F4F1EA"), CE(ColorToken.TextSecondary, "#A8A69E"), CE(ColorToken.TextOnLime, "#222220"),
                 CE(ColorToken.AccentMusic, "#9B5CF6"), CE(ColorToken.AccentInfo, "#22D3EE"), CE(ColorToken.AccentWarn, "#FF8A1F"),
@@ -247,7 +247,7 @@ public static class PimlrUIThemeSetup
                 TE(TypeRole.Heading, russo, null, 36f, true, 4f, ColorToken.TextPrimary),
                 TE(TypeRole.Body, medium, null, 24f, false, 0f, ColorToken.TextPrimary),
                 TE(TypeRole.Utility, semi, null, 24f, false, 1f, ColorToken.TextPrimary),
-                TE(TypeRole.Caption, medium, null, 18f, true, 6f, ColorToken.TextSecondary),
+                TE(TypeRole.Caption, medium, null, 21f, true, 5f, ColorToken.TextSecondary),
             };
         }
 

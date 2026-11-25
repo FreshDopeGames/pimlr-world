@@ -45,7 +45,12 @@ namespace PIMLR.UI
                 var mat = usePreset && e.preset ? e.preset : e.font.material;
                 if (mat && text.fontSharedMaterial != mat) text.fontSharedMaterial = mat;
             }
-            if (sizeScale > 0f && e.size > 0f && !Mathf.Approximately(text.fontSize, e.size * sizeScale)) text.fontSize = e.size * sizeScale;
+            if (sizeScale > 0f && e.size > 0f)
+            {
+                // Readability floor: never below theme.minTextSize (14 px at 720p by default), whatever the scale.
+                float size = Mathf.Max(e.size * sizeScale, theme.minTextSize);
+                if (!Mathf.Approximately(text.fontSize, size)) text.fontSize = size;
+            }
 
             bool upper = textCase == TextCase.Upper || (textCase == TextCase.FromRole && e.upperCase);
             var style = upper ? text.fontStyle | FontStyles.UpperCase : text.fontStyle & ~FontStyles.UpperCase;
