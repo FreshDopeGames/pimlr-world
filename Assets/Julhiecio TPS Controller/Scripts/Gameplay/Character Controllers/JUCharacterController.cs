@@ -166,8 +166,19 @@ namespace JUTPS
                 _GetUp();
             }
 
-            // PIMLR: gamepad B cycles Stand -> Crouch -> Prone -> Stand (not while driving; B brakes there)
-            if (PimlrInput.StanceCycleDown && !IsDriving && !PimlrInput.VehicleExitedRecently && !PimlrMenuNavigator.IsNavigating)
+            // PIMLR #ROLL: gamepad B / Circle on foot. TAP = dodge-roll, or pop straight up when crouched / prone.
+            // HOLD = Stand -> Crouch -> Prone -> Crouch (PimlrInput.AllowProneOnController = false: crouch on/off).
+            // Not while driving / just after leaving a vehicle (B exits) / while a menu is open (B is Back).
+            if (IsDriving || PimlrInput.VehicleExitedRecently || PimlrMenuNavigator.IsNavigating)
+            {
+                if (PimlrInput.StanceCycleDown) PimlrInput.ConsumeStancePress();
+            }
+            else if (PimlrInput.StanceTap)
+            {
+                if (IsCrouched || IsProne) { _GetUp(); _GetUp(); }   // straight to standing
+                else if (EnableRoll) _Roll();
+            }
+            else if (PimlrInput.StanceHold)
             {
                 if (IsRunning && AutoRun == true)
                 {
@@ -175,8 +186,8 @@ namespace JUTPS
                 }
 
                 if (!IsCrouched && !IsProne) _Crouch();
-                else if (IsCrouched && !IsProne) _Prone();
-                else { _GetUp(); _GetUp(); }
+                else if (IsCrouched && !IsProne) { if (PimlrInput.AllowProneOnController) _Prone(); else _GetUp(); }
+                else _GetUp();                                       // prone -> crouch
             }
 
             //Jump

@@ -66,7 +66,34 @@ public static class PimlrInput
 
     // ---- gamepad buttons handled outside JUTPS (pressed this frame) ----
     static Gamepad Pad => Gamepad.current;
-    public static bool StanceCycleDown => Pad != null && Pad.buttonEast.wasPressedThisFrame;     // B / Circle
+    public static bool StanceCycleDown => Pad != null && Pad.buttonEast.wasPressedThisFrame;     // B / Circle (raw press)
+
+    // ---- PIMLR #ROLL: B / Circle on foot - TAP = roll (or pop straight up out of crouch / prone), HOLD = crouch / prone ----
+    // A tap is reported on release (if the hold time wasn't reached); a hold fires once, as soon as the time is reached.
+    public static float StanceHoldSeconds = 0.3f;
+    /// <summary>Hold B while crouched goes on to prone. Set false to make hold a plain crouch on/off toggle.</summary>
+    public static bool AllowProneOnController = true;
+    static int stanceFrame = -1; static float stanceDownTime = -1f; static bool stanceHoldFired, stanceTap, stanceHold;
+    static void UpdateStanceButton()
+    {
+        if (stanceFrame == Time.frameCount) return;
+        stanceFrame = Time.frameCount;
+        stanceTap = stanceHold = false;
+        var b = Pad != null ? Pad.buttonEast : null;
+        if (b == null) { stanceDownTime = -1f; return; }
+        if (b.wasPressedThisFrame) { stanceDownTime = Time.unscaledTime; stanceHoldFired = false; }
+        if (stanceDownTime >= 0f && b.isPressed && !stanceHoldFired && Time.unscaledTime - stanceDownTime >= StanceHoldSeconds)
+        { stanceHold = true; stanceHoldFired = true; }
+        if (b.wasReleasedThisFrame)
+        {
+            if (stanceDownTime >= 0f && !stanceHoldFired) stanceTap = true;
+            stanceDownTime = -1f;
+        }
+    }
+    public static bool StanceTap { get { UpdateStanceButton(); return stanceTap; } }
+    public static bool StanceHold { get { UpdateStanceButton(); return stanceHold; } }
+    /// <summary>The current B press belongs to something else (vehicle exit, menu back): no tap or hold from it.</summary>
+    public static void ConsumeStancePress() { UpdateStanceButton(); stanceDownTime = -1f; stanceHoldFired = true; stanceTap = stanceHold = false; }
     public static bool MenuButtonDown => Pad != null && Pad.startButton.wasPressedThisFrame;      // Start / Options
     // Music (Y play/pause, LB/RB tracks) is handled by MusicInputHandler in the gameplay scenes.
     // Set every frame by the player's DriveVehicles: true while in a vehicle (driving or drive-by seat).
@@ -84,6 +111,7 @@ public static class PimlrInput
     public static void MarkVehicleExit()
     {
         lastVehicleExitFrame = Time.frameCount;
+        ConsumeStancePress(); // PIMLR #ROLL: releasing the exit press must not also roll
         BlockGameplayInputFor(VehicleExitButtonPause, blockMovement: false); // still tapping A to pedal -> no jump on landing
     }
 
@@ -205,6 +233,7 @@ public static class PimlrInput
                     case PimlrButton.Fire: return "R2";
                     case PimlrButton.Aim: return "L2";
                     case PimlrButton.Run: return "L3";
+                    case PimlrButton.Roll: return "Circle";
                 }
                 break;
             case PimlrControlScheme.Xbox:
@@ -220,6 +249,7 @@ public static class PimlrInput
                     case PimlrButton.Fire: return "RT";
                     case PimlrButton.Aim: return "LT";
                     case PimlrButton.Run: return "LS";
+                    case PimlrButton.Roll: return "B";
                 }
                 break;
             default:
@@ -235,6 +265,7 @@ public static class PimlrInput
                     case PimlrButton.Fire: return "Left Mouse";
                     case PimlrButton.Aim: return "Right Mouse";
                     case PimlrButton.Run: return "Shift";
+                    case PimlrButton.Roll: return "Ctrl";
                 }
                 break;
         }
@@ -242,6 +273,6 @@ public static class PimlrInput
     }
 }
 
-public enum PimlrButton { Interact, Jump, Reload, Stance, PlayTrack, PrevTrack, NextTrack, Fire, Aim, Run }
+public enum PimlrButton { Interact, Jump, Reload, Stance, PlayTrack, PrevTrack, NextTrack, Fire, Aim, Run, Roll }
 
 public enum PimlrPedalMode { TapToPedal, Triggers }

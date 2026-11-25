@@ -110,11 +110,7 @@ var MicrophoneNativeLibrary = {
             var ptrFunc = CallbacksMap[JSONCallbackName];
             var buffer = getPtrFromString(JSON.stringify({ command: { command: command, data: object } }));
 
-            if(typeof Runtime !== 'undefined' && typeof Runtime.dynCall === "function"){
-                Runtime.dynCall('vi', ptrFunc, [buffer]);
-            } else{
-                Module['dynCall_vi'](ptrFunc, buffer);
-            }
+            {{{ makeDynCall('vi', 'ptrFunc') }}}(buffer); // PIMLR: Unity 6 / Emscripten 3 callback form
             
             _free(buffer);
         }

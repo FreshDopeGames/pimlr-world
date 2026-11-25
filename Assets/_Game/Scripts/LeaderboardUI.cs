@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -37,6 +38,23 @@ public class LeaderboardUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private TextMeshProUGUI yourStatsText;
 
+    // PIMLR (online leaderboards): shared pimlrworld.com boards with Today / This Week / All Time tabs.
+    // Falls back to this device's local scores when the server can't be reached.
+    public enum Period { Today, Week, AllTime }
+    [Header("Online")]
+    [SerializeField] private bool useOnline = true;
+    [SerializeField] private Period defaultPeriod = Period.Week;
+    [SerializeField] private float pollSeconds = 10f;
+    [SerializeField] private Button todayButton;
+    [SerializeField] private Button weekButton;
+    [SerializeField] private Button allTimeButton;
+    [SerializeField] private Image todayHighlight;
+    [SerializeField] private Image weekHighlight;
+    [SerializeField] private Image allTimeHighlight;
+    private Period currentPeriod;
+    private int requestSerial;
+    private Coroutine pollRoutine;
+
     // PIMLR (playtest): keep one list because both modes reuse the same visible row area.
     private readonly List<LeaderboardRow> spawnedRows = new List<LeaderboardRow>();
     private LeaderboardManager subscribedManager;
@@ -55,6 +73,11 @@ public class LeaderboardUI : MonoBehaviour
         if (infiniteModeButton != null) infiniteModeButton.onClick.AddListener(OnInfiniteModeClicked);
         if (storyModeButton != null) storyModeButton.onClick.AddListener(OnStoryModeClicked);
         if (backButton != null) backButton.onClick.AddListener(OnBackButton);
+        if (todayButton != null) todayButton.onClick.AddListener(OnTodayClicked);
+        if (weekButton != null) weekButton.onClick.AddListener(OnWeekClicked);
+        if (allTimeButton != null) allTimeButton.onClick.AddListener(OnAllTimeClicked);
+        PimlrOnline.RunSubmitted += OnRunSubmitted;
+        currentPeriod = defaultPeriod;
 
         currentMode = BoardMode.Story;
         currentSort = LeaderboardManager.InfiniteModeSortMode.Wave;
@@ -64,10 +87,19 @@ public class LeaderboardUI : MonoBehaviour
             subscribedManager.Changed += OnLeaderboardChanged;
 
         Refresh();
+        if (useOnline) pollRoutine = StartCoroutine(Poll());
     }
 
     private void OnDisable()
     {
+        if (todayButton != null) todayButton.onClick.RemoveListener(OnTodayClicked);
+        if (weekButton != null) weekButton.onClick.RemoveListener(OnWeekClicked);
+        if (allTimeButton != null) allTimeButton.onClick.RemoveListener(OnAllTimeClicked);
+        PimlrOnline.RunSubmitted -= OnRunSubmitted;
+        if (pollRoutine != null) StopCoroutine(pollRoutine);
+        pollRoutine = null;
+        requestSerial++; // drop any reply still in flight
+
         // PIMLR (playtest): remove only this component's named listeners, preserving Inspector callbacks.
         if (waveTabButton != null) waveTabButton.onClick.RemoveListener(OnWaveTabClicked);
         if (killsTabButton != null) killsTabButton.onClick.RemoveListener(OnKillsTabClicked);
@@ -81,8 +113,111 @@ public class LeaderboardUI : MonoBehaviour
         subscribedManager = null;
     }
 
-    // PIMLR (playtest): all board changes converge here so the two modes cannot leave stale rows behind.
+    // PIMLR (online leaderboards): every refresh asks the server first; the local board is the offline fallback.
     public void Refresh()
+    {
+        SetPeriodHighlights();
+        if (!useOnline || !isActiveAndEnabled) { RefreshLocal(); return; }
+
+        int serial = ++requestSerial;
+        if (headerText != null) headerText.text = GetHeaderText() + " · " + PeriodLabel();
+        PimlrOnline.GetBoard(CurrentCategory(), PeriodKey(), 50, board =>
+        {
+            if (this == null || serial != requestSerial || !isActiveAndEnabled) return;
+            if (board == null)
+            {
+                RefreshLocal();
+                // Small note in the header; the big status text stays reserved for "no runs yet".
+                if (headerText != null) headerText.text = GetHeaderText() + " · This device (offline)";
+                return;
+            }
+            RenderOnline(board);
+        });
+    }
+
+    private IEnumerator Poll()
+    {
+        var wait = new WaitForSecondsRealtime(Mathf.Max(3f, pollSeconds));
+        while (true) { yield return wait; Refresh(); }
+    }
+
+    private void RenderOnline(PimlrOnline.BoardResponse board)
+    {
+        ClearRows();
+        bool isInfiniteMode = currentMode == BoardMode.Infinite;
+        if (headerText != null) headerText.text = GetHeaderText() + " · " + PeriodLabel();
+        if (waveTabButton != null) waveTabButton.gameObject.SetActive(isInfiniteMode);
+        if (killsTabButton != null) killsTabButton.gameObject.SetActive(isInfiniteMode);
+        if (timeTabButton != null) timeTabButton.gameObject.SetActive(isInfiniteMode);
+        SetActiveTabHighlight(currentSort);
+        if (infiniteModeHighlight != null) infiniteModeHighlight.gameObject.SetActive(isInfiniteMode);
+        if (storyModeHighlight != null) storyModeHighlight.gameObject.SetActive(!isInfiniteMode);
+
+        Transform holder = rowHolder != null ? rowHolder : isInfiniteMode ? infiniteModeRowHolder : storyModeRowHolder;
+        LeaderboardRow prefab = rowPrefab != null ? rowPrefab : isInfiniteMode ? infiniteModeRowPrefab : storyModeRowPrefab;
+        if (holder != null && prefab != null)
+        {
+            foreach (PimlrOnline.BoardRow r in board.rows)
+            {
+                LeaderboardRow row = Instantiate(prefab, holder);
+                string detail = isInfiniteMode ? $"Wave {r.wave}, {r.kills} washes" : $"{r.kills} washes";
+                row.Set(r.rank, r.name, FormatOnlineValue(board.unit, r.value), r.you, detail);
+                spawnedRows.Add(row);
+            }
+        }
+
+        SetStatus(board.rows.Count == 0 ? $"No runs {PeriodLabel().ToLower()} yet. Be the first!" : "");
+        if (yourStatsText != null)
+        {
+            yourStatsText.text = board.you != null && board.you.rank > 0
+                ? $"Your rank: #{board.you.rank} of {board.total}"
+                : (PimlrOnline.HasAccount ? $"No runs {PeriodLabel().ToLower()} yet" : "Pick a name to join the leaderboard");
+        }
+    }
+
+    private void SetStatus(string msg)
+    {
+        if (statusText == null) return;
+        statusText.text = msg;
+        statusText.gameObject.SetActive(!string.IsNullOrEmpty(msg));
+    }
+
+    private string CurrentCategory()
+    {
+        if (currentMode == BoardMode.Story) return "story_time";
+        return currentSort switch
+        {
+            LeaderboardManager.InfiniteModeSortMode.Kills => "inf_kills",
+            LeaderboardManager.InfiniteModeSortMode.SurvivalTime => "inf_survival",
+            _ => "inf_wave"
+        };
+    }
+
+    private string PeriodKey() => currentPeriod switch { Period.Today => "today", Period.AllTime => "all", _ => "week" };
+    private string PeriodLabel() => currentPeriod switch { Period.Today => "Today", Period.AllTime => "All Time", _ => "This Week" };
+
+    private static string FormatOnlineValue(string unit, float value) => unit switch
+    {
+        "time" => FormatTime(value),
+        "wave" => $"Wave {Mathf.RoundToInt(value)}",
+        _ => $"{Mathf.RoundToInt(value)} washes"
+    };
+
+    public void ShowPeriod(Period period) { currentPeriod = period; Refresh(); }
+    private void OnTodayClicked() => ShowPeriod(Period.Today);
+    private void OnWeekClicked() => ShowPeriod(Period.Week);
+    private void OnAllTimeClicked() => ShowPeriod(Period.AllTime);
+    private void OnRunSubmitted(PimlrOnline.RunResult _) => Refresh();
+
+    private void SetPeriodHighlights()
+    {
+        if (todayHighlight != null) todayHighlight.gameObject.SetActive(currentPeriod == Period.Today);
+        if (weekHighlight != null) weekHighlight.gameObject.SetActive(currentPeriod == Period.Week);
+        if (allTimeHighlight != null) allTimeHighlight.gameObject.SetActive(currentPeriod == Period.AllTime);
+    }
+
+    // PIMLR (playtest): all board changes converge here so the two modes cannot leave stale rows behind.
+    private void RefreshLocal()
     {
         ClearRows();
 

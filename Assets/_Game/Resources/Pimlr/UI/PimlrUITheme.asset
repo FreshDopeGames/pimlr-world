@@ -1,0 +1,153 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c8de41fb9d5dff46826cf406d131c4a, type: 3}
+  m_Name: PimlrUITheme
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.PimlrUITheme
+  colors:
+  - token: 0
+    color: {r: 0.13333334, g: 0.13333334, b: 0.1254902, a: 1}
+  - token: 1
+    color: {r: 0.18039216, g: 0.18039216, b: 0.16862746, a: 1}
+  - token: 2
+    color: {r: 0.05490196, g: 0.05490196, b: 0.050980393, a: 0.7}
+  - token: 3
+    color: {r: 0.23529412, g: 0.42352942, b: 0.101960786, a: 1}
+  - token: 4
+    color: {r: 0.5294118, g: 0.15686275, b: 0.09411765, a: 1}
+  - token: 5
+    color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
+  - token: 6
+    color: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
+  - token: 7
+    color: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 1}
+  - token: 8
+    color: {r: 0.13333334, g: 0.13333334, b: 0.1254902, a: 1}
+  - token: 9
+    color: {r: 0.60784316, g: 0.36078432, b: 0.9647059, a: 1}
+  - token: 10
+    color: {r: 0.13333334, g: 0.827451, b: 0.93333334, a: 1}
+  - token: 11
+    color: {r: 1, g: 0.5411765, b: 0.12156863, a: 1}
+  - token: 12
+    color: {r: 0.9607843, g: 0.77254903, b: 0.25882354, a: 1}
+  - token: 13
+    color: {r: 0.8980392, g: 0.28235295, b: 0.3019608, a: 1}
+  - token: 14
+    color: {r: 0.33333334, g: 0.33333334, b: 0.30980393, a: 1}
+  type:
+  - role: 0
+    font: {fileID: 11400000, guid: 75b675882c947ed4a9ca596320a81de8, type: 2}
+    preset: {fileID: 2100000, guid: 5eeba3f676cdb084ba20ded77ae7968b, type: 2}
+    size: 72
+    upperCase: 1
+    tracking: 2
+    color: 6
+  - role: 1
+    font: {fileID: 11400000, guid: 75b675882c947ed4a9ca596320a81de8, type: 2}
+    preset: {fileID: 0}
+    size: 36
+    upperCase: 1
+    tracking: 4
+    color: 6
+  - role: 2
+    font: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+    preset: {fileID: 0}
+    size: 24
+    upperCase: 0
+    tracking: 0
+    color: 6
+  - role: 3
+    font: {fileID: 11400000, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
+    preset: {fileID: 0}
+    size: 24
+    upperCase: 0
+    tracking: 1
+    color: 6
+  - role: 4
+    font: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+    preset: {fileID: 0}
+    size: 18
+    upperCase: 1
+    tracking: 6
+    color: 7
+  - role: 5
+    font: {fileID: 11400000, guid: 75b675882c947ed4a9ca596320a81de8, type: 2}
+    preset: {fileID: 0}
+    size: 30
+    upperCase: 0
+    tracking: 1
+    color: 6
+  sprites:
+  - slot: 1
+    sprite: {fileID: 21300000, guid: 0daa74ad285c6e34abead28ccc1a2eb0, type: 3}
+  - slot: 2
+    sprite: {fileID: 21300000, guid: ade8cb0c4eb7669468d15ee0b6e650c8, type: 3}
+  - slot: 3
+    sprite: {fileID: 21300000, guid: 9e3048b972fa0ed408293a4cbfa12478, type: 3}
+  - slot: 4
+    sprite: {fileID: 21300000, guid: 2c5cd984fdc8e234bad5192bf4a75ffa, type: 3}
+  - slot: 5
+    sprite: {fileID: 21300000, guid: faba320f64d00c644893e73a64b3d9cc, type: 3}
+  - slot: 6
+    sprite: {fileID: 21300000, guid: c688a35d4e9d906469c70203cc325ce7, type: 3}
+  - slot: 7
+    sprite: {fileID: 21300000, guid: 39f2a69077479e5418ead5ad8b1b92d3, type: 3}
+  - slot: 8
+    sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
+  - slot: 9
+    sprite: {fileID: 21300000, guid: 44166ff9d317be04aa504e0e2d541576, type: 3}
+  - slot: 10
+    sprite: {fileID: 21300000, guid: 45f4bb6b53c3a41478e71b71b29bff02, type: 3}
+  - slot: 11
+    sprite: {fileID: 21300000, guid: 103ee36eb96764b45aad268b8a4a7915, type: 3}
+  buttons:
+  - variant: 0
+    fill: 5
+    label: 8
+    fillAlpha: 1
+    hoverLift: 0.25
+    pressDrop: 0.25
+  - variant: 1
+    fill: 3
+    label: 6
+    fillAlpha: 1
+    hoverLift: 0.15
+    pressDrop: 0.25
+  - variant: 2
+    fill: 1
+    label: 5
+    fillAlpha: 0
+    hoverLift: 0.12
+    pressDrop: 0.2
+  - variant: 3
+    fill: 4
+    label: 6
+    fillAlpha: 1
+    hoverLift: 0.15
+    pressDrop: 0.25
+  - variant: 4
+    fill: 1
+    label: 6
+    fillAlpha: 1
+    hoverLift: 0.12
+    pressDrop: 0.2
+  focusColor: 5
+  hoverScale: 1.04
+  compactHoverScale: 1.02
+  hoverTime: 0.08
+  pressTime: 0.05
+  panelInTime: 0.22
+  panelOutTime: 0.15
+  toastTime: 0.35
+  referenceResolution: {x: 1920, y: 1080}
+  matchWidthOrHeight: 0.5
+  spacingUnit: 8

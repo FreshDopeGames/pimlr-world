@@ -41,6 +41,10 @@ public static class RunStats
 
     public static event Action<RunSnapshot> Changed;
     public static event Action<RunSnapshot> Ended;
+    // PIMLR (online leaderboards): a run started / its clock was restarted (tutorial). PimlrOnline mirrors these
+    // to the server so it can time runs independently of the client.
+    public static event Action<RunSnapshot> Began;
+    public static event Action ClockRestarted;
 
     public static bool Active => _snapshot.active;
     public static RunMode Mode => _snapshot.mode;
@@ -77,6 +81,18 @@ public static class RunStats
         _frozenElapsed = 0f;
 
         Changed?.Invoke(Snapshot);
+        Began?.Invoke(Snapshot);
+    }
+
+    // PIMLR #TUT: restart the timer of the active run without ending it (the controls warm-up doesn't count).
+    public static void RestartClock()
+    {
+        if (!Active)
+            return;
+
+        _startTime = Time.time;
+        Changed?.Invoke(Snapshot);
+        ClockRestarted?.Invoke();
     }
 
     public static void RegisterKill(bool isBoss = false)
@@ -164,6 +180,8 @@ public static class RunStats
         _frozenElapsed = 0f;
         Changed = null;
         Ended = null;
+        Began = null;
+        ClockRestarted = null;
     }
 
     private static RunSnapshot CreateEmptySnapshot()

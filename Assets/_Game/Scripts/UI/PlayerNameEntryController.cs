@@ -12,7 +12,14 @@ public class PlayerNameEntryController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI errorText;  // optional
     [SerializeField] private Button newSessionButton;   // "Not you? New session" in the Leaderboards panel
 
+    // PIMLR (online leaderboards): optional extra fields. Handle = private contact for weekly prizes;
+    // PIN = lets the same name be used on another device (shared playtest PCs, phone + laptop).
+    [Header("Online (optional)")]
+    [SerializeField] private TMP_InputField handleInput;
+    [SerializeField] private TMP_InputField pinInput;
+
     private bool wired;
+    private bool busy;
 
     private void Awake()
     {
@@ -29,7 +36,19 @@ public class PlayerNameEntryController : MonoBehaviour
 
         PlayerSession.NameRequested += Show;
         confirmButton.onClick.AddListener(Confirm);
-        input.onSubmit.AddListener(_ => Confirm());
+        // PIMLR (online leaderboards): Enter moves name -> handle -> PIN -> confirm, so keyboard players never need the mouse.
+        input.onSubmit.AddListener(_ => NextOrConfirm(handleInput ? handleInput : pinInput));
+        if (handleInput)
+        {
+            handleInput.characterLimit = 60;
+            handleInput.onSubmit.AddListener(_ => NextOrConfirm(pinInput));
+        }
+        if (pinInput)
+        {
+            pinInput.characterLimit = 4;
+            pinInput.contentType = TMP_InputField.ContentType.Pin;
+            pinInput.onSubmit.AddListener(_ => Confirm());
+        }
         if (newSessionButton) newSessionButton.onClick.AddListener(StartNewSession);
         if (randomizeButton) randomizeButton.onClick.AddListener(() => input.text = PlayerSession.SuggestName());
         if (cancelButton) cancelButton.onClick.AddListener(Cancel);
@@ -60,18 +79,67 @@ public class PlayerNameEntryController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None; // run-end screens may still have the cursor locked
         Cursor.visible = true;
-        if (errorText) errorText.text = "";
+        ShowMessage("");
         input.text = PlayerSession.SuggestName(); // one-click path
+        if (handleInput) handleInput.text = "";
+        if (pinInput) pinInput.text = "";
+        SetBusy(false);
         root.SetActive(true);
         input.Select();
         input.caretPosition = input.text.Length;
     }
 
-    private void Confirm()
+    private void NextOrConfirm(TMP_InputField next)
     {
-        if (PlayerSession.TrySetName(input.text, out string error)) root.SetActive(false);
-        else if (errorText) errorText.text = error;
+        if (next) { next.Select(); next.ActivateInputField(); }
+        else Confirm();
     }
 
-    private void Cancel() { PlayerSession.CancelPending(); root.SetActive(false); }
+    private void Confirm()
+    {
+        if (busy) return;
+
+        // Same cleaning/limits PlayerSession.TrySetName applies, checked before asking the server.
+        string clean = (input.text ?? "").Replace("<", "").Replace(">", "").Trim();
+        if (clean.Length < PlayerProfile.MinNameLength) { ShowMessage($"Name needs at least {PlayerProfile.MinNameLength} characters."); return; }
+        if (clean.Length > PlayerProfile.MaxNameLength) { ShowMessage($"Name cannot exceed {PlayerProfile.MaxNameLength} characters."); return; }
+
+        string handle = handleInput ? handleInput.text.Trim() : "";
+        string pin = pinInput ? pinInput.text.Trim() : "";
+        if (pin.Length > 0 && (pin.Length != 4 || !int.TryParse(pin, out _))) { ShowMessage("PIN must be 4 digits (or leave it blank)."); return; }
+
+        SetBusy(true);
+        ShowMessage("Saving your name...");
+        PimlrOnline.Register(clean, handle, pin, result =>
+        {
+            SetBusy(false);
+            if (!result.ok) { ShowMessage(result.message); input.Select(); return; }
+
+            if (PlayerSession.TrySetName(clean, out string error))
+            {
+                if (result.offline) Debug.Log("PlayerNameEntry: offline - name saved on this device; online leaderboard will sync when connected.");
+                root.SetActive(false);
+            }
+            else ShowMessage(error);
+        });
+    }
+
+    private void Cancel()
+    {
+        if (busy) return;
+        PlayerSession.CancelPending();
+        root.SetActive(false);
+    }
+
+    private void SetBusy(bool value)
+    {
+        busy = value;
+        confirmButton.interactable = !value;
+    }
+
+    private void ShowMessage(string msg)
+    {
+        if (errorText) errorText.text = msg;
+        else if (!string.IsNullOrEmpty(msg)) Debug.Log("PlayerNameEntry: " + msg);
+    }
 }

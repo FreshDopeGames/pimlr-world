@@ -113,7 +113,9 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
             RunStats.SetZone(currentZoneMode);
             PlayerCar.SetActive(false);
             AiCar.SetActive(false);
-            ai_Chat_Triger.SetActive(true);
+            // PIMLR #TUT: controls warm-up (once per session) before Sirihanna's trigger switches on.
+            GameObject warmupEnemy = zombieSpawner && zombieSpawner.PrefabsToInstantiate.Length > 0 ? zombieSpawner.PrefabsToInstantiate[0] : null; // PIMLR_Melee
+            TutorialDirector.RunThen(() => ai_Chat_Triger.SetActive(true), warmupEnemy);
         }
         else if (currentZoneMode == Zone.Zone1)
         {
@@ -386,6 +388,7 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
     public void OnKillEnemy()
     {
+        if (TutorialDirector.IsRunning) return; // PIMLR #TUT: the warm-up robot pays no coins and doesn't count toward Zone 1 or the leaderboard
         zombiesKilled += 1;
         RunStats.RegisterKill();
 

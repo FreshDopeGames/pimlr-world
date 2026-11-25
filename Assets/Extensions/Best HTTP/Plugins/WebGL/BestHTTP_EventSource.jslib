@@ -26,12 +26,12 @@ var Lib_BEST_HTTP_WebGL_ES_Bridge =
 
 				stringToUTF8Array(reason, HEAPU8, buffer, length);
 
-				Module['dynCall_vii'](errCallback, id, buffer);
+				{{{ makeDynCall('vii', 'errCallback') }}}(id, buffer);
 
 				_free(buffer);
 			}
 			else
-				Module['dynCall_vii'](errCallback, [id, 0]);
+				{{{ makeDynCall('vii', 'errCallback') }}}(id, 0);
 		},
 
         _GenericEventHandler: function(id, eventName, e, onMessage) {
@@ -53,7 +53,7 @@ var Lib_BEST_HTTP_WebGL_ES_Bridge =
 		  var dataBuffer = AllocString(e.data);
 		  var idBuffer = AllocString(e.id);
 
-		  Module['dynCall_viiiii'](onMessage, id, eventBuffer, dataBuffer, idBuffer, e.retry);
+		  {{{ makeDynCall('viiiii', 'onMessage') }}}(id, eventBuffer, dataBuffer, idBuffer, e.retry);
 
 		  if (eventBuffer != 0)
 			  _free(eventBuffer);
@@ -88,7 +88,7 @@ var Lib_BEST_HTTP_WebGL_ES_Bridge =
 		event.eventImpl.onopen = function() {
 			console.log(id + ' ES_Create - onOpen');
 
-			Module['dynCall_vi'](onOpen, id);
+			{{{ makeDynCall('vi', 'onOpen') }}}(id);
 		};
 
 		event.eventImpl.onmessage = function(e) {

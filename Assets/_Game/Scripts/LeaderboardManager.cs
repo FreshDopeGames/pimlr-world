@@ -110,6 +110,7 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
                 if (s.kills == 0 && s.wave <= 1)
                     return false;
                 manager.SubmitInfiniteModeRun(s);
+                PimlrOnline.SubmitRun(s); // PIMLR (online leaderboards): also send to pimlrworld.com (queued, retries offline)
                 return true;
 
             case RunMode.Story:
@@ -119,6 +120,7 @@ public class LeaderboardManager : Singleton<LeaderboardManager>
                     return false;
                 }
                 manager.SubmitStoryModeRun(s);
+                PimlrOnline.SubmitRun(s); // PIMLR (online leaderboards): also send to pimlrworld.com (queued, retries offline)
                 Debug.Log($"LeaderboardManager: Story run recorded for {GetPlayerName()} - {s.elapsed:0.0}s, {s.kills} kills.");
                 return true;
 

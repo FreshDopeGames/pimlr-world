@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b1f6c41d4347df247b46fdc049aea895
+guid: e1217eb816e7d2c4cbf4cc3f51fb6022
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5983382790857763927
-    second: BrandGuideQR_0
+      213: -7677797967018077463
+    second: ui_bar_fill_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -42,13 +42,13 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 0
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -77,7 +77,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -115,13 +115,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BrandGuideQR_0
+      name: ui_bar_fill_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 2000
-        height: 2000
+        width: 64
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,8 +130,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 75c234c62fe390350800000000000000
-      internalID: 5983382790857763927
+      spriteID: 9e2dbae7d6bf27590800000000000000
+      internalID: -7677797967018077463
       vertices: []
       indices: 
       edges: []

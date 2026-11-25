@@ -1,0 +1,334 @@
+{
+    "colors": [
+        {
+            "token": "SurfaceBase",
+            "hex": "#222220",
+            "alpha": 1.0
+        },
+        {
+            "token": "SurfaceRaised",
+            "hex": "#2E2E2B",
+            "alpha": 1.0
+        },
+        {
+            "token": "SurfaceScrim",
+            "hex": "#0E0E0D",
+            "alpha": 0.699999988079071
+        },
+        {
+            "token": "BrandForest",
+            "hex": "#3C6C1A",
+            "alpha": 1.0
+        },
+        {
+            "token": "BrandBrick",
+            "hex": "#872818",
+            "alpha": 1.0
+        },
+        {
+            "token": "BrandLime",
+            "hex": "#CDF952",
+            "alpha": 1.0
+        },
+        {
+            "token": "TextPrimary",
+            "hex": "#F4F1EA",
+            "alpha": 1.0
+        },
+        {
+            "token": "TextSecondary",
+            "hex": "#A8A69E",
+            "alpha": 1.0
+        },
+        {
+            "token": "TextOnLime",
+            "hex": "#222220",
+            "alpha": 1.0
+        },
+        {
+            "token": "AccentMusic",
+            "hex": "#9B5CF6",
+            "alpha": 1.0
+        },
+        {
+            "token": "AccentInfo",
+            "hex": "#22D3EE",
+            "alpha": 1.0
+        },
+        {
+            "token": "AccentWarn",
+            "hex": "#FF8A1F",
+            "alpha": 1.0
+        },
+        {
+            "token": "AccentGold",
+            "hex": "#F5C542",
+            "alpha": 1.0
+        },
+        {
+            "token": "StateDanger",
+            "hex": "#E5484D",
+            "alpha": 1.0
+        },
+        {
+            "token": "StateDisabled",
+            "hex": "#55554F",
+            "alpha": 1.0
+        }
+    ],
+    "type": [
+        {
+            "role": "Display",
+            "font": "RussoOne-Regular SDF",
+            "preset": "RussoOne-Regular SDF - Punch",
+            "size": 72.0,
+            "upperCase": true,
+            "tracking": 2.0,
+            "color": "TextPrimary"
+        },
+        {
+            "role": "Heading",
+            "font": "RussoOne-Regular SDF",
+            "preset": "",
+            "size": 36.0,
+            "upperCase": true,
+            "tracking": 4.0,
+            "color": "TextPrimary"
+        },
+        {
+            "role": "Body",
+            "font": "Barlow-Medium SDF",
+            "preset": "",
+            "size": 24.0,
+            "upperCase": false,
+            "tracking": 0.0,
+            "color": "TextPrimary"
+        },
+        {
+            "role": "Utility",
+            "font": "Barlow-SemiBold SDF",
+            "preset": "",
+            "size": 24.0,
+            "upperCase": false,
+            "tracking": 1.0,
+            "color": "TextPrimary"
+        },
+        {
+            "role": "Caption",
+            "font": "Barlow-Medium SDF",
+            "preset": "",
+            "size": 18.0,
+            "upperCase": true,
+            "tracking": 6.0,
+            "color": "TextSecondary"
+        }
+    ],
+    "sprites": [
+        {
+            "slot": "Panel",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_panel_angled.png",
+            "border": {
+                "x": 48.0,
+                "y": 48.0,
+                "z": 48.0,
+                "w": 48.0
+            },
+            "size": {
+                "x": 256.0,
+                "y": 256.0
+            }
+        },
+        {
+            "slot": "PanelEdge",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_panel_edge.png",
+            "border": {
+                "x": 48.0,
+                "y": 48.0,
+                "z": 48.0,
+                "w": 48.0
+            },
+            "size": {
+                "x": 256.0,
+                "y": 256.0
+            }
+        },
+        {
+            "slot": "Card",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_card.png",
+            "border": {
+                "x": 32.0,
+                "y": 32.0,
+                "z": 32.0,
+                "w": 32.0
+            },
+            "size": {
+                "x": 192.0,
+                "y": 192.0
+            }
+        },
+        {
+            "slot": "Button",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_btn_base.png",
+            "border": {
+                "x": 40.0,
+                "y": 32.0,
+                "z": 40.0,
+                "w": 32.0
+            },
+            "size": {
+                "x": 256.0,
+                "y": 96.0
+            }
+        },
+        {
+            "slot": "FocusRing",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_btn_focus.png",
+            "border": {
+                "x": 40.0,
+                "y": 32.0,
+                "z": 40.0,
+                "w": 32.0
+            },
+            "size": {
+                "x": 256.0,
+                "y": 96.0
+            }
+        },
+        {
+            "slot": "Pattern",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_tex_pattern.png",
+            "border": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "size": {
+                "x": 256.0,
+                "y": 256.0
+            }
+        },
+        {
+            "slot": "Halftone",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_tex_halftone.png",
+            "border": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "size": {
+                "x": 128.0,
+                "y": 128.0
+            }
+        },
+        {
+            "slot": "BarFill",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_bar_fill.png",
+            "border": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "size": {
+                "x": 64.0,
+                "y": 24.0
+            }
+        },
+        {
+            "slot": "BarBack",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_bar_back.png",
+            "border": {
+                "x": 12.0,
+                "y": 0.0,
+                "z": 12.0,
+                "w": 0.0
+            },
+            "size": {
+                "x": 64.0,
+                "y": 24.0
+            }
+        },
+        {
+            "slot": "Badge",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_badge_burst.png",
+            "border": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            },
+            "size": {
+                "x": 256.0,
+                "y": 256.0
+            }
+        },
+        {
+            "slot": "Chip",
+            "path": "Assets/_Game/UI/Art/Placeholder/ui_chip.png",
+            "border": {
+                "x": 24.0,
+                "y": 0.0,
+                "z": 24.0,
+                "w": 0.0
+            },
+            "size": {
+                "x": 128.0,
+                "y": 48.0
+            }
+        }
+    ],
+    "buttons": [
+        {
+            "variant": "Primary",
+            "fill": "BrandLime",
+            "label": "TextOnLime",
+            "fillAlpha": 1.0,
+            "hoverLift": 0.25,
+            "pressDrop": 0.25
+        },
+        {
+            "variant": "Secondary",
+            "fill": "BrandForest",
+            "label": "TextPrimary",
+            "fillAlpha": 1.0,
+            "hoverLift": 0.15000000596046448,
+            "pressDrop": 0.25
+        },
+        {
+            "variant": "Tertiary",
+            "fill": "SurfaceRaised",
+            "label": "BrandLime",
+            "fillAlpha": 0.0,
+            "hoverLift": 0.11999999731779099,
+            "pressDrop": 0.20000000298023224
+        },
+        {
+            "variant": "Destructive",
+            "fill": "BrandBrick",
+            "label": "TextPrimary",
+            "fillAlpha": 1.0,
+            "hoverLift": 0.15000000596046448,
+            "pressDrop": 0.25
+        },
+        {
+            "variant": "Icon",
+            "fill": "SurfaceRaised",
+            "label": "TextPrimary",
+            "fillAlpha": 1.0,
+            "hoverLift": 0.11999999731779099,
+            "pressDrop": 0.20000000298023224
+        }
+    ],
+    "hoverScale": 1.0399999618530273,
+    "hoverTime": 0.07999999821186066,
+    "pressTime": 0.05000000074505806,
+    "panelInTime": 0.2199999988079071,
+    "panelOutTime": 0.15000000596046448,
+    "toastTime": 0.3499999940395355,
+    "referenceResolution": {
+        "x": 1920.0,
+        "y": 1080.0
+    }
+}
