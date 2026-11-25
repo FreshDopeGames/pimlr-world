@@ -205,6 +205,7 @@ public static class PimlrInput
                     case PimlrButton.Fire: return "R2";
                     case PimlrButton.Aim: return "L2";
                     case PimlrButton.Run: return "L3";
+                    case PimlrButton.Roll: return "Circle";   // PlayStation block
                 }
                 break;
             case PimlrControlScheme.Xbox:
@@ -220,6 +221,7 @@ public static class PimlrInput
                     case PimlrButton.Fire: return "RT";
                     case PimlrButton.Aim: return "LT";
                     case PimlrButton.Run: return "LS";
+                    case PimlrButton.Roll: return "B";        // Xbox block
                 }
                 break;
             default:
@@ -235,6 +237,7 @@ public static class PimlrInput
                     case PimlrButton.Fire: return "Left Mouse";
                     case PimlrButton.Aim: return "Right Mouse";
                     case PimlrButton.Run: return "Shift";
+                    case PimlrButton.Roll: return "Ctrl";     // keyboard block
                 }
                 break;
         }
@@ -242,6 +245,6 @@ public static class PimlrInput
     }
 }
 
-public enum PimlrButton { Interact, Jump, Reload, Stance, PlayTrack, PrevTrack, NextTrack, Fire, Aim, Run }
+public enum PimlrButton { Interact, Jump, Reload, Stance, PlayTrack, PrevTrack, NextTrack, Fire, Aim, Run, Roll }
 
 public enum PimlrPedalMode { TapToPedal, Triggers }

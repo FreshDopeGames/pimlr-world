@@ -79,6 +79,16 @@ public static class RunStats
         Changed?.Invoke(Snapshot);
     }
 
+    // PIMLR #TUT: restart the timer of the active run without ending it (the controls warm-up doesn't count).
+    public static void RestartClock()
+    {
+        if (!Active)
+            return;
+
+        _startTime = Time.time;
+        Changed?.Invoke(Snapshot);
+    }
+    
     public static void RegisterKill(bool isBoss = false)
     {
         if (!Active)
