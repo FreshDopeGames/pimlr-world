@@ -112,10 +112,10 @@ public static class PimlrFitCheckSlice2Builder
             var r = ring.rectTransform; r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one; r.offsetMin = new Vector2(-5, -5); r.offsetMax = new Vector2(5, 5);
             var tb = Undo.AddComponent<ThemedButton>(save.gameObject);
             tb.variant = ButtonVariant.Primary; tb.focusRing = ring; tb.label = save.GetComponentInChildren<TMP_Text>(true);
-            if (tb.label) { var lt = Undo.AddComponent<ThemedText>(tb.label.gameObject); lt.role = TypeRole.Heading; lt.sizeScale = 0.78f; lt.Apply(); }
+            if (tb.label) { var lt = Undo.AddComponent<ThemedText>(tb.label.gameObject); lt.role = TypeRole.Heading; lt.sizeScale = 1.17f; /* canvas-aware ThemedText: 1.17 x 0.667 = same size as before */ lt.Apply(); }
             tb.Apply();
         }
-        if (title) { var tt = Undo.AddComponent<ThemedText>(title.gameObject); tt.role = TypeRole.Display; tt.sizeScale = 0.56f; tt.Apply(); }
+        if (title) { var tt = Undo.AddComponent<ThemedText>(title.gameObject); tt.role = TypeRole.Display; tt.sizeScale = 0.84f; /* canvas-aware ThemedText */ tt.Apply(); }
 
         // Responsive layout (landscape / touch / portrait bottom sheet); SAVE's desktop placement is captured on first enable.
         var resp = card.gameObject.AddComponent<PimlrFitCheckResponsive>();

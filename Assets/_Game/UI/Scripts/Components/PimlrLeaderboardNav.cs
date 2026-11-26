@@ -1,11 +1,13 @@
 // #UI (Slice 3): explicit cursor flow for the themed leaderboard. LeaderboardUI rebuilds rows and shows/hides the
-// Infinite sort chips on its own, so this re-links everything whenever that changes (cheap check each frame).
+// Infinite sort chips on its own, so this re-links whenever that changes (cheap check each frame).
 //
-//   BACK  ->right STORY ->right INFINITE (row holds at the ends)
-//   mode buttons  -> down: active sort chip (Infinite) or first row (Story)
-//   sort chips    -> left/right along the row (holds at ends); up: active mode button; down: first row
-//   rows          -> up/down through the list (holds at the last row); first row up: active sort chip or mode
-//   B / Esc       -> BACK (PimlrNavHint.isCancel)
+//   BACK                          down: active mode
+//   STORY | INFINITE              left/right (hold at ends); up: BACK; down: active period
+//                                 (landscape: INFINITE right -> TODAY, the next control on the same visual row)
+//   TODAY | WEEK | ALL TIME       left/right (hold); up: active mode; down: active sort (Infinite) or first row
+//   WAVES | WASHES | TIME         left/right (hold); up: active period; down: first row
+//   rows                          up/down through the list (hold at the last row); first row up: sort or period
+//   B / Esc                       BACK (PimlrNavHint.isCancel)
 // The focused row is scrolled into view. Gamepad (PimlrNavHint) and keyboard (Unity Navigation) get the same links.
 //
 // Unreal note: CommonUI explicit navigation rules on the board widget; UListView::ScrollIndexIntoView for rows.
@@ -21,11 +23,15 @@ namespace PIMLR.UI
     public class PimlrLeaderboardNav : MonoBehaviour
     {
         public Selectable back, story, infinite;
-        public GameObject storyActive, infiniteActive;          // LeaderboardUI's mode highlight objects
+        public GameObject storyActive, infiniteActive;
+        public Selectable[] periods = new Selectable[3];        // Today, Week, All time
+        public GameObject[] periodActive = new GameObject[3];
         public Selectable[] sorts = new Selectable[3];          // Waves, Washes, Time
-        public GameObject[] sortActive = new GameObject[3];     // LeaderboardUI's sort highlight objects
+        public GameObject[] sortActive = new GameObject[3];
         public Transform rowHolder;
         public ScrollRect scroll;
+        [Tooltip("Set by the responsive layout: modes and periods share one visual row (landscape).")]
+        public bool modesAndPeriodsOnOneRow = true;
 
         int signature = -1;
         Transform lastFirstRow;
@@ -34,7 +40,7 @@ namespace PIMLR.UI
         void LateUpdate()
         {
             int sig = Signature();
-            var first = rowHolder && rowHolder.childCount > 0 ? rowHolder.GetChild(0) : null; // rows rebuilt -> new first row object
+            var first = rowHolder && rowHolder.childCount > 0 ? rowHolder.GetChild(0) : null;
             if (sig != signature || first != lastFirstRow) { signature = sig; lastFirstRow = first; Relink(); }
             KeepFocusedRowVisible();
         }
@@ -45,19 +51,27 @@ namespace PIMLR.UI
             {
                 int h = rowHolder ? rowHolder.childCount * 31 : 0;
                 h = h * 7 + (infiniteActive && infiniteActive.activeInHierarchy ? 1 : 0);
+                h = h * 3 + (modesAndPeriodsOnOneRow ? 1 : 0);
                 for (int i = 0; i < sortActive.Length; i++) h = h * 5 + (sortActive[i] && sortActive[i].activeInHierarchy ? i + 1 : 0);
+                for (int i = 0; i < periodActive.Length; i++) h = h * 5 + (periodActive[i] && periodActive[i].activeInHierarchy ? i + 1 : 0);
+                for (int i = 0; i < sorts.Length; i++) h = h * 2 + (sorts[i] && sorts[i].gameObject.activeInHierarchy ? 1 : 0);
                 return h;
             }
         }
 
-        Selectable ActiveMode() => infiniteActive && infiniteActive.activeInHierarchy ? infinite : story;
-
-        Selectable ActiveSort()
+        static Selectable Active(Selectable[] items, GameObject[] markers)
         {
-            for (int i = 0; i < sorts.Length; i++)
-                if (sorts[i] && sorts[i].gameObject.activeInHierarchy && sortActive[i] && sortActive[i].activeInHierarchy) return sorts[i];
-            foreach (var s in sorts) if (s && s.gameObject.activeInHierarchy) return s;
+            for (int i = 0; i < items.Length; i++)
+                if (items[i] && items[i].gameObject.activeInHierarchy && markers[i] && markers[i].activeInHierarchy) return items[i];
+            foreach (var s in items) if (s && s.gameObject.activeInHierarchy) return s;
             return null;
+        }
+
+        static List<Selectable> Visible(Selectable[] items)
+        {
+            var list = new List<Selectable>();
+            foreach (var s in items) if (s && s.gameObject.activeInHierarchy) list.Add(s);
+            return list;
         }
 
         public void Relink()
@@ -65,21 +79,28 @@ namespace PIMLR.UI
             rows.Clear();
             if (rowHolder) foreach (Transform t in rowHolder) { var s = t.GetComponent<Selectable>(); if (s && t.gameObject.activeSelf) rows.Add(s); }
             var firstRow = rows.Count > 0 ? rows[0] : null;
-            var sortNow = ActiveSort();
-            var modeNow = ActiveMode();
-            var belowModes = sortNow ? sortNow : firstRow;
+            var modeNow = infiniteActive && infiniteActive.activeInHierarchy ? infinite : story;
+            var periodNow = Active(periods, periodActive);
+            var sortNow = Active(sorts, sortActive);
+            var vPeriods = Visible(periods);
+            var vSorts = Visible(sorts);
 
-            Link(back, up: back, down: belowModes, left: back, right: story);
-            Link(story, up: story, down: belowModes, left: back, right: infinite);
-            Link(infinite, up: infinite, down: belowModes, left: story, right: infinite);
+            Link(back, up: back, down: modeNow, left: back, right: modesAndPeriodsOnOneRow ? back : back);
+            Link(story, up: back, down: periodNow ? periodNow : (sortNow ? sortNow : firstRow), left: story, right: infinite);
+            Link(infinite, up: back, down: periodNow ? periodNow : (sortNow ? sortNow : firstRow), left: story,
+                 right: modesAndPeriodsOnOneRow && vPeriods.Count > 0 ? vPeriods[0] : infinite);
 
-            var visibleSorts = new List<Selectable>();
-            foreach (var s in sorts) if (s && s.gameObject.activeInHierarchy) visibleSorts.Add(s);
-            for (int i = 0; i < visibleSorts.Count; i++)
-                Link(visibleSorts[i], up: modeNow, down: firstRow ? firstRow : visibleSorts[i],
-                     left: i > 0 ? visibleSorts[i - 1] : visibleSorts[i], right: i < visibleSorts.Count - 1 ? visibleSorts[i + 1] : visibleSorts[i]);
+            var belowPeriods = sortNow ? sortNow : firstRow;
+            for (int i = 0; i < vPeriods.Count; i++)
+                Link(vPeriods[i], up: modesAndPeriodsOnOneRow ? back : modeNow, down: belowPeriods ? belowPeriods : vPeriods[i],
+                     left: i > 0 ? vPeriods[i - 1] : (modesAndPeriodsOnOneRow ? infinite : vPeriods[i]),
+                     right: i < vPeriods.Count - 1 ? vPeriods[i + 1] : vPeriods[i]);
 
-            var aboveRows = sortNow ? sortNow : modeNow;
+            for (int i = 0; i < vSorts.Count; i++)
+                Link(vSorts[i], up: periodNow ? periodNow : modeNow, down: firstRow ? firstRow : vSorts[i],
+                     left: i > 0 ? vSorts[i - 1] : vSorts[i], right: i < vSorts.Count - 1 ? vSorts[i + 1] : vSorts[i]);
+
+            var aboveRows = sortNow ? sortNow : (periodNow ? periodNow : modeNow);
             for (int i = 0; i < rows.Count; i++)
                 Link(rows[i], up: i > 0 ? rows[i - 1] : aboveRows, down: i < rows.Count - 1 ? rows[i + 1] : rows[i], left: rows[i], right: rows[i]);
 

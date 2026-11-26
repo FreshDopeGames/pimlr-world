@@ -47,6 +47,9 @@ public class PimlrMinimapEnemyBlips : MonoBehaviour
 
     void Start()
     {
+        // #UI (Slice 4): blip colors from the PIMLR UI theme (enemy = danger red, boss = warn orange).
+        enemyColor = PIMLR.UI.PimlrUITheme.C(PIMLR.UI.ColorToken.StateDanger);
+        bossColor = PIMLR.UI.PimlrUITheme.C(PIMLR.UI.ColorToken.AccentWarn);
         var controller = GetComponent<MinimapBlipController>();
         if (controller != null)
         {

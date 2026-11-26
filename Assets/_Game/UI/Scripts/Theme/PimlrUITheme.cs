@@ -221,6 +221,7 @@ namespace PIMLR.UI
                 case ColorToken.AccentGold: return Hex(0xF5, 0xC5, 0x42);
                 case ColorToken.StateDanger: return Hex(0xE5, 0x48, 0x4D);
                 case ColorToken.StateDisabled: return Hex(0x55, 0x55, 0x4F);
+                case ColorToken.HealthGreen: return Hex(0x00, 0xFF, 0x00);
                 case ColorToken.Clear: return new Color(0f, 0f, 0f, 0f);
                 default: return UnityEngine.Color.white;
             }

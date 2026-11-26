@@ -957,6 +957,7 @@ GameObject:
   - component: {fileID: 458302045814201522}
   - component: {fileID: 6460462991516519497}
   - component: {fileID: 8820245762525704120}
+  - component: {fileID: 7168705243904374133}
   m_Layer: 5
   m_Name: Health Text (TMP)
   m_TagString: Untagged
@@ -1013,15 +1014,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 100/100
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
-  m_sharedMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
+  m_sharedMaterial: {fileID: -6278078481223849367, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1048,7 +1049,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 1
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -1083,6 +1084,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7168705243904374133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130900090775992785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 3
+  textCase: 0
+  sizeScale: 1.5
+  overrideColor: 0
+  color: 6
+  alpha: 1
+  keepColor: 1
+  usePreset: 1
 --- !u!1 &133980783304737953
 GameObject:
   m_ObjectHideFlags: 0
@@ -8732,6 +8754,7 @@ GameObject:
   - component: {fileID: 6894453507677868195}
   - component: {fileID: 6992923695593284852}
   - component: {fileID: 4474628873680772328}
+  - component: {fileID: 571584890824178301}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -8779,7 +8802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8796,6 +8819,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &571584890824178301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628115426730909503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &634010560894827297
 GameObject:
   m_ObjectHideFlags: 0
@@ -10976,6 +11018,7 @@ GameObject:
   - component: {fileID: 1936140605120243555}
   - component: {fileID: 2167313602159489191}
   - component: {fileID: 1390038883439990794}
+  - component: {fileID: 5672227043788940404}
   m_Layer: 5
   m_Name: Goal Panel
   m_TagString: Untagged
@@ -11005,7 +11048,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -31, y: 0}
-  m_SizeDelta: {x: 200, y: 0}
+  m_SizeDelta: {x: 250, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &6213101566022166711
 CanvasRenderer:
@@ -11028,14 +11071,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.69803923}
+  m_Color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.6}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 68d30670681841d4eb10c8d027698ba7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e3048b972fa0ed408293a4cbfa12478, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11114,6 +11157,25 @@ MonoBehaviour:
   boosterPanelHolder: {fileID: 1863493726270907652}
   boosterTitleTxt: {fileID: 6960532513131000796}
   boosterInfoTxt: {fileID: 8672749505694293292}
+--- !u!114 &5672227043788940404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772620778245939999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 2
+  alpha: 0.8
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 3
+  autoImageType: 1
 --- !u!1 &780674759849267497
 GameObject:
   m_ObjectHideFlags: 0
@@ -18454,6 +18516,7 @@ GameObject:
   - component: {fileID: 8462032655150864515}
   - component: {fileID: 2144533439381652891}
   - component: {fileID: 848789347545157969}
+  - component: {fileID: 2617643444150456339}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -18510,15 +18573,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Get a tool from Sirihanna
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+  m_sharedMaterial: {fileID: 3215112344672573039, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -18535,17 +18598,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 36
+  m_fontSize: 16.24
+  m_fontSizeBase: 16.24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 10
   m_fontSizeMax: 12
   m_fontStyle: 17
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 5
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -18580,6 +18643,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2617643444150456339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244845669046859075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 4
+  textCase: 0
+  sizeScale: 1.16
+  overrideColor: 1
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &1245199373816142144
 GameObject:
   m_ObjectHideFlags: 0
@@ -21718,6 +21802,7 @@ GameObject:
   - component: {fileID: 7912591572119275511}
   - component: {fileID: 6687408716793969175}
   - component: {fileID: 8998619542487543896}
+  - component: {fileID: 6525223414941004252}
   m_Layer: 5
   m_Name: Player
   m_TagString: Untagged
@@ -21765,7 +21850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.060922597, g: 0.990566, b: 0, a: 1}
+  m_Color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -21782,6 +21867,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6525223414941004252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477064470067909606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &1477191978072320558
 GameObject:
   m_ObjectHideFlags: 0
@@ -25194,7 +25298,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 190, y: 40}
+  m_SizeDelta: {x: 240, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5698724254374907795
 CanvasRenderer:
@@ -28072,6 +28176,7 @@ GameObject:
   - component: {fileID: 8624192431816255800}
   - component: {fileID: 4842848817491789529}
   - component: {fileID: 5074698209824890430}
+  - component: {fileID: 8448021269353432937}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -28119,7 +28224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -28136,6 +28241,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8448021269353432937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929662893218842334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &1931035795093181678
 GameObject:
   m_ObjectHideFlags: 0
@@ -28916,6 +29040,7 @@ GameObject:
   - component: {fileID: 5469335442714740289}
   - component: {fileID: 3888201149896109385}
   - component: {fileID: 2167560366737301606}
+  - component: {fileID: 4240250885835184980}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -28963,7 +29088,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -28980,6 +29105,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4240250885835184980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002501215891132750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &2007551344471185209
 GameObject:
   m_ObjectHideFlags: 0
@@ -28991,6 +29135,7 @@ GameObject:
   - component: {fileID: 6326895421519254811}
   - component: {fileID: 3106551610831422398}
   - component: {fileID: 2476960203200556275}
+  - component: {fileID: 4207559077017657698}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -29047,15 +29192,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Hater Bots Washed:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+  m_sharedMaterial: {fileID: 3215112344672573039, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -29072,8 +29217,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12.8
-  m_fontSizeBase: 12.8
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 10
@@ -29082,7 +29227,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 5
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -29117,6 +29262,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4207559077017657698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007551344471185209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 4
+  textCase: 0
+  sizeScale: 1
+  overrideColor: 0
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &2018218839732213497
 GameObject:
   m_ObjectHideFlags: 0
@@ -29773,6 +29939,7 @@ GameObject:
   - component: {fileID: 2035708747678115490}
   - component: {fileID: 2118093868857044455}
   - component: {fileID: 5775018432500279162}
+  - component: {fileID: 3149467543207474502}
   m_Layer: 5
   m_Name: Bg
   m_TagString: Untagged
@@ -29825,15 +29992,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.63750005}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4131630591c169546b246507563b4057, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 9e3048b972fa0ed408293a4cbfa12478, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -29842,6 +30009,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.01
+--- !u!114 &3149467543207474502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094293746509832887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 2
+  alpha: 0.85
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 3
+  autoImageType: 1
 --- !u!1 &2094312009119536172
 GameObject:
   m_ObjectHideFlags: 0
@@ -30900,6 +31086,7 @@ GameObject:
   - component: {fileID: 3974756428732658127}
   - component: {fileID: 8766674866972168730}
   - component: {fileID: 373966957124337815}
+  - component: {fileID: 4246888897037010404}
   m_Layer: 5
   m_Name: Stamina_barBG
   m_TagString: Untagged
@@ -30949,15 +31136,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.63750005}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2ff558bf8c113e940977e5a416595e18, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 44166ff9d317be04aa504e0e2d541576, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -30984,6 +31171,25 @@ MonoBehaviour:
   hideWhenFull: 0
   depletedColor: {r: 1, g: 0.4, b: 0.4, a: 1}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &4246888897037010404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2163628377729764965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 2
+  alpha: 0.85
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 9
+  autoImageType: 1
 --- !u!1 &2176343644292961532
 GameObject:
   m_ObjectHideFlags: 0
@@ -30995,6 +31201,7 @@ GameObject:
   - component: {fileID: 3194506842270791891}
   - component: {fileID: 4557732874038577094}
   - component: {fileID: 3438732269992111491}
+  - component: {fileID: 3165514199327797455}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -31042,7 +31249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -31059,6 +31266,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3165514199327797455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2176343644292961532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &2177998147602641848
 GameObject:
   m_ObjectHideFlags: 0
@@ -31591,6 +31817,7 @@ RectTransform:
   - {fileID: 4013048776142533186}
   - {fileID: 3554688437643137877}
   - {fileID: 3836813438860769455}
+  - {fileID: 4115899469431226284}
   - {fileID: 28019538839713865}
   - {fileID: 658280473386656394}
   - {fileID: 5178502806031052117}
@@ -36982,6 +37209,7 @@ GameObject:
   - component: {fileID: 1032630626770473028}
   - component: {fileID: 365512584826153714}
   - component: {fileID: 5233216319460450852}
+  - component: {fileID: 2313236882810392348}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -37030,14 +37258,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 0.55}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -37047,6 +37275,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2313236882810392348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2511720998030020220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 7
+  alpha: 0.55
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 8
+  autoImageType: 1
 --- !u!1 &2515373787118466093
 GameObject:
   m_ObjectHideFlags: 0
@@ -38808,6 +39055,101 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2629667158603375011}
   m_CullTransparentMesh: 1
+--- !u!1 &2636141332847688750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4115899469431226284}
+  - component: {fileID: 2419689767605146134}
+  - component: {fileID: 5041189621021112205}
+  - component: {fileID: 4356980882191118013}
+  m_Layer: 0
+  m_Name: Minimap Ring (#UI)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4115899469431226284
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636141332847688750}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7656949185409855745}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -125, y: 100}
+  m_SizeDelta: {x: 185, y: 185}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2419689767605146134
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636141332847688750}
+  m_CullTransparentMesh: 1
+--- !u!114 &5041189621021112205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636141332847688750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.23529412, g: 0.42352942, b: 0.101960786, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 578ae2136e11f784b8975857b9210933, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4356980882191118013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636141332847688750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 3
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &2639468833695777975
 GameObject:
   m_ObjectHideFlags: 0
@@ -39049,6 +39391,7 @@ GameObject:
   - component: {fileID: 6025122556200062078}
   - component: {fileID: 171123439179751136}
   - component: {fileID: 4820924809462232524}
+  - component: {fileID: 4568316086512941000}
   m_Layer: 5
   m_Name: kill info
   m_TagString: Untagged
@@ -39105,15 +39448,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0 / 10
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
+  m_sharedMaterial: {fileID: -6278078481223849367, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -39130,17 +39473,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 19.2
+  m_fontSizeBase: 19.2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 10
   m_fontSizeMax: 12
-  m_fontStyle: 17
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 1
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -39175,6 +39518,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4568316086512941000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2657006070377883751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 3
+  textCase: 0
+  sizeScale: 1.2
+  overrideColor: 1
+  color: 5
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &2663318029716121469
 GameObject:
   m_ObjectHideFlags: 0
@@ -57952,6 +58316,7 @@ GameObject:
   - component: {fileID: 7788334363750833756}
   - component: {fileID: 2058170385096138521}
   - component: {fileID: 4895576188728362567}
+  - component: {fileID: 3443267849612696035}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -58000,14 +58365,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 0.55}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -58017,6 +58382,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3443267849612696035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907330697208381219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 7
+  alpha: 0.55
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 8
+  autoImageType: 1
 --- !u!1 &3909325598188802530
 GameObject:
   m_ObjectHideFlags: 0
@@ -58864,6 +59248,8 @@ GameObject:
   - component: {fileID: 7004166197777395354}
   - component: {fileID: 3402340564567724987}
   - component: {fileID: 1190246593504953318}
+  - component: {fileID: 3787390759895711839}
+  - component: {fileID: 6124754162135445168}
   m_Layer: 0
   m_Name: Global UI
   m_TagString: Untagged
@@ -59038,6 +59424,1230 @@ MonoBehaviour:
   loadingMenuName: Loading Screen
   menuAfterLoad: 
   minLoadingScreenSeconds: 1.5
+--- !u!114 &3787390759895711839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968174702307162379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d929440d64a43c4883cb4c5ab5ffaa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.PimlrUISnapshot
+  entries:
+  - slice: slice4a
+    target: {fileID: 7902346361474408974}
+    sprite: {fileID: 21300000, guid: 2ff558bf8c113e940977e5a416595e18, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 7936652305187621401}
+    sprite: {fileID: 21300000, guid: 05643fcd01e49a741820e9cc1ce367e9, type: 3}
+    imageType: 3
+    color: {r: 0.45098042, g: 1, b: 0.12941177, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 8820245762525704120}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+    fontMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+    fontSize: 24
+    fontStyle: 1
+    characterSpacing: 0
+    textColor: {r: 0, g: 0, b: 0, a: 1}
+    autoSize: 0
+    fontSizeMin: 17.5
+    fontSizeMax: 70
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 8766674866972168730}
+    sprite: {fileID: 21300000, guid: 2ff558bf8c113e940977e5a416595e18, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 1166610375242726758}
+    sprite: {fileID: 21300000, guid: 36d8490447005ac4bba74ef6cb3b1459, type: 3}
+    imageType: 3
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 1344810474216950652}
+    sprite: {fileID: 21300000, guid: 12c11b1fa318911489431e5f1e1ba178, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 2352006875955862562}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+    fontMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+    fontSize: 30
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 17.5
+    fontSizeMax: 70
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 5775018432500279162}
+    sprite: {fileID: 21300000, guid: 4131630591c169546b246507563b4057, type: 3}
+    imageType: 0
+    color: {r: 0, g: 0, b: 0, a: 1}
+    pixelsPerUnitMultiplier: 0.01
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 6602391322958815485}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+    fontMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+    fontSize: 31.1
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 14
+    fontSizeMax: 31.04
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 6688195252505587028}
+    sprite: {fileID: 21300000, guid: 68d30670681841d4eb10c8d027698ba7, type: 3}
+    imageType: 1
+    color: {r: 0, g: 0, b: 0, a: 0.69803923}
+    pixelsPerUnitMultiplier: 2
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 53204279363121124}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 1, y: 0.5}
+    rectAnchorMax: {x: 1, y: 0.5}
+    rectPivot: {x: 1, y: 0.5}
+    rectPos: {x: -31, y: 0}
+    rectSize: {x: 200, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 7471226214212247519}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0.5, y: 0.5}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 190, y: 40}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 8493353168164191815}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0.5, y: 0.5}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 190, y: 40}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 6897498075956045153}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0.5, y: 0.5}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 190, y: 40}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 5707391485714325519}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0.5, y: 0.5}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 190, y: 40}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 540253940055777534}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0.5, y: 0.5}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 190, y: 40}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 1717002861467256191}
+    sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 7262571751509734463}
+    sprite: {fileID: 21300000, guid: ad8724e00eeac9f4b88686e38abf26f7, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 848789347545157969}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 12
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 3703727998827896521}
+    sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 5074698209824890430}
+    sprite: {fileID: 21300000, guid: ad8724e00eeac9f4b88686e38abf26f7, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 8208517036579336386}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 12
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 2217512432790895582}
+    sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 3438732269992111491}
+    sprite: {fileID: 21300000, guid: ad8724e00eeac9f4b88686e38abf26f7, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 4802411744024662835}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 12
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 4895576188728362567}
+    sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 4474628873680772328}
+    sprite: {fileID: 21300000, guid: ad8724e00eeac9f4b88686e38abf26f7, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 7229438595979939985}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 12
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 5233216319460450852}
+    sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 2167560366737301606}
+    sprite: {fileID: 21300000, guid: ad8724e00eeac9f4b88686e38abf26f7, type: 3}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 24938532336571691}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 12
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 6785360300803440940}
+    sprite: {fileID: 21300000, guid: 68d30670681841d4eb10c8d027698ba7, type: 3}
+    imageType: 1
+    color: {r: 0, g: 0, b: 0, a: 0.69803923}
+    pixelsPerUnitMultiplier: 4
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 2476960203200556275}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 12.8
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 4820924809462232524}
+    sprite: {fileID: 0}
+    imageType: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+    fontSize: 18
+    fontStyle: 17
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 10
+    fontSizeMax: 12
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+  - slice: slice4a
+    target: {fileID: 8998619542487543896}
+    sprite: {fileID: 21300000, guid: aed9514c89624b24a8aaab3af9ad2eef, type: 3}
+    imageType: 0
+    color: {r: 0.060922597, g: 0.990566, b: 0, a: 1}
+    pixelsPerUnitMultiplier: 1
+    transition: 0
+    colors:
+      m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+      m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+      m_ColorMultiplier: 1
+      m_FadeDuration: 0.1
+    targetGraphic: {fileID: 0}
+    rectAnchorMin: {x: 0, y: 0}
+    rectAnchorMax: {x: 0, y: 0}
+    rectPivot: {x: 0, y: 0}
+    rectPos: {x: 0, y: 0}
+    rectSize: {x: 0, y: 0}
+    font: {fileID: 0}
+    fontMaterial: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    characterSpacing: 0
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    autoSize: 0
+    fontSizeMin: 0
+    fontSizeMax: 0
+    fieldNames: []
+    fieldValues: []
+    deactivated: []
+    json: 
+--- !u!114 &6124754162135445168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968174702307162379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3faee41eff73935448601a36449fd8b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.PimlrThemedColorFields
+  entries:
+  - target: {fileID: 373966957124337815}
+    field: normalColor
+    token: 5
+    alpha: 1
+  - target: {fileID: 373966957124337815}
+    field: depletedColor
+    token: 14
+    alpha: 1
 --- !u!1 &3977727916308809677
 GameObject:
   m_ObjectHideFlags: 0
@@ -64662,6 +66272,7 @@ GameObject:
   - component: {fileID: 4699473265884165468}
   - component: {fileID: 4460068166204112511}
   - component: {fileID: 2217512432790895582}
+  - component: {fileID: 6524300109600179862}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -64710,14 +66321,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 0.55}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -64727,6 +66338,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6524300109600179862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4371512950231766600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 7
+  alpha: 0.55
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 8
+  autoImageType: 1
 --- !u!1 &4374074733819806875
 GameObject:
   m_ObjectHideFlags: 0
@@ -68064,6 +69694,7 @@ GameObject:
   - component: {fileID: 904401401419661615}
   - component: {fileID: 7702633110266183416}
   - component: {fileID: 24938532336571691}
+  - component: {fileID: 8246126339880998730}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -68120,15 +69751,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Shut Down Police Cruiser
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+  m_sharedMaterial: {fileID: 3215112344672573039, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -68145,17 +69776,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 36
+  m_fontSize: 16.24
+  m_fontSizeBase: 16.24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 10
   m_fontSizeMax: 12
   m_fontStyle: 17
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 5
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -68190,6 +69821,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8246126339880998730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4623057471406552047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 4
+  textCase: 0
+  sizeScale: 1.16
+  overrideColor: 1
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &4636623093254068483
 GameObject:
   m_ObjectHideFlags: 0
@@ -68944,6 +70596,7 @@ GameObject:
   - component: {fileID: 2131948950007226737}
   - component: {fileID: 2791063280695540560}
   - component: {fileID: 3703727998827896521}
+  - component: {fileID: 8113550334928998096}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -68992,14 +70645,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 0.55}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -69009,6 +70662,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8113550334928998096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4680466934090465801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 7
+  alpha: 0.55
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 8
+  autoImageType: 1
 --- !u!1 &4688329279537025934
 GameObject:
   m_ObjectHideFlags: 0
@@ -79239,6 +80911,7 @@ GameObject:
   - component: {fileID: 4614152244518694929}
   - component: {fileID: 3820558098020385641}
   - component: {fileID: 1344810474216950652}
+  - component: {fileID: 3466369075397459406}
   m_Layer: 5
   m_Name: WeaponInfo
   m_TagString: Untagged
@@ -79290,15 +80963,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.63750005}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 12c11b1fa318911489431e5f1e1ba178, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 9e3048b972fa0ed408293a4cbfa12478, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -79307,6 +80980,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3466369075397459406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5471760070409174935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 2
+  alpha: 0.85
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 3
+  autoImageType: 1
 --- !u!1 &5472263533415165861
 GameObject:
   m_ObjectHideFlags: 0
@@ -81903,6 +83595,7 @@ GameObject:
   - component: {fileID: 2984619260092836104}
   - component: {fileID: 899657965125698418}
   - component: {fileID: 7262571751509734463}
+  - component: {fileID: 5456623621596797826}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -81950,7 +83643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8039216, g: 0.9764706, b: 0.32156864, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -81967,6 +83660,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5456623621596797826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5644183579087904191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 0
+  autoImageType: 1
 --- !u!1 &5650137971249312860
 GameObject:
   m_ObjectHideFlags: 0
@@ -89304,6 +91016,7 @@ GameObject:
   - component: {fileID: 474505455807868609}
   - component: {fileID: 6785360300803440940}
   - component: {fileID: 7643106694044737838}
+  - component: {fileID: 212800657626730923}
   m_Layer: 5
   m_Name: Enemy Kill
   m_TagString: Untagged
@@ -89353,14 +91066,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.69803923}
+  m_Color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.6}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 68d30670681841d4eb10c8d027698ba7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e3048b972fa0ed408293a4cbfa12478, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89392,6 +91105,25 @@ MonoBehaviour:
   m_LayoutPriority: 1
   m_MaxWidth: -1
   m_MaxHeight: -1
+--- !u!114 &212800657626730923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6130289751714123020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 2
+  alpha: 0.8
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 3
+  autoImageType: 1
 --- !u!1 &6135748246444147646
 GameObject:
   m_ObjectHideFlags: 0
@@ -94771,7 +96503,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 190, y: 40}
+  m_SizeDelta: {x: 240, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6153588590798113786
 CanvasRenderer:
@@ -96617,7 +98349,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 190, y: 40}
+  m_SizeDelta: {x: 240, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1903000721789939720
 CanvasRenderer:
@@ -99545,6 +101277,7 @@ GameObject:
   - component: {fileID: 9073841842011881572}
   - component: {fileID: 2945443745236751329}
   - component: {fileID: 1717002861467256191}
+  - component: {fileID: 2218182407727437059}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -99593,14 +101326,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.65882355, g: 0.6509804, b: 0.61960787, a: 0.55}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 33eb021aa9ff4ac44b0bbeb535fba991, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -99610,6 +101343,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2218182407727437059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6742173019847673918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 7
+  alpha: 0.55
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 8
+  autoImageType: 1
 --- !u!1 &6750525942168036377
 GameObject:
   m_ObjectHideFlags: 0
@@ -103922,7 +105674,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 190, y: 40}
+  m_SizeDelta: {x: 240, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7211656517323288250
 CanvasRenderer:
@@ -105453,6 +107205,7 @@ GameObject:
   - component: {fileID: 3400550186844723222}
   - component: {fileID: 8072444781513335918}
   - component: {fileID: 8208517036579336386}
+  - component: {fileID: 439310920001075113}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -105509,15 +107262,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Level 1 - Wash 10 Melee Bots
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+  m_sharedMaterial: {fileID: 3215112344672573039, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -105534,17 +107287,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 36
+  m_fontSize: 16.24
+  m_fontSizeBase: 16.24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 10
   m_fontSizeMax: 12
   m_fontStyle: 17
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 5
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -105579,6 +107332,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &439310920001075113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7150178872215288189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 4
+  textCase: 0
+  sizeScale: 1.16
+  overrideColor: 1
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &7156125486593421047
 GameObject:
   m_ObjectHideFlags: 0
@@ -110093,6 +111867,7 @@ GameObject:
   - component: {fileID: 2816747820359479794}
   - component: {fileID: 1166610375242726758}
   - component: {fileID: 1180413090333079276}
+  - component: {fileID: 7914923243548666323}
   m_Layer: 5
   m_Name: Stamina_bar_Fill
   m_TagString: Untagged
@@ -110140,14 +111915,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.07058824, g: 0.07058824, b: 0.06666667, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 36d8490447005ac4bba74ef6cb3b1459, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -110172,6 +111947,25 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &7914923243548666323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482948075490587395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 5
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 1
+  sprite: 8
+  autoImageType: 0
 --- !u!1 &7486646704486660787
 GameObject:
   m_ObjectHideFlags: 0
@@ -116130,6 +117924,8 @@ GameObject:
   - component: {fileID: 5487957514644416205}
   - component: {fileID: 7902346361474408974}
   - component: {fileID: 3658642376036804032}
+  - component: {fileID: 1657762645783710196}
+  - component: {fileID: 8098395533110806971}
   m_Layer: 5
   m_Name: Health_barBG
   m_TagString: Untagged
@@ -116180,15 +117976,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.02745098, g: 0.02745098, b: 0.02745098, a: 0.63750005}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2ff558bf8c113e940977e5a416595e18, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 44166ff9d317be04aa504e0e2d541576, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -116219,6 +118015,42 @@ MonoBehaviour:
   HPHealingColor: {r: 0, g: 1, b: 1, a: 1}
   HPLossColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   ChangeHPTextColorToo: 1
+--- !u!114 &1657762645783710196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7917066887692755972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 2
+  alpha: 0.85
+  followPatternOpacity: 1
+  keepColor: 0
+  sprite: 9
+  autoImageType: 1
+--- !u!114 &8098395533110806971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7917066887692755972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315b6e1d2ed01ee4cb5e885823ee7a49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.PimlrHealthBarColor
+  fill: {fileID: 7936652305187621401}
+  label: {fileID: 8820245762525704120}
+  lowThreshold: 0.25
+  healthy: 17
+  low: 13
 --- !u!1 &7921525187717398388
 GameObject:
   m_ObjectHideFlags: 0
@@ -118488,7 +120320,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 190, y: 40}
+  m_SizeDelta: {x: 240, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8094486808887046173
 CanvasRenderer:
@@ -119615,6 +121447,7 @@ GameObject:
   - component: {fileID: 4227642278427832934}
   - component: {fileID: 9073846408636765072}
   - component: {fileID: 6602391322958815485}
+  - component: {fileID: 7504910065853040504}
   m_Layer: 5
   m_Name: CoinTXT
   m_TagString: Untagged
@@ -119671,15 +121504,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
-  m_sharedMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
+  m_sharedMaterial: {fileID: -6278078481223849367, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -119696,17 +121529,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.1
-  m_fontSizeBase: 36
+  m_fontSize: 31.04
+  m_fontSizeBase: 31.04
   m_fontWeight: 400
-  m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 35
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 14
+  m_fontSizeMax: 31.04
   m_fontStyle: 0
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 1
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -119741,6 +121574,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7504910065853040504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8096276472552077406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 3
+  textCase: 0
+  sizeScale: 1.94
+  overrideColor: 0
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &8099714541728691828
 GameObject:
   m_ObjectHideFlags: 0
@@ -125099,6 +126953,7 @@ GameObject:
   - component: {fileID: 4193483711511451479}
   - component: {fileID: 7936652305187621401}
   - component: {fileID: 3958918703880340813}
+  - component: {fileID: 1316843222295371898}
   m_Layer: 5
   m_Name: Heath_bar_Fill
   m_TagString: Untagged
@@ -125146,14 +127001,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45098042, g: 1, b: 0.12941177, a: 1}
+  m_Color: {r: 0.07058824, g: 0.07058824, b: 0.06666667, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 05643fcd01e49a741820e9cc1ce367e9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1217eb816e7d2c4cbf4cc3f51fb6022, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -125178,6 +127033,25 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &1316843222295371898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429922596104031603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0682f1acb926847b359fae7fc46ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedImage
+  themeOverride: {fileID: 0}
+  color: 17
+  alpha: 1
+  followPatternOpacity: 1
+  keepColor: 1
+  sprite: 8
+  autoImageType: 0
 --- !u!1 &8431708552360931851
 GameObject:
   m_ObjectHideFlags: 0
@@ -130876,6 +132750,7 @@ GameObject:
   - component: {fileID: 7069936481994498290}
   - component: {fileID: 4498299250877059900}
   - component: {fileID: 7229438595979939985}
+  - component: {fileID: 6962675698023339614}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -130932,15 +132807,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Level 3 - Wash 10 Bomber Bots
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+  m_sharedMaterial: {fileID: 3215112344672573039, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -130957,17 +132832,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 36
+  m_fontSize: 16.24
+  m_fontSizeBase: 16.24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 10
   m_fontSizeMax: 12
   m_fontStyle: 17
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 5
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -131002,6 +132877,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6962675698023339614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8799652109485668107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 4
+  textCase: 0
+  sizeScale: 1.16
+  overrideColor: 1
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &8802430691273914426
 GameObject:
   m_ObjectHideFlags: 0
@@ -132282,6 +134178,7 @@ GameObject:
   - component: {fileID: 4370907590165792296}
   - component: {fileID: 1459384750209712340}
   - component: {fileID: 4802411744024662835}
+  - component: {fileID: 803850281563408406}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -132338,15 +134235,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Level 2 - Wash Gunner Bot
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
-  m_sharedMaterial: {fileID: -3773392590839333306, guid: e3e564638a7dd4747aabb67e8719367d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
+  m_sharedMaterial: {fileID: 3215112344672573039, guid: 1bee2a8d16a1be447ac2e2446d383a4f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -132363,17 +134260,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 36
+  m_fontSize: 16.24
+  m_fontSizeBase: 16.24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 10
   m_fontSizeMax: 12
   m_fontStyle: 17
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 5
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -132408,6 +134305,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &803850281563408406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8899073100161711563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 4
+  textCase: 0
+  sizeScale: 1.16
+  overrideColor: 1
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &8905448190414947936
 GameObject:
   m_ObjectHideFlags: 0
@@ -134017,6 +135935,7 @@ GameObject:
   - component: {fileID: 7786501198482676639}
   - component: {fileID: 2394428392063773024}
   - component: {fileID: 2352006875955862562}
+  - component: {fileID: 2977400054040550535}
   m_Layer: 5
   m_Name: Ammo Count (TMP)
   m_TagString: Untagged
@@ -134073,15 +135992,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00/00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
-  m_sharedMaterial: {fileID: 1001228505088396455, guid: 9963bec72153f6a479bda4bd36cf3c69, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
+  m_sharedMaterial: {fileID: -6278078481223849367, guid: 1d4ee24a8d83f5a4590928fe3ac2cb41, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.95686275, g: 0.94509804, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -134108,7 +136027,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 1
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -134143,6 +136062,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2977400054040550535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8966931730708317726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4061c5223f081e645bc1c0c400fc2a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.UI.ThemedText
+  themeOverride: {fileID: 0}
+  role: 3
+  textCase: 0
+  sizeScale: 1.875
+  overrideColor: 0
+  color: 6
+  alpha: 1
+  keepColor: 0
+  usePreset: 1
 --- !u!1 &8977230286287733307
 GameObject:
   m_ObjectHideFlags: 0

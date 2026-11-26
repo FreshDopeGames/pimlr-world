@@ -108,6 +108,9 @@ public static class PimlrAspectCheck
             var r = ScreenRect(g.rectTransform);
             if (r.width < 1 || r.height < 1) continue;
             if (r.width >= W * 0.95f && r.height >= H * 0.95f) continue; // full-screen backdrops/scrims may bleed
+            // Content inside a scroll mask (rows scrolled out of view) is clipped on purpose; the mask itself is checked.
+            var mask = g.GetComponentInParent<RectMask2D>();
+            if (mask && mask.transform != g.transform) continue;
             if (!Contains(screen, r, 2f)) issues.Add($"OFFSCREEN  {Path(g.transform, root)}  ({Fmt(r)} vs screen {W}x{H})");
             else if (!Contains(safe, r, 2f)) issues.Add($"SAFEAREA   {Path(g.transform, root)}");
         }
@@ -123,13 +126,16 @@ public static class PimlrAspectCheck
         var sels = root.GetComponentsInChildren<Selectable>(false).Where(s => s.isActiveAndEnabled && s.interactable).ToList();
         for (int i = 0; i < sels.Count; i++)
         {
-            var a = ScreenRect((RectTransform)sels[i].transform);
-            if (phone && Mathf.Min(a.width, a.height) + 0.5f < minTouchPx)
+            var a = Clipped(sels[i]);
+            if (a.width < 1f || a.height < 1f) continue; // fully scrolled out of view
+            // List rows are focus targets for controller/keyboard scrolling, not tap targets (no click action).
+            if (phone && !(sels[i] is PIMLR.UI.PimlrListRow) && Mathf.Min(a.width, a.height) + 0.5f < minTouchPx)
                 issues.Add($"TOUCH      {Path(sels[i].transform, root)}  {Mathf.Min(a.width, a.height):0}px < {minTouchPx:0}px");
             for (int j = i + 1; j < sels.Count; j++)
             {
                 if (sels[i].transform.IsChildOf(sels[j].transform) || sels[j].transform.IsChildOf(sels[i].transform)) continue;
-                var b = ScreenRect((RectTransform)sels[j].transform);
+                var b = Clipped(sels[j]);
+                if (b.width < 1f || b.height < 1f) continue;
                 float ov = Overlap(a, b);
                 if (ov > 0.10f * Mathf.Min(a.width * a.height, b.width * b.height))
                     issues.Add($"OVERLAP    {Path(sels[i].transform, root)}  x  {Path(sels[j].transform, root)}");
@@ -141,6 +147,17 @@ public static class PimlrAspectCheck
         sb.AppendLine($"{(issues.Count == 0 ? "PASS" : "FAIL")} {head}: {issues.Count} issue(s)");
         foreach (var i in issues.Distinct().Take(40)) sb.AppendLine("  " + i);
         return sb.ToString();
+    }
+
+    // Visible part of a selectable: list content is clipped to its scroll mask (rows scrolled away aren't on screen).
+    static Rect Clipped(Selectable s)
+    {
+        var r = ScreenRect((RectTransform)s.transform);
+        var mask = s.GetComponentInParent<RectMask2D>();
+        if (!mask) return r;
+        var m = ScreenRect(mask.rectTransform);
+        float xMin = Mathf.Max(r.xMin, m.xMin), yMin = Mathf.Max(r.yMin, m.yMin), xMax = Mathf.Min(r.xMax, m.xMax), yMax = Mathf.Min(r.yMax, m.yMax);
+        return xMax > xMin && yMax > yMin ? Rect.MinMaxRect(xMin, yMin, xMax, yMax) : new Rect(0, 0, 0, 0);
     }
 
     static Rect ScreenRect(RectTransform rt)

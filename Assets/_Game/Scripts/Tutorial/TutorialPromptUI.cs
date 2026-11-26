@@ -9,6 +9,7 @@
 // a fade-in/out UMG Animation, added to the viewport by the tutorial subsystem.
 
 using System.Collections;
+using PIMLR.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,9 +22,10 @@ public class TutorialPromptUI : MonoBehaviour
     Coroutine fade;
     float fadeSeconds = 0.2f;
 
-    static readonly Color PanelColor = new Color(0.05f, 0.05f, 0.08f, 0.78f);
-    static readonly Color DoneColor = new Color(0.20f, 0.75f, 0.35f, 0.85f);
-    static readonly Color Accent = new Color(1f, 0.82f, 0.15f, 1f); // matches the yellow objective arrow
+    // #UI (Slice 4): colors and fonts come from the PIMLR UI theme (fallbacks = approved token values).
+    static Color PanelColor => PimlrUITheme.C(ColorToken.SurfaceScrim, 1.1f);
+    static Color DoneColor => PimlrUITheme.C(ColorToken.BrandForest, 0.92f);
+    static Color Accent => PimlrUITheme.C(ColorToken.BrandLime);
 
     public static TutorialPromptUI Create()
     {
@@ -54,6 +56,8 @@ public class TutorialPromptUI : MonoBehaviour
         panel = panelRt.gameObject.AddComponent<Image>();
         panel.color = PanelColor;
         panel.raycastTarget = false;
+        var cardSprite = PimlrUITheme.Current ? PimlrUITheme.Current.Sprite(SpriteSlot.Card) : null; // #UI
+        if (cardSprite) { panel.sprite = cardSprite; panel.type = Image.Type.Sliced; }
 
         // Accent bar on the left edge.
         var bar = NewRect("Accent", panelRt);
@@ -61,20 +65,20 @@ public class TutorialPromptUI : MonoBehaviour
         bar.pivot = new Vector2(0f, 0.5f); bar.sizeDelta = new Vector2(8f, 0f);
         var barImg = bar.gameObject.AddComponent<Image>(); barImg.color = Accent; barImg.raycastTarget = false;
 
-        promptText = NewText("Prompt", panelRt, 38f, FontStyles.Bold, TextAlignmentOptions.Center);
+        promptText = NewText("Prompt", panelRt, 38f, FontStyles.Normal, TextAlignmentOptions.Center, TypeRole.Heading); // #UI
         var pr = promptText.rectTransform;
         pr.anchorMin = new Vector2(0f, 0.3f); pr.anchorMax = new Vector2(1f, 1f);
         pr.offsetMin = new Vector2(30f, 0f); pr.offsetMax = new Vector2(-30f, -8f);
 
-        progressText = NewText("Progress", panelRt, 26f, FontStyles.Normal, TextAlignmentOptions.Center);
+        progressText = NewText("Progress", panelRt, 26f, FontStyles.Normal, TextAlignmentOptions.Center, TypeRole.Utility);
         progressText.color = Accent;
         var pg = progressText.rectTransform;
         pg.anchorMin = new Vector2(0f, 0f); pg.anchorMax = new Vector2(1f, 0.35f);
         pg.offsetMin = new Vector2(30f, 6f); pg.offsetMax = new Vector2(-30f, 0f);
 
         // Skip hint + hold-to-skip fill under the panel.
-        skipText = NewText("SkipHint", transform, 20f, FontStyles.Normal, TextAlignmentOptions.Center);
-        skipText.color = new Color(1f, 1f, 1f, 0.7f);
+        skipText = NewText("SkipHint", transform, 21f, FontStyles.Normal, TextAlignmentOptions.Center, TypeRole.Body); // #UI: 21 = text floor
+        skipText.color = PimlrUITheme.C(ColorToken.TextSecondary);
         var sk = skipText.rectTransform;
         sk.anchorMin = sk.anchorMax = new Vector2(0.5f, 1f); sk.pivot = new Vector2(0.5f, 1f);
         sk.anchoredPosition = new Vector2(0f, -276f); sk.sizeDelta = new Vector2(600f, 30f);
@@ -94,9 +98,10 @@ public class TutorialPromptUI : MonoBehaviour
         return (RectTransform)go.transform;
     }
 
-    static TMP_Text NewText(string name, Transform parent, float size, FontStyles style, TextAlignmentOptions align)
+    static TMP_Text NewText(string name, Transform parent, float size, FontStyles style, TextAlignmentOptions align, TypeRole role)
     {
         var t = NewRect(name, parent).gameObject.AddComponent<TextMeshProUGUI>();
+        var font = PimlrUITheme.Font(role); if (font) t.font = font; // #UI
         t.fontSize = size; t.fontStyle = style; t.alignment = align;
         t.color = Color.white; t.raycastTarget = false; t.textWrappingMode = TextWrappingModes.Normal;
         return t;

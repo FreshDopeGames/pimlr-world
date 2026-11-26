@@ -10,6 +10,7 @@
 // a widget animation for the slide-in, played after the activation popup's animation finishes.
 
 using DG.Tweening;
+using PIMLR.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,8 +21,9 @@ public class PimlrBoostHUD : MonoBehaviour
     public static float AppearDelay = 2.3f;
     public static Vector2 Margin = new Vector2(28f, 24f);
     public static float Width = 400f;
-    public static Color Accent = new Color(1f, 0.82f, 0.1f, 1f);       // PIMLR yellow
-    public static Color PanelColor = new Color(0f, 0f, 0f, 0.62f);
+    // #UI (Slice 4): music purple + carbon card from the PIMLR UI theme (Track Boost = AccentMusic token).
+    public static Color Accent => PimlrUITheme.C(ColorToken.AccentMusic);
+    public static Color PanelColor => PimlrUITheme.C(ColorToken.SurfaceScrim, 1.1f);
 
     static PimlrBoostHUD instance;
     static string pendingTitle, pendingInfo;
@@ -46,8 +48,12 @@ public class PimlrBoostHUD : MonoBehaviour
         showAt = Time.unscaledTime + AppearDelay;
         var hud = Ensure();
         if (!hud) return;
-        if (titleFont) { hud.header.font = titleFont; hud.title.font = titleFont; }
-        if (infoFont) hud.info.font = infoFont;
+        // #UI: theme fonts win; the caller's fonts are only a fallback when no theme asset is present.
+        if (!PimlrUITheme.Current)
+        {
+            if (titleFont) { hud.header.font = titleFont; hud.title.font = titleFont; }
+            if (infoFont) hud.info.font = infoFont;
+        }
         hud.SlideOut(true); // a switch: the old card leaves while the new popup plays
     }
 
@@ -83,6 +89,8 @@ public class PimlrBoostHUD : MonoBehaviour
         bg.transform.SetParent(transform, false);
         bg.color = PanelColor;
         bg.raycastTarget = false;
+        var cardSprite = PimlrUITheme.Current ? PimlrUITheme.Current.Sprite(SpriteSlot.Card) : null; // #UI
+        if (cardSprite) { bg.sprite = cardSprite; bg.type = Image.Type.Sliced; }
         card = bg.rectTransform;
         card.anchorMin = card.anchorMax = new Vector2(0f, 1f);
         card.pivot = new Vector2(0f, 1f);
@@ -97,10 +105,11 @@ public class PimlrBoostHUD : MonoBehaviour
         ert.anchorMin = new Vector2(0f, 0f); ert.anchorMax = new Vector2(0f, 1f);
         ert.pivot = new Vector2(0f, 0.5f); ert.sizeDelta = new Vector2(6f, 0f); ert.anchoredPosition = Vector2.zero;
 
-        var font = PIMLR.Missions.SaveTheFans.SaveTheFansStyle.Font;
-        header = MakeText("Header", 17f, new Color(1f, 1f, 1f, 0.7f), font);
-        title = MakeText("Title", 28f, Accent, font);
-        info = MakeText("Info", 20f, Color.white, font);
+        // #UI: Caption / Heading / Body roles. Sizes are canvas units on the 1280x720 HUD canvas (x1.5 at 1080p).
+        var fallback = PIMLR.Missions.SaveTheFans.SaveTheFansStyle.Font;
+        header = MakeText("Header", 15f, PimlrUITheme.C(ColorToken.AccentMusic), PimlrUITheme.Font(TypeRole.Caption) ?? fallback);
+        title = MakeText("Title", 24f, PimlrUITheme.C(ColorToken.TextPrimary), PimlrUITheme.Font(TypeRole.Heading) ?? fallback);
+        info = MakeText("Info", 17f, PimlrUITheme.C(ColorToken.TextSecondary), PimlrUITheme.Font(TypeRole.Body) ?? fallback);
         header.text = "TRACK BOOST ACTIVE";
         header.characterSpacing = 6f;
     }

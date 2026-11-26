@@ -235,7 +235,8 @@ public class PimlrMenuNavigator : MonoBehaviour
 
         foreach (var s in Selectable.allSelectablesArray)
         {
-            if (!(s is Button || s is Toggle || s is Dropdown || s is TMP_Dropdown || s is InputField || s is TMP_InputField))
+            // #UI: focusable list rows (leaderboard) are cursor targets too, so the list can be walked with a controller.
+            if (!(s is Button || s is Toggle || s is Dropdown || s is TMP_Dropdown || s is InputField || s is TMP_InputField || s is PIMLR.UI.PimlrListRow))
                 continue;
             if (!s.isActiveAndEnabled || !s.IsInteractable()) continue;
             if (s.TryGetComponent(out PimlrNavHint skipHint) && skipHint.skip) continue;

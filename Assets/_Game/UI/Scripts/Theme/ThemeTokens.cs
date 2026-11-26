@@ -24,6 +24,7 @@ namespace PIMLR.UI
         StateDisabled = 14, // #55554F
         White = 15,
         Clear = 16,
+        HealthGreen = 17,   // #00FF00 the green of the plus-sign health pickup (health bar)
     }
 
     public enum TypeRole

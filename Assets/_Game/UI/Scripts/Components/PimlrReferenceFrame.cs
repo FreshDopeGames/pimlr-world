@@ -21,13 +21,19 @@ namespace PIMLR.UI
         [Tooltip("Never let the canvas shrink this UI below its 1080p physical size (relative to the screen's short side). Fixes narrow ratios like 4:3, where the canvas fits by width and text would drop under the 14 px floor.")]
         public bool keepShortSideScale = true;
 
+        [Tooltip("Portrait only: fill the whole screen instead of the parent panel (for panels sized for landscape).")]
+        public bool fillCanvasInPortrait;
+
         Vector2 lastParentSize = new Vector2(-1f, -1f);
+        // Driven values (like CanvasScaler): resizing the Game view re-fits the frame without marking the scene dirty.
+        DrivenRectTransformTracker tracker;
         float lastScale = -1f;
 
         /// <summary>Current canvas-units -> design-units scale (1 when the canvas is already 1080p).</summary>
         public float Scale => lastScale > 0f ? lastScale : CanvasToDesignScale();
 
         void OnEnable() => Fit(true);
+        void OnDisable() => tracker.Clear();
         void LateUpdate() => Fit(false);
 
         /// <summary>Scale between the canvas reference and the design resolution, using the scaler's width/height match.</summary>
@@ -53,14 +59,20 @@ namespace PIMLR.UI
                 if (sf > 0f) k = Mathf.Max(k, PimlrResponsive.ShortSideScale / sf);
             }
             var size = parent.rect.size;
+            var rootCanvasForFill = GetComponentInParent<Canvas>() ? GetComponentInParent<Canvas>().rootCanvas : null;
+            bool fill = fillCanvasInPortrait && rootCanvasForFill && PimlrResponsive.Orientation == LayoutOrientation.Portrait;
+            if (fill) size = ((RectTransform)rootCanvasForFill.transform).rect.size;
             if (!force && size == lastParentSize && Mathf.Approximately(k, lastScale)) return;
             lastParentSize = size; lastScale = k;
 
             var rt = (RectTransform)transform;
+            tracker.Clear();
+            tracker.Add(this, rt, DrivenTransformProperties.Anchors | DrivenTransformProperties.Pivot | DrivenTransformProperties.AnchoredPosition | DrivenTransformProperties.SizeDelta | DrivenTransformProperties.Scale);
             rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = Vector2.zero;
             rt.sizeDelta = size / Mathf.Max(0.0001f, k);
             rt.localScale = Vector3.one * k;
+            if (fill) rt.position = rootCanvasForFill.transform.position; // centered on the screen, not the panel
         }
     }
 }
