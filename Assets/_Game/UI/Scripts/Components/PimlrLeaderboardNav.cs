@@ -28,12 +28,14 @@ namespace PIMLR.UI
         public ScrollRect scroll;
 
         int signature = -1;
+        Transform lastFirstRow;
         readonly List<Selectable> rows = new List<Selectable>();
 
         void LateUpdate()
         {
             int sig = Signature();
-            if (sig != signature) { signature = sig; Relink(); }
+            var first = rowHolder && rowHolder.childCount > 0 ? rowHolder.GetChild(0) : null; // rows rebuilt -> new first row object
+            if (sig != signature || first != lastFirstRow) { signature = sig; lastFirstRow = first; Relink(); }
             KeepFocusedRowVisible();
         }
 
@@ -42,7 +44,6 @@ namespace PIMLR.UI
             unchecked
             {
                 int h = rowHolder ? rowHolder.childCount * 31 : 0;
-                if (rowHolder && rowHolder.childCount > 0) h = h * 17 + rowHolder.GetChild(0).GetInstanceID();
                 h = h * 7 + (infiniteActive && infiniteActive.activeInHierarchy ? 1 : 0);
                 for (int i = 0; i < sortActive.Length; i++) h = h * 5 + (sortActive[i] && sortActive[i].activeInHierarchy ? i + 1 : 0);
                 return h;
