@@ -68,6 +68,33 @@ public static class PimlrInput
     static Gamepad Pad => Gamepad.current;
     public static bool StanceCycleDown => Pad != null && Pad.buttonEast.wasPressedThisFrame;     // B / Circle
     public static bool MenuButtonDown => Pad != null && Pad.startButton.wasPressedThisFrame;      // Start / Options
+
+    // PIMLR #ROLL: B / Circle on foot - tap = roll (or stand up from crouch/prone), hold = crouch / prone.
+    /// <summary>Seconds B must be held before it counts as a hold (crouch/prone) instead of a tap (roll).</summary>
+    public static float StanceHoldSeconds = 0.3f;
+    /// <summary>Hold cycles Stand -> Crouch -> Prone -> Crouch. Set false to make hold a plain crouch on/off toggle.</summary>
+    public static bool AllowProneOnController = true;
+    static int stanceFrame = -1; static float stanceDownTime = -1f; static bool stanceHoldFired, stanceTap, stanceHold;
+    static void UpdateStanceButton()
+    {
+        if (stanceFrame == Time.frameCount) return;
+        stanceFrame = Time.frameCount;
+        stanceTap = stanceHold = false;
+        var b = Pad != null ? Pad.buttonEast : null;
+        if (b == null) { stanceDownTime = -1f; return; }
+        if (b.wasPressedThisFrame) { stanceDownTime = Time.unscaledTime; stanceHoldFired = false; }
+        if (stanceDownTime >= 0f && b.isPressed && !stanceHoldFired && Time.unscaledTime - stanceDownTime >= StanceHoldSeconds)
+        { stanceHold = true; stanceHoldFired = true; }
+        if (b.wasReleasedThisFrame)
+        {
+            if (stanceDownTime >= 0f && !stanceHoldFired) stanceTap = true;
+            stanceDownTime = -1f;
+        }
+    }
+    public static bool StanceTap { get { UpdateStanceButton(); return stanceTap; } }
+    public static bool StanceHold { get { UpdateStanceButton(); return stanceHold; } }
+    /// <summary>The current B press belongs to something else (vehicle exit, menu back): no tap or hold from it.</summary>
+    public static void ConsumeStancePress() { UpdateStanceButton(); stanceDownTime = -1f; stanceHoldFired = true; stanceTap = stanceHold = false; }
     // Music (Y play/pause, LB/RB tracks) is handled by MusicInputHandler in the gameplay scenes.
     // Set every frame by the player's DriveVehicles: true while in a vehicle (driving or drive-by seat).
     static int inVehicleFrame = -10;
@@ -84,6 +111,7 @@ public static class PimlrInput
     public static void MarkVehicleExit()
     {
         lastVehicleExitFrame = Time.frameCount;
+        ConsumeStancePress(); // PIMLR #ROLL: releasing the exit press must not also roll
         BlockGameplayInputFor(VehicleExitButtonPause, blockMovement: false); // still tapping A to pedal -> no jump on landing
     }
 

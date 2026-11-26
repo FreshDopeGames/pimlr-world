@@ -166,17 +166,33 @@ namespace JUTPS
                 _GetUp();
             }
 
-            // PIMLR: gamepad B cycles Stand -> Crouch -> Prone -> Stand (not while driving; B brakes there)
-            if (PimlrInput.StanceCycleDown && !IsDriving && !PimlrInput.VehicleExitedRecently && !PimlrMenuNavigator.IsNavigating)
+            // PIMLR #ROLL: gamepad B / Circle on foot.
+            //   Tap  = dodge-roll when standing; from crouch / prone, pop straight up to standing.
+            //   Hold = Stand -> Crouch -> Prone -> Crouch (PimlrInput.AllowProneOnController = false: crouch on/off).
+            // Ignored while driving, right after a vehicle exit, and while a menu is open (B is Exit / Back there).
+            if (IsDriving || PimlrMenuNavigator.IsNavigating)
             {
-                if (IsRunning && AutoRun == true)
+                PimlrInput.ConsumeStancePress();
+            }
+            else if (!PimlrInput.VehicleExitedRecently)
+            {
+                if (PimlrInput.StanceHold)
                 {
-                    IsRunning = false; MaxSprintSpeed = false; CanSprint = true; SprintSpeedDecrease = 0;
-                }
+                    if (IsRunning && AutoRun == true)
+                    {
+                        IsRunning = false; MaxSprintSpeed = false; CanSprint = true; SprintSpeedDecrease = 0;
+                    }
 
-                if (!IsCrouched && !IsProne) _Crouch();
-                else if (IsCrouched && !IsProne) _Prone();
-                else { _GetUp(); _GetUp(); }
+                    if (!IsCrouched && !IsProne) _Crouch();
+                    else if (IsCrouched && !IsProne) { if (PimlrInput.AllowProneOnController) _Prone(); else _GetUp(); }
+                    else _GetUp(); // prone -> crouch
+                }
+                else if (PimlrInput.StanceTap)
+                {
+                    if (IsProne) { _GetUp(); _GetUp(); }
+                    else if (IsCrouched) _GetUp();
+                    else if (EnableRoll) _Roll();
+                }
             }
 
             //Jump
