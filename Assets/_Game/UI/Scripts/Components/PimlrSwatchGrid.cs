@@ -107,6 +107,22 @@ namespace PIMLR.UI
             from.navigation = nav;
         }
 
+        /// <summary>Re-lay out existing chips (responsive: bigger touch targets, different columns) and re-link.</summary>
+        public void ApplyLayout(int newColumns, Vector2 newChipSize, Vector2 newSpacing)
+        {
+            columns = Mathf.Max(1, newColumns); chipSize = newChipSize; spacing = newSpacing;
+            int count = chips.Count, rows = Mathf.CeilToInt(count / (float)columns);
+            ((RectTransform)transform).sizeDelta = new Vector2(columns * chipSize.x + (columns - 1) * spacing.x, rows * chipSize.y + (rows - 1) * spacing.y);
+            for (int n = 0; n < count; n++)
+            {
+                int col = n % columns, row = n / columns;
+                var crt = (RectTransform)chips[n].transform;
+                crt.sizeDelta = chipSize;
+                crt.anchoredPosition = new Vector2(col * (chipSize.x + spacing.x) + chipSize.x / 2f, -row * (chipSize.y + spacing.y) - chipSize.y / 2f);
+            }
+            Relink();
+        }
+
         /// <summary>Rewrite every chip's links (call if exitUp / exitDown change).</summary>
         public void Relink()
         {

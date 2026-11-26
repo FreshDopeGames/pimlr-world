@@ -47,7 +47,7 @@ public static class PimlrFitCheckSlice2Builder
         var frameGo = new GameObject(FrameName, typeof(RectTransform));
         Undo.RegisterCreatedObjectUndo(frameGo, "Fit Check v2");
         frameGo.transform.SetParent(ctrl.transform, false);
-        frameGo.AddComponent<PimlrReferenceFrame>().Fit(true);
+        var frameComp = frameGo.AddComponent<PimlrReferenceFrame>(); frameComp.Fit(true);
 
         var card = Img(frameGo.transform, "L4 Fit Check Card", ColorToken.SurfaceRaised, 0.96f, SpriteSlot.Panel);
         Place(card.rectTransform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-96, 30), new Vector2(452, 410));
@@ -117,6 +117,20 @@ public static class PimlrFitCheckSlice2Builder
         }
         if (title) { var tt = Undo.AddComponent<ThemedText>(title.gameObject); tt.role = TypeRole.Display; tt.sizeScale = 0.56f; tt.Apply(); }
 
+        // Responsive layout (landscape / touch / portrait bottom sheet); SAVE's desktop placement is captured on first enable.
+        var resp = card.gameObject.AddComponent<PimlrFitCheckResponsive>();
+        resp.frame = frameComp; resp.card = card.rectTransform; resp.tabs = rrt; resp.colorCaption = cap.rectTransform;
+        resp.nameLabel = nameLbl.rectTransform; resp.savedLabel = saved.rectTransform; resp.hint = hint.rectTransform; resp.hintText = hint;
+        resp.grid = grid; resp.saveButton = save ? (RectTransform)save.transform : null;
+        if (save) { var sr = (RectTransform)save.transform; snap.entries.Add(new PimlrUISnapshot.Entry { slice = "slice2-rect", target = sr, json = JsonUtility.ToJson(new RectSnap { aMin = sr.anchorMin, aMax = sr.anchorMax, pivot = sr.pivot, pos = sr.anchoredPosition, size = sr.sizeDelta }) }); }
+
+        // Portrait framing for the Fit Check camera (projection only; the camera's own settings are untouched).
+        var cam = Object.FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(c => c.name == "Camera - Character Customization" && c.gameObject.scene == ctrl.gameObject.scene);
+        var colorer = Object.FindObjectsByType<changeColor>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(c => c.GetType() == typeof(changeColor) && c.gameObject.scene == ctrl.gameObject.scene);
+        var framing = card.gameObject.AddComponent<PimlrPortraitCameraFraming>();
+        framing.targetCamera = cam; framing.sheet = card.rectTransform;
+        framing.characterRoot = colorer && colorer.renderers != null && colorer.renderers.Length > 0 && colorer.renderers[0] ? colorer.renderers[0].transform.root : null;
+
         Undo.RecordObject(ctrl, "Fit Check v2");
         ctrl.swatchGrid = grid; ctrl.doneButton = save; ctrl.savedFeedback = saved;
         EditorUtility.SetDirty(ctrl);
@@ -155,7 +169,9 @@ public static class PimlrFitCheckSlice2Builder
         {
             foreach (var e in snap.entries.Where(e => e.slice == "slice2" && e.target))
             { Undo.RecordObject(e.target, "Revert Fit Check v2"); PimlrUISnapshot.Restore(e); EditorUtility.SetDirty(e.target); }
-            snap.entries.RemoveAll(e => e.slice == "slice2");
+            foreach (var e in snap.entries.Where(e => e.slice == "slice2-rect" && e.target is RectTransform))
+            { var rt = (RectTransform)e.target; var v = JsonUtility.FromJson<RectSnap>(e.json); Undo.RecordObject(rt, "Revert Fit Check v2"); rt.anchorMin = v.aMin; rt.anchorMax = v.aMax; rt.pivot = v.pivot; rt.anchoredPosition = v.pos; rt.sizeDelta = v.size; }
+            snap.entries.RemoveAll(e => e.slice == "slice2" || e.slice == "slice2-rect");
             if (snap.entries.Count == 0) Undo.DestroyObjectImmediate(snap);
         }
         Undo.RecordObject(ctrl, "Revert Fit Check v2");
@@ -163,6 +179,8 @@ public static class PimlrFitCheckSlice2Builder
         if (save) { EditorSceneManager.MarkSceneDirty(ctrl.gameObject.scene); EditorSceneManager.SaveScene(ctrl.gameObject.scene); }
         return "reverted";
     }
+
+    [System.Serializable] struct RectSnap { public Vector2 aMin, aMax, pivot, pos, size; } // plain values only (no object refs)
 
     // ---------------- building blocks (1080p units inside the frame) ----------------
 
