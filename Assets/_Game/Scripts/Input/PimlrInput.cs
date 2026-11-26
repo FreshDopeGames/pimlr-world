@@ -72,8 +72,8 @@ public static class PimlrInput
     // PIMLR #ROLL: B / Circle on foot - tap = roll (or stand up from crouch/prone), hold = crouch / prone.
     /// <summary>Seconds B must be held before it counts as a hold (crouch/prone) instead of a tap (roll).</summary>
     public static float StanceHoldSeconds = 0.3f;
-    /// <summary>Hold cycles Stand -> Crouch -> Prone -> Crouch. Set false to make hold a plain crouch on/off toggle.</summary>
-    public static bool AllowProneOnController = true;
+    /// <summary>false (current): hold toggles crouch on/off. true: hold cycles Stand -> Crouch -> Prone -> Crouch.</summary>
+    public static bool AllowProneOnController = false; // PIMLR #ROLL: prone left out for now - hold just toggles crouch
     static int stanceFrame = -1; static float stanceDownTime = -1f; static bool stanceHoldFired, stanceTap, stanceHold;
     static void UpdateStanceButton()
     {

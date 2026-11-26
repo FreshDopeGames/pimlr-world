@@ -44,7 +44,7 @@ public class PimlrControlsInfo : MonoBehaviour
         { "LT", "L2", "Aim" },
         { "A", "X", "Jump / Interact  |  Ride: Tap to Pedal (hold to cruise)" },
         { "X", "Square", "Reload" },
-        { "B", "Circle", "Tap: Roll / Stand up  |  Hold: Crouch / Prone  |  Exit Vehicle" },
+        { "B", "Circle", "Tap: Roll / Stand up  |  Hold: Crouch  |  Exit Vehicle" },
         { "Y", "Triangle", "Play / Pause Track" },
         { "LB", "L1", "Previous Track" },
         { "RB", "R1", "Next Track" },

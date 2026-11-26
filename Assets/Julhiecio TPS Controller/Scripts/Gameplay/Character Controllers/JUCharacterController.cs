@@ -168,7 +168,7 @@ namespace JUTPS
 
             // PIMLR #ROLL: gamepad B / Circle on foot.
             //   Tap  = dodge-roll when standing; from crouch / prone, pop straight up to standing.
-            //   Hold = Stand -> Crouch -> Prone -> Crouch (PimlrInput.AllowProneOnController = false: crouch on/off).
+            //   Hold = toggle crouch on/off (PimlrInput.AllowProneOnController = true restores Stand -> Crouch -> Prone -> Crouch).
             // Ignored while driving, right after a vehicle exit, and while a menu is open (B is Exit / Back there).
             if (IsDriving || PimlrMenuNavigator.IsNavigating)
             {
@@ -185,7 +185,8 @@ namespace JUTPS
 
                     if (!IsCrouched && !IsProne) _Crouch();
                     else if (IsCrouched && !IsProne) { if (PimlrInput.AllowProneOnController) _Prone(); else _GetUp(); }
-                    else _GetUp(); // prone -> crouch
+                    else if (PimlrInput.AllowProneOnController) _GetUp(); // prone -> crouch
+                    else { _GetUp(); _GetUp(); } // prone (e.g. from keyboard) -> stand
                 }
                 else if (PimlrInput.StanceTap)
                 {

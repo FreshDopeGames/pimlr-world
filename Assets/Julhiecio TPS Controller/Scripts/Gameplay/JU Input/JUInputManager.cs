@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //using JUTPS.JUInputSystem;
@@ -61,6 +61,7 @@ namespace JUTPS.JUInputSystem
 		public CustomInputButton[] CustomButton;
 
 		public static bool IsUsingGamepad;
+		bool pimlrJumpNeedsRelease; // PIMLR #MENUJUMP
 
 		[Header("PIMLR Gamepad Look")]
 		[Tooltip("Right-stick camera speed, as an equivalent mouse delta per frame at full deflection.")]
@@ -86,7 +87,17 @@ namespace JUTPS.JUInputSystem
 			UpdateGetButton();
 
 			// PIMLR: while a controller is navigating a menu, A / D-pad / X belong to the menu, not the character.
-			if (PimlrMenuNavigator.IsNavigating)
+			// PIMLR #MENUJUMP: "a menu is up" also covers any gamepad screen that shows the cursor (Living Room menus,
+			// leaderboards - their rows aren't buttons, so the navigator alone can miss them). CanJump = false isn't
+			// enough there: JUTPS's landing cooldown (_enableCanJump) turns it back on by itself.
+			bool pimlrMenuUp = PimlrMenuNavigator.IsNavigating || (PimlrInput.UsingGamepad && Cursor.visible);
+			// The A / Cross press that confirms or closes a menu is still held when the menu goes away; jump stays
+			// muted until that press is released, so it can never carry over into a jump.
+			if (pimlrMenuUp) pimlrJumpNeedsRelease = true;
+			else if (pimlrJumpNeedsRelease && !PressedJump) pimlrJumpNeedsRelease = false;
+			if (pimlrJumpNeedsRelease) PressedJump = PressedJumpDown = false;
+
+			if (pimlrMenuUp)
 			{
 				PressedJump = PressedJumpDown = false;
 				PressedInteract = PressedInteractDown = false;
