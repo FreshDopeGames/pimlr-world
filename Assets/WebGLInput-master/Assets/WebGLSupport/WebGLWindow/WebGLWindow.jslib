@@ -2,27 +2,27 @@ var WebGLWindow = {
 	WebGLWindowInit : function() {
 		// Remove the `Runtime` object from "v1.37.27: 12/24/2017"
 		// if Runtime not defined. create and add functon!!
-		if(typeof Runtime === "undefined") Runtime = { dynCall : dynCall }
 	},
     WebGLWindowGetCanvasName: function() {
         var elements = document.getElementsByTagName('canvas');
         var res = (elements.length <= 0) ? "" : elements[0].parentNode.id;
-        var intArray = intArrayFromString(res);
-        return (allocate.length <= 2) ? allocate(intArray, ALLOC_NORMAL):allocate(intArray, 'i8', ALLOC_NORMAL);
+        // PIMLR: Unity 6 removed allocate(); copy the string into wasm memory with _malloc + stringToUTF8
+        var __s = String(res), __n = lengthBytesUTF8(__s) + 1, __p = _malloc(__n); stringToUTF8(__s, __p, __n);
+        return __p;
 	},
     WebGLWindowOnFocus: function (cb) {
         window.addEventListener('focus', function () {
-            Runtime.dynCall("v", cb, []);
+            {{{ makeDynCall('v', 'cb') }}}();
         });
     },
     WebGLWindowOnBlur: function (cb) {
         window.addEventListener('blur', function () {
-            Runtime.dynCall("v", cb, []);
+            {{{ makeDynCall('v', 'cb') }}}();
         });
     },
 	WebGLWindowOnResize: function(cb) {
         window.addEventListener('resize', function () {
-            Runtime.dynCall("v", cb, []);
+            {{{ makeDynCall('v', 'cb') }}}();
         });
 	},
 	WebGLWindowInjectFullscreen : function () {

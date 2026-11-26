@@ -6,7 +6,7 @@
 var OpenWindowPlugin = {
     openWindow: function(link)
     {
-    	var url = Pointer_stringify(link);
+    	var url = UTF8ToString(link) /* PIMLR: Unity 6 */;
 
 		var func = function()
         {

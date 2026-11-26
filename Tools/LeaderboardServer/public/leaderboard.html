@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PIMLR World Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0b0b0d; --panel:#16161b; --line:#2a2a33; --ink:#f4f4f6; --dim:#9a9aa6; --hot:#38e07b; --gold:#ffcc3d; --silver:#cfd6e0; --bronze:#d98b4c; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:radial-gradient(1200px 600px at 50% -200px,#1d2a22,var(--bg)); color:var(--ink); font-family:Inter,system-ui,sans-serif; min-height:100vh; }
+  header { padding:28px 16px 8px; text-align:center; }
+  h1 { font-family:Anton,Impact,sans-serif; font-weight:400; letter-spacing:.04em; font-size:clamp(34px,6vw,64px); margin:0; line-height:1; text-transform:uppercase; }
+  h1 span { color:var(--hot); }
+  .sub { color:var(--dim); margin-top:8px; font-size:14px; }
+  .tabs { display:flex; gap:8px; justify-content:center; margin:18px 0 6px; flex-wrap:wrap; }
+  .tabs button { background:var(--panel); color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:10px 18px; font:600 14px Inter,sans-serif; cursor:pointer; }
+  .tabs button.on { background:var(--hot); color:#06140b; border-color:var(--hot); }
+  main { max-width:1200px; margin:0 auto; padding:12px 16px 40px; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .card h2 { margin:0; padding:14px 16px; font-family:Anton,Impact,sans-serif; font-weight:400; font-size:22px; letter-spacing:.03em; text-transform:uppercase; border-bottom:1px solid var(--line); }
+  ol { list-style:none; margin:0; padding:6px 0; }
+  li { display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:8px; padding:9px 16px; font-size:15px; }
+  li:nth-child(odd) { background:#ffffff05; }
+  .rk { font-weight:800; color:var(--dim); text-align:center; }
+  li.r1 .rk { color:var(--gold); } li.r2 .rk { color:var(--silver); } li.r3 .rk { color:var(--bronze); }
+  li.r1 { background:#ffcc3d12; }
+  .nm { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .val { font-weight:800; font-variant-numeric:tabular-nums; }
+  .empty { color:var(--dim); padding:18px 16px; font-size:14px; }
+  .champs { max-width:1200px; margin:0 auto; padding:0 16px; }
+  .champs .card { padding:14px 16px; }
+  .champs h3 { margin:0 0 8px; font-family:Anton,Impact,sans-serif; font-weight:400; font-size:20px; letter-spacing:.03em; text-transform:uppercase; color:var(--gold); }
+  .champs .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; font-size:14px; }
+  .champs b { color:var(--ink); } .champs .grid div { color:var(--dim); }
+  footer { text-align:center; color:var(--dim); font-size:13px; padding:0 16px 30px; }
+  footer a { color:var(--hot); }
+  .live { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--hot); margin-right:6px; animation:p 1.6s infinite; vertical-align:middle; }
+  @keyframes p { 50% { opacity:.25; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>PIMLR World <span>Leaderboard</span></h1>
+  <div class="sub"><span class="live"></span><span id="info">Loading…</span></div>
+  <div class="tabs" id="tabs">
+    <button data-p="today">Today</button>
+    <button data-p="week" class="on">This Week</button>
+    <button data-p="all">All Time</button>
+  </div>
+</header>
+<section class="champs" id="champs" hidden></section>
+<main id="boards"></main>
+<footer>Weekly winners lock every Sunday at 11:59 PM Pacific · Tag <b>@pimlrworld</b> · <a href="/rules">Contest rules</a> · <a href="/privacy">Privacy</a> · <a href="/">Play now</a></footer>
+<script>
+  const ORDER = ['story_time','inf_wave','inf_kills','inf_survival'];
+  let period = new URLSearchParams(location.search).get('period') || 'week';
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtTime = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h ? h+':'+String(m).padStart(2,'0') : m) + ':' + String(x).padStart(2,'0'); };
+  const fmt = (unit, v) => unit === 'time' ? fmtTime(v) : unit === 'wave' ? 'Wave ' + v : v + ' washes';
+  function setTabs() { document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.p === period)); }
+  document.getElementById('tabs').addEventListener('click', e => { if (!e.target.dataset.p) return; period = e.target.dataset.p; setTabs(); history.replaceState(null, '', '?period=' + period); load(); });
+  async function load() {
+    try {
+      const r = await fetch('/api/leaderboard/all?limit=10&period=' + period, { cache: 'no-store' });
+      const d = await r.json();
+      document.getElementById('info').textContent = (period === 'today' ? 'Today (' + d.today + ')' : period === 'week' ? 'This week · locks ' + d.weekEndsPT : 'All time') + ' · updates live';
+      document.getElementById('boards').innerHTML = ORDER.map(k => {
+        const b = d.boards[k];
+        const rows = b.rows.length ? '<ol>' + b.rows.map(x => `<li class="r${x.rank}"><span class="rk">${x.rank}</span><span class="nm">${esc(x.name)}</span><span class="val">${fmt(b.unit, x.value)}</span></li>`).join('') + '</ol>' : '<div class="empty">No runs yet. Be the first.</div>';
+        return `<div class="card"><h2>${esc(b.label)}</h2>${rows}</div>`;
+      }).join('');
+    } catch (e) { document.getElementById('info').textContent = 'Reconnecting…'; }
+  }
+  async function loadChamps() {
+    try {
+      const d = await (await fetch('/api/winners?limit=1', { cache: 'no-store' })).json();
+      const w = d.weeks[0]; if (!w) return;
+      const labels = { story_time:'Story: Fastest Run', inf_wave:'Infinite: Most Waves', inf_kills:'Infinite: Most Washes', inf_survival:'Infinite: Longest Run' };
+      const units = { story_time:'time', inf_wave:'wave', inf_kills:'kills', inf_survival:'time' };
+      const el = document.getElementById('champs');
+      el.innerHTML = `<div class="card"><h3>Last week's champions · week of ${esc(w.week)}</h3><div class="grid">${ORDER.map(k => { const top = (w.categories[k] || [])[0]; return `<div>${labels[k]}<br><b>${top ? esc(top.name) + ' · ' + fmt(units[k], top.value) : '—'}</b></div>`; }).join('')}</div></div>`;
+      el.hidden = false;
+    } catch (e) {}
+  }
+  setTabs(); load(); loadChamps();
+  setInterval(load, 10000); setInterval(loadChamps, 300000);
+</script>
+</body>
+</html>

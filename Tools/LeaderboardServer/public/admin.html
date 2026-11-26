@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PIMLR Leaderboard Admin</title>
+<style>
+  body { margin:0; font:14px/1.4 system-ui,sans-serif; background:#111; color:#eee; }
+  header { padding:14px 16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; border-bottom:1px solid #333; }
+  h1 { font-size:18px; margin:0 12px 0 0; }
+  select, button { font:inherit; padding:6px 10px; border-radius:6px; border:1px solid #444; background:#222; color:#eee; cursor:pointer; }
+  button.warn { border-color:#a33; } button.ok { border-color:#3a3; }
+  main { padding:16px; display:grid; gap:18px; }
+  section { background:#1a1a1a; border:1px solid #333; border-radius:10px; overflow:auto; }
+  h2 { font-size:16px; margin:0; padding:10px 12px; border-bottom:1px solid #333; }
+  table { border-collapse:collapse; width:100%; min-width:900px; }
+  th, td { padding:6px 10px; border-bottom:1px solid #2a2a2a; text-align:left; white-space:nowrap; }
+  tr.hidden td { opacity:.4; text-decoration:line-through; } tr.hidden td.act { text-decoration:none; opacity:1; }
+  .flag { color:#ffb347; } .note { color:#999; padding:10px 12px; }
+  .win { padding:10px 12px; } .win div { margin:3px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PIMLR Admin</h1>
+  <label>Week of <select id="week"></select></label>
+  <button id="lock" class="ok">Lock / re-lock winners for this week</button>
+  <a id="csv" href="#"><button>Download CSV</button></a>
+  <span id="totals" style="color:#999"></span>
+</header>
+<main>
+  <section><h2>Winners for this week</h2><div class="win" id="winners"></div></section>
+  <div id="boards"></div>
+  <p class="note">Hide removes a run from every public board (reversible). Ban hides all of a player's runs. Flags: <b>no_server_start</b> = the server never saw this run begin (offline / server restart / crafted); <b>fast_vs_server</b> = Story time much shorter than the server measured (long pauses or slow-mo can also cause this). Check flagged top entries before announcing winners, then click Lock to recompute.</p>
+</main>
+<script>
+  const fmtTime = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); };
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let week = '';
+  async function api(path, body) {
+    const r = await fetch(path, body ? { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) } : {});
+    if (!r.ok) { alert('Error ' + r.status + ': ' + await r.text()); throw new Error(r.status); }
+    return r.json();
+  }
+  async function load() {
+    const d = await api('/api/admin/overview' + (week ? '?week=' + week : ''));
+    week = d.week;
+    const sel = document.getElementById('week');
+    const weeks = d.weeks.includes(d.current) ? d.weeks : [d.current, ...d.weeks];
+    sel.innerHTML = weeks.map(w => `<option ${w === week ? 'selected' : ''}>${w}</option>`).join('');
+    document.getElementById('csv').href = '/api/admin/export?week=' + week;
+    document.getElementById('totals').textContent = `${d.totals.players} players · ${d.totals.runs} runs · current week ${d.current}`;
+    const W = document.getElementById('winners');
+    if (d.snapshot) {
+      W.innerHTML = `<div style="color:#999">Locked ${esc(d.snapshot.computedAt)} (${esc(d.snapshot.reason)})</div>` + Object.entries(d.snapshot.categories).map(([k, rows]) =>
+        `<div><b>${esc(d.boards[k].label)}:</b> ${rows.map(r => `#${r.rank} ${esc(r.name)} <span style="color:#7cf">${esc(((d.winnersHandles[k] || []).find(x => x.rank === r.rank) || {}).handle) || '(no handle)'}</span>`).join(' · ') || '—'}</div>`).join('');
+    } else W.innerHTML = week === d.current ? '<div style="color:#999">This week is still open. It locks automatically after Sunday 11:59 PM PT.</div>' : '<div style="color:#999">Not locked yet.</div>';
+    document.getElementById('boards').innerHTML = Object.entries(d.boards).map(([k, b]) => `<section><h2>${esc(b.label)}</h2><table><tr><th>#</th><th>Name</th><th>Handle</th><th>Value</th><th>Wave</th><th>Washes</th><th>Client time</th><th>Server time</th><th>Flags</th><th>When</th><th></th></tr>` +
+      (b.rows.map(r => `<tr class="${r.hidden || r.banned ? 'hidden' : ''}"><td>${r.rank}</td><td>${esc(r.name)}${r.banned ? ' (banned)' : ''}</td><td>${esc(r.handle)}</td><td>${b.unit === 'time' ? fmtTime(r.value) : r.value}</td><td>${r.wave}</td><td>${r.kills}</td><td>${fmtTime(r.elapsed)}</td><td>${r.serverElapsed == null ? '?' : fmtTime(r.serverElapsed)}${r.clockRestarted ? ' (tutorial reset)' : ''}</td><td class="flag">${esc((r.flags || []).join(', '))}</td><td>${esc(r.at.replace('T', ' ').slice(0, 16))}Z</td>
+        <td class="act"><button class="${r.hidden ? 'ok' : 'warn'}" data-hide="${r.runId}" data-v="${r.hidden ? 0 : 1}">${r.hidden ? 'Unhide' : 'Hide run'}</button> <button class="${r.banned ? 'ok' : 'warn'}" data-ban="${r.playerId}" data-v="${r.banned ? 0 : 1}">${r.banned ? 'Unban' : 'Ban player'}</button></td></tr>`).join('') || '<tr><td colspan="11" style="color:#999">No runs</td></tr>') + '</table></section>').join('');
+  }
+  document.getElementById('week').onchange = e => { week = e.target.value; load(); };
+  document.getElementById('lock').onclick = async () => { if (confirm('Compute winners for week of ' + week + ' now?')) { await api('/api/admin/week/lock', { week }); load(); } };
+  document.getElementById('boards').onclick = async e => {
+    const t = e.target;
+    if (t.dataset.hide) { const reason = t.dataset.v === '1' ? prompt('Reason (optional)') : ''; if (reason === null) return; await api('/api/admin/run/hide', { runId: t.dataset.hide, hidden: t.dataset.v === '1', reason }); load(); }
+    if (t.dataset.ban && confirm(t.dataset.v === '1' ? 'Ban this player? All their runs disappear from boards.' : 'Unban?')) { await api('/api/admin/player/ban', { playerId: t.dataset.ban, banned: t.dataset.v === '1' }); load(); }
+  };
+  load();
+</script>
+</body>
+</html>

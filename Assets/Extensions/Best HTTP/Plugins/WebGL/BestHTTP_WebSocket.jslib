@@ -25,7 +25,7 @@ var Lib_BEST_HTTP_WebGL_WS_Bridge =
 
 			stringToUTF8Array(reason, HEAPU8, buffer, length);
 
-			Module['dynCall_viii'](onClose, id, code, buffer);
+			{{{ makeDynCall('viii', 'onClose') }}}(id, code, buffer);
 
 			_free(buffer);
 		},
@@ -37,7 +37,7 @@ var Lib_BEST_HTTP_WebGL_WS_Bridge =
 
 			stringToUTF8Array(reason, HEAPU8, buffer, length);
 
-			Module['dynCall_vii'](errCallback, id, buffer);
+			{{{ makeDynCall('vii', 'errCallback') }}}(id, buffer);
 
 			_free(buffer);
 		}
@@ -66,7 +66,7 @@ var Lib_BEST_HTTP_WebGL_WS_Bridge =
 		socket.socketImpl.onopen = function(e) {
 			console.log(id + ' WS_Create - onOpen');
 
-			Module['dynCall_vi'](onOpen, id);
+			{{{ makeDynCall('vi', 'onOpen') }}}(id);
 		};
 
 		socket.socketImpl.onmessage = function (e)
@@ -78,7 +78,7 @@ var Lib_BEST_HTTP_WebGL_WS_Bridge =
 				var buffer = _malloc(byteArray.length);
 				HEAPU8.set(byteArray, buffer);
 
-				Module['dynCall_viii'](onBinary, id, buffer, byteArray.length);
+				{{{ makeDynCall('viii', 'onBinary') }}}(id, buffer, byteArray.length);
 
 				_free(buffer);
 			}
@@ -89,7 +89,7 @@ var Lib_BEST_HTTP_WebGL_WS_Bridge =
 
 				stringToUTF8Array(e.data, HEAPU8, buffer, length);
 
-				Module['dynCall_vii'](onText, id, buffer);
+				{{{ makeDynCall('vii', 'onText') }}}(id, buffer);
 
 				_free(buffer);
 			}

@@ -614,6 +614,8 @@ public class PimlrMenuNavigator : MonoBehaviour
     void ShowRing(GameObject selected)
     {
         if (selected == null) { HideRing(); return; }
+        // #UI: themed selectables draw their own cursor; never show two highlights at once.
+        if (selected.TryGetComponent(out PIMLR.UI.IPimlrFocusVisual fv) && fv.DrawsOwnFocus) { HideRing(); return; }
         if (ring == null) CreateRing();
 
         if (ring.parent != selected.transform)
