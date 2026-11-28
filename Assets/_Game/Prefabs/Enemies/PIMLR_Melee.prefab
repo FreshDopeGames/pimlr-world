@@ -3538,6 +3538,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f2fdc3019d21f104d95e2ce1a74d0499, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7814355153054071517}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f2fdc3019d21f104d95e2ce1a74d0499, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7602935451238757866}
     - targetCorrespondingSourceObject: {fileID: 6398959885873274237, guid: f2fdc3019d21f104d95e2ce1a74d0499, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2262107743264305301}
@@ -6120,6 +6123,25 @@ MonoBehaviour:
   StepCorrection: 0
   GroundCheck: 0
   WallCheck: 1
+--- !u!114 &7602935451238757866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8114356081070409092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f500ae9567bd24e438c492b51a74db1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PIMLR.Coins.EnemyCoinDrop
+  minValue: 3
+  maxValue: 5
+  coinCount: -1
+  dropChance: 1
+  dropPoint: {fileID: 0}
+  delay: 0.25
+  health: {fileID: 0}
 --- !u!4 &8237277094855427541 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8211682993464967936, guid: f2fdc3019d21f104d95e2ce1a74d0499, type: 3}

@@ -34,6 +34,10 @@ public class UIStaminaBar : MonoBehaviour
     [Tooltip("Tint while exhausted (sprinting locked until it recovers). Multiplies your sprite's colour.")]
     [SerializeField] private Color depletedColor = new Color(0.55f, 0.55f, 0.55f, 1f);
     [SerializeField] private Color normalColor = Color.white;
+    // #UI (Slice 4b): Settings > Color-blind mode uses this instead of normalColor (themed: StaminaColorblind).
+    [SerializeField] private Color colorBlindColor = new Color(0.133f, 0.827f, 0.933f, 1f);
+    [Tooltip("Optional icon tinted like the bar (not while exhausted).")]
+    [SerializeField] private Image icon;
 
     private void Update()
     {
@@ -49,7 +53,9 @@ public class UIStaminaBar : MonoBehaviour
         fillImage.fillAmount = lerpSpeed <= 0f ? target : Mathf.MoveTowards(fillImage.fillAmount, target, lerpSpeed * Time.deltaTime);
 
         // Darker while exhausted (sprinting locked until it recovers).
-        fillImage.color = st.Exhausted ? depletedColor : normalColor;
+        Color live = PimlrSettings.ColorBlindMode ? colorBlindColor : normalColor; // #UI
+        fillImage.color = st.Exhausted ? depletedColor : live;
+        if (icon) icon.color = live;
 
         if (hideWhenFull)
         {

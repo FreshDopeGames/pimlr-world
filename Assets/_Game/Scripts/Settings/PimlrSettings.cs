@@ -14,7 +14,7 @@ using UnityEngine;
 public static class PimlrSettings
 {
     const string KLookX = "PIMLR_Set_LookX", KLookY = "PIMLR_Set_LookY", KInvertY = "PIMLR_Set_InvertY",
-                 KRumble = "PIMLR_Set_Rumble", KMusic = "PIMLR_Set_MusicVolume";
+                 KRumble = "PIMLR_Set_Rumble", KMusic = "PIMLR_Set_MusicVolume", KColorBlind = "PIMLR_Set_ColorBlind";
 
     public const float MinLook = 0.2f, MaxLook = 3f;
 
@@ -29,10 +29,12 @@ public static class PimlrSettings
     public static bool Rumble { get => PlayerPrefs.GetInt(KRumble, 1) == 1; set => SetI(KRumble, value ? 1 : 0); }
     /// <summary>Background music volume 0..1 (catalog tracks, the base soundtrack, the music player).</summary>
     public static float MusicVolume { get => PlayerPrefs.GetFloat(KMusic, 1f); set => SetF(KMusic, Mathf.Clamp01(value)); }
+    /// <summary>#UI: Color-blind mode. HUD colors that only differ by hue switch to safer ones (stamina: yellow -> cyan).</summary>
+    public static bool ColorBlindMode { get => PlayerPrefs.GetInt(KColorBlind, 0) == 1; set => SetI(KColorBlind, value ? 1 : 0); }
 
     public static void ResetToDefaults()
     {
-        foreach (var k in new[] { KLookX, KLookY, KInvertY, KRumble, KMusic }) PlayerPrefs.DeleteKey(k);
+        foreach (var k in new[] { KLookX, KLookY, KInvertY, KRumble, KMusic, KColorBlind }) PlayerPrefs.DeleteKey(k);
         PlayerPrefs.Save();
         Changed?.Invoke();
     }

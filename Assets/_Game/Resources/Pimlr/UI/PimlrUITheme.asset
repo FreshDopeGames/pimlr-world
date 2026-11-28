@@ -45,6 +45,10 @@ MonoBehaviour:
     color: {r: 0.33333334, g: 0.33333334, b: 0.30980393, a: 1}
   - token: 17
     color: {r: 0, g: 1, b: 0, a: 1}
+  - token: 18
+    color: {r: 1, g: 0.8392157, b: 0.039215688, a: 1}
+  - token: 19
+    color: {r: 0.13333334, g: 0.827451, b: 0.93333334, a: 1}
   type:
   - role: 0
     font: {fileID: 11400000, guid: 75b675882c947ed4a9ca596320a81de8, type: 2}

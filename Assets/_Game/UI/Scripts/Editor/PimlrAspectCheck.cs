@@ -129,8 +129,10 @@ public static class PimlrAspectCheck
             var a = Clipped(sels[i]);
             if (a.width < 1f || a.height < 1f) continue; // fully scrolled out of view
             // List rows are focus targets for controller/keyboard scrolling, not tap targets (no click action).
-            if (phone && !(sels[i] is PIMLR.UI.PimlrListRow) && Mathf.Min(a.width, a.height) + 0.5f < minTouchPx)
-                issues.Add($"TOUCH      {Path(sels[i].transform, root)}  {Mathf.Min(a.width, a.height):0}px < {minTouchPx:0}px");
+            // A target partly scrolled out of its list is still full size once scrolled in: judge its whole rect.
+            var full = ScreenRect((RectTransform)sels[i].transform);
+            if (phone && !(sels[i] is PIMLR.UI.PimlrListRow) && Mathf.Min(full.width, full.height) + 0.5f < minTouchPx)
+                issues.Add($"TOUCH      {Path(sels[i].transform, root)}  {Mathf.Min(full.width, full.height):0}px < {minTouchPx:0}px");
             for (int j = i + 1; j < sels.Count; j++)
             {
                 if (sels[i].transform.IsChildOf(sels[j].transform) || sels[j].transform.IsChildOf(sels[i].transform)) continue;

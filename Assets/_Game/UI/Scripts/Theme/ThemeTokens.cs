@@ -25,6 +25,8 @@ namespace PIMLR.UI
         White = 15,
         Clear = 16,
         HealthGreen = 17,   // #00FF00 the green of the plus-sign health pickup (health bar)
+        StaminaYellow = 18, // #FFD60A warm yellow stamina (industry convention; distinct from health green)
+        StaminaColorblind = 19, // #22D3EE stamina in Color-blind mode (blue stays distinct from green/yellow for red-green color blindness)
     }
 
     public enum TypeRole
@@ -51,6 +53,11 @@ namespace PIMLR.UI
         BarBack = 9,
         Badge = 10,       // rank badge base
         Chip = 11,        // small pill (mode chip, coin chip)
+        HudPlayerFrame = 12, // 9-slice frame around the gameplay music player (empty = flat green edges)
+        BoostIcon = 13,      // icon on the Boost slide-down panel (empty = no icon)
+        ObjectiveMarker = 14, // marker next to the current objective (empty = green diamond)
+        MinimapRing = 15,    // ring around the minimap (empty = the map mask's circle)
+        WeaponSlot = 16,     // 9-slice frame of the selected weapon-carousel slot (empty = lime outline)
     }
 
     /// <summary>How much a button moves on hover/focus/press. Big menu buttons pop; slots and icons stay calm.</summary>

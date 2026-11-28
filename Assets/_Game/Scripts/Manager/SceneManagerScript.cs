@@ -393,6 +393,19 @@ public class MusicData
 
     // Lock-state message shown until the achievement requirement is met.
     public string lockedBtnMsg;
+
+    // PIMLR #UI (Nov 27): track details for the HUD player and the Pause screen's Music Library.
+    // Filled by PIMLR > Music > Fill Track Info (from the clip name and its folder); edit by hand any time.
+    // Empty fields fall back to the clip name "Artist - Title (ft. Guests)" at runtime.
+    [Header("Track info (#UI)")]
+    public string artist;
+    public string title;
+    [Tooltip("Featured artists, without the 'ft.' (e.g. 'Mike & Keys').")]
+    public string featuredArtists;
+    [Tooltip("Project (album / EP / single) this track belongs to. The Music Library groups and plays tracks by project.")]
+    public string project;
+    [Tooltip("Order within the project (1 = first). 0 = keep catalog order.")]
+    public int trackNumber;
 }
 
 
@@ -411,6 +424,7 @@ public enum AchievementReward
     VehicleSpeed,
     Defense,
     MaxHP,
-    FreezeRay
+    FreezeRay,
+    CoinMultiplier // PIMLR (Nov 27): 2x PIMLR Coins from defeated enemies (Thurz - BIG YAPER). Append-only: values are serialized.
 
 }

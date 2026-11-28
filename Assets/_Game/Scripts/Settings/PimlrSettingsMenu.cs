@@ -2,7 +2,7 @@
 //   - the Pause screen (YannicksWorld): a copy of its LIVING ROOM button, just above it,
 //   - the Living Room menu (SceneStaticEU): a copy of its FIT CHECK button, next to it.
 // Rows: Look Left / Right, Look Up / Down (multipliers on the camera's own sensitivity), Invert Camera Y,
-// Controller Rumble, Background Music volume. Mouse: drag the bars or click - / +. Controller: D-pad between
+// Controller Rumble, Background Music volume, Color-blind mode (#UI). Mouse: drag the bars or click - / +. Controller: D-pad between
 // rows, A on - / + / ON-OFF, B = Back (PimlrMenuNavigator). Esc also closes it.
 //
 // Unreal note: a UMG widget (UUserWidget) pushed on the menu stack from the pause / living-room widgets, bound to
@@ -186,14 +186,14 @@ public class PimlrSettingsMenu : MonoBehaviour
 
         var panel = Box("Panel", root.transform, Panel);
         var prt = panel.rectTransform;
-        prt.sizeDelta = new Vector2(1000, 720);
+        prt.sizeDelta = new Vector2(1000, 816); // #UI: +96 for the Color-blind row
         var outline = panel.gameObject.AddComponent<Outline>();
         outline.effectColor = Accent; outline.effectDistance = new Vector2(3, -3);
 
         var title = Text("Title", panel.transform, "SETTINGS", 54, Accent, TextAlignmentOptions.Center);
-        Place(title.rectTransform, new Vector2(0, 300), new Vector2(900, 70));
+        Place(title.rectTransform, new Vector2(0, 348), new Vector2(900, 70));
 
-        float y = 190f;
+        float y = 238f;
         SliderRow(panel.transform, "LOOK LEFT / RIGHT", ref y, () => PimlrSettings.LookX, v => PimlrSettings.LookX = v,
             PimlrSettings.MinLook, PimlrSettings.MaxLook, 0.1f, v => $"{v:0.0}x");
         SliderRow(panel.transform, "LOOK UP / DOWN", ref y, () => PimlrSettings.LookY, v => PimlrSettings.LookY = v,
@@ -206,13 +206,15 @@ public class PimlrSettingsMenu : MonoBehaviour
         });
         SliderRow(panel.transform, "BACKGROUND MUSIC", ref y, () => PimlrSettings.MusicVolume, v => PimlrSettings.MusicVolume = v,
             0f, 1f, 0.05f, v => $"{Mathf.RoundToInt(v * 100f)}%");
+        // #UI (Slice 4b): stamina turns cyan instead of yellow, so it never reads like the green health bar.
+        ToggleRow(panel.transform, "COLOR-BLIND MODE", ref y, () => PimlrSettings.ColorBlindMode, v => PimlrSettings.ColorBlindMode = v);
 
         var reset = MakeButton(panel.transform, "Reset Button", "RESET TO DEFAULTS", 26);
-        Place((RectTransform)reset.transform, new Vector2(-200, -290), new Vector2(340, 70));
+        Place((RectTransform)reset.transform, new Vector2(-200, -338), new Vector2(340, 70));
         reset.onClick.AddListener(() => { PimlrSettings.ResetToDefaults(); Refresh(); });
 
         var back = MakeButton(panel.transform, "Back Button", "BACK", 30);
-        Place((RectTransform)back.transform, new Vector2(200, -290), new Vector2(340, 70));
+        Place((RectTransform)back.transform, new Vector2(200, -338), new Vector2(340, 70));
         back.onClick.AddListener(Close);
         var hint = back.gameObject.AddComponent<PimlrNavHint>(); hint.isCancel = true;
 

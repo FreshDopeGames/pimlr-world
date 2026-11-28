@@ -222,6 +222,8 @@ namespace PIMLR.UI
                 case ColorToken.StateDanger: return Hex(0xE5, 0x48, 0x4D);
                 case ColorToken.StateDisabled: return Hex(0x55, 0x55, 0x4F);
                 case ColorToken.HealthGreen: return Hex(0x00, 0xFF, 0x00);
+                case ColorToken.StaminaYellow: return Hex(0xFF, 0xD6, 0x0A);
+                case ColorToken.StaminaColorblind: return Hex(0x22, 0xD3, 0xEE);
                 case ColorToken.Clear: return new Color(0f, 0f, 0f, 0f);
                 default: return UnityEngine.Color.white;
             }

@@ -28,6 +28,10 @@ public class PimlrMenuNavigator : MonoBehaviour
 {
     public static bool IsNavigating { get; private set; }
 
+    /// <summary>#UI Slice 5: while this returns true, D-pad LEFT/RIGHT is left to the screen (the Pause screen pages
+    /// equipment with it) and only the left stick moves the cursor sideways. D-pad up/down still navigates.</summary>
+    public static System.Func<bool> ClaimDpadHorizontal;
+
     const float FirstRepeatDelay = 0.35f;
     const float RepeatInterval = 0.12f;
     const float RescanInterval = 0.2f;
@@ -416,6 +420,7 @@ public class PimlrMenuNavigator : MonoBehaviour
         if (pad == null) return Vector2Int.zero;
 
         Vector2 v = pad.dpad.ReadValue();
+        if (ClaimDpadHorizontal != null && ClaimDpadHorizontal()) v.x = 0f; // #UI Slice 5
         if (v.sqrMagnitude < 0.25f)
         {
             v = pad.leftStick.ReadValue();

@@ -5,6 +5,8 @@
 // It sits under the "JUTPS Interface" HUD, so it fades out with the rest of the HUD during cinematics and menus.
 //
 // Hooks: UI_GoalPanel.StartBoost -> Show, AuthManager.PowerChange(Nothing) -> Clear.
+// #UI (Slice 4b): when the gameplay music player (PimlrHudMusicPlayer) is on the HUD, the boost shows as its
+// slide-down "Boost:" panel instead of this card; same timing, same hooks.
 //
 // Unreal note: a small UMG widget on the HUD bound to an "ActiveBoostChanged" delegate on the boost subsystem;
 // a widget animation for the slide-in, played after the activation popup's animation finishes.
@@ -21,8 +23,9 @@ public class PimlrBoostHUD : MonoBehaviour
     public static float AppearDelay = 2.3f;
     public static Vector2 Margin = new Vector2(28f, 24f);
     public static float Width = 400f;
-    // #UI (Slice 4): music purple + carbon card from the PIMLR UI theme (Track Boost = AccentMusic token).
-    public static Color Accent => PimlrUITheme.C(ColorToken.AccentMusic);
+    // #UI (Slice 4): Track Boost uses the health green (Craig, Nov 27): music and health share one thru line, and it
+    // matches the green screen flash when a boost activates. Carbon card from the PIMLR UI theme.
+    public static Color Accent => PimlrUITheme.C(ColorToken.HealthGreen);
     public static Color PanelColor => PimlrUITheme.C(ColorToken.SurfaceScrim, 1.1f);
 
     static PimlrBoostHUD instance;
@@ -61,6 +64,7 @@ public class PimlrBoostHUD : MonoBehaviour
     public static void Clear()
     {
         pending = false;
+        if (PimlrHudMusicPlayer.Instance) PimlrHudMusicPlayer.Instance.HideBoost(); // #UI Slice 4b
         if (instance) instance.SlideOut(false);
     }
 
@@ -107,7 +111,7 @@ public class PimlrBoostHUD : MonoBehaviour
 
         // #UI: Caption / Heading / Body roles. Sizes are canvas units on the 1280x720 HUD canvas (x1.5 at 1080p).
         var fallback = PIMLR.Missions.SaveTheFans.SaveTheFansStyle.Font;
-        header = MakeText("Header", 15f, PimlrUITheme.C(ColorToken.AccentMusic), PimlrUITheme.Font(TypeRole.Caption) ?? fallback);
+        header = MakeText("Header", 15f, Accent, PimlrUITheme.Font(TypeRole.Caption) ?? fallback); // TRACK BOOST ACTIVE in health green
         title = MakeText("Title", 24f, PimlrUITheme.C(ColorToken.TextPrimary), PimlrUITheme.Font(TypeRole.Heading) ?? fallback);
         info = MakeText("Info", 17f, PimlrUITheme.C(ColorToken.TextSecondary), PimlrUITheme.Font(TypeRole.Body) ?? fallback);
         header.text = "TRACK BOOST ACTIVE";
@@ -151,6 +155,13 @@ public class PimlrBoostHUD : MonoBehaviour
         if (pending && Time.unscaledTime >= showAt)
         {
             pending = false;
+            if (PimlrHudMusicPlayer.Instance && PimlrHudMusicPlayer.Instance.isActiveAndEnabled) // #UI Slice 4b
+            {
+                PimlrHudMusicPlayer.Instance.ShowBoost(pendingTitle, pendingInfo);
+                if (card.gameObject.activeSelf) card.gameObject.SetActive(false); // the old card stays out of the way
+                return;
+            }
+            if (!card.gameObject.activeSelf) card.gameObject.SetActive(true);
             title.text = pendingTitle ?? "";
             info.text = pendingInfo ?? "";
             Layout();
@@ -171,6 +182,7 @@ public class PimlrBoostHUD : MonoBehaviour
 
     void SlideOut(bool quick)
     {
+        if (PimlrHudMusicPlayer.Instance) PimlrHudMusicPlayer.Instance.HideBoost(); // #UI Slice 4b
         if (!visible) return;
         visible = false;
         card.DOKill(); group.DOKill();

@@ -82,6 +82,7 @@ public class MusicInputHandler : MonoBehaviour
 
     private void DoNext()
     {
+        if (PimlrPauseAudio.Open) { PimlrLibraryPlayer.Instance.Next(); return; } // #UI Slice 5: Pause screen = the Music Library
         MusicSystem m = Music;
         if (m == null) return;
         m.ChangeMusicForward(); // PIMLR #8: advance to next track.
@@ -89,6 +90,7 @@ public class MusicInputHandler : MonoBehaviour
 
     private void DoPrevious()
     {
+        if (PimlrPauseAudio.Open) { PimlrLibraryPlayer.Instance.Previous(); return; } // #UI Slice 5
         MusicSystem m = Music;
         if (m == null) return;
         m.ChangeMusicBackward(); // PIMLR #8: go to previous track.
@@ -96,6 +98,7 @@ public class MusicInputHandler : MonoBehaviour
 
     private void DoPlayPause()
     {
+        if (PimlrPauseAudio.Open) { PimlrLibraryPlayer.Instance.TogglePause(); return; } // #UI Slice 5
         MusicSystem m = Music;
         if (m == null) return;
         m.PlayMusic(); // PIMLR #8: PlayMusic() toggles play/pause (see MusicSystem.PlayMusic()).

@@ -174,7 +174,8 @@ public static class PimlrHudSlice4Builder
             var fields = root.GetComponent<PimlrThemedColorFields>();
             if (fields) { Object.DestroyImmediate(fields, true); changed = true; }
             foreach (var hc in root.GetComponentsInChildren<PimlrHealthBarColor>(true)) { Object.DestroyImmediate(hc, true); changed = true; }
-            foreach (var t in root.GetComponentsInChildren<Transform>(true).Where(t => t && t.name.EndsWith("(#UI)")).ToList())
+            // Only 4a's own object: later slices' "(#UI)" objects (4b player / carousel, 5 pause hub) have their own reverts.
+            foreach (var t in root.GetComponentsInChildren<Transform>(true).Where(t => t && t.name == "Minimap Ring (#UI)").ToList())
             { Object.DestroyImmediate(t.gameObject, true); changed = true; }
             if (changed) PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
         }

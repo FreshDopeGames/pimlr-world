@@ -394,19 +394,9 @@ public class GameExecutionManager : Singleton<GameExecutionManager>
 
         SceneManagerScript.Instance.goalPanel.SetCurrentKillInfo(zombiesKilled.ToString() + " / 10");
 
-        if (zone2Start)
-        {
-            //PersistentAudioManager.Instance.musicPlayer.shopPointsInt += 10;
-            CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() + 10);
-            RunStats.AddCoins(10);
-
-        }
-        else
-        {
-            //PersistentAudioManager.Instance.musicPlayer.shopPointsInt += 5;
-            CoinManager.Instance.SetCoins(CoinManager.Instance.GetCoins() + 5);
-            RunStats.AddCoins(5);
-        }
+        // PIMLR #COINS: kills no longer pay into the bank directly. The enemy's EnemyCoinDrop spills
+        // coin pickups instead, and CoinManager + RunStats are credited only when the player collects
+        // them (CoinCollector -> PIMLRCoinBank). Zone 2 kills still pay double, via EnemyCoinDrop.
     }
 
     // PIMLR (leaderboards): ends the Story run as Completed and submits it. Called from JUHealth.OnVideoPlay when the

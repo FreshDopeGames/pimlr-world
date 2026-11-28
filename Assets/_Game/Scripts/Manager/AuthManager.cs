@@ -631,6 +631,9 @@ public class AuthManager : Singleton<AuthManager>
 
         }
 
+        // PIMLR (Nov 27): 2x PIMLR Coins from defeated enemies (read by EnemyCoinDrop).
+        if (newAchievementReward == AchievementReward.CoinMultiplier) PimlrBoostEffects.CoinMultiplier = PimlrBoostEffects.CoinBoostFactor;
+
         // PIMLR #ANL: one event per change (UI_GoalPanel sends Nothing on both disable and destroy).
         if (previousReward != newAchievementReward)
             PIMLR.Analytics.PimlrAnalytics.Log("boost_active", new PIMLR.Analytics.AnalyticsData()
@@ -642,6 +645,7 @@ public class AuthManager : Singleton<AuthManager>
     {
         // PIMLR #STATS: drop the boost modifiers; PlayerStatBlock re-applies the artist's base values.
         PlayerStatBlock.RemoveSource(BoostModifierSource);
+        PimlrBoostEffects.CoinMultiplier = 1f; // PIMLR (Nov 27)
         if (GameExecutionManager.Instance)
             VehicleStatBoost.Apply(GameExecutionManager.Instance.carController, 1f); // the car's own starting values
     }

@@ -53,6 +53,16 @@ public class PimlrControlsInfo : MonoBehaviour
         { "Start", "Options", "Menu / Pause" },
     };
 
+    /// <summary>#UI Slice 5: the rows for a scheme (Key, Action), for the Pause screen's Controls sub-menu.</summary>
+    public static System.Collections.Generic.List<(string key, string action)> RowsFor(PimlrControlScheme scheme)
+    {
+        var list = new System.Collections.Generic.List<(string, string)>();
+        if (scheme == PimlrControlScheme.KeyboardMouse) { foreach (var r in KeyboardRows) list.Add((r.Key, r.Action)); return list; }
+        int col = scheme == PimlrControlScheme.PlayStation ? 1 : 0;
+        for (int i = 0; i < GamepadRows.GetLength(0); i++) list.Add((GamepadRows[i, col], GamepadRows[i, 2]));
+        return list;
+    }
+
     RectTransform template;
     Text header;
     PimlrControlScheme shownScheme;
@@ -80,6 +90,9 @@ public class PimlrControlsInfo : MonoBehaviour
             foreach (var extra in rt.GetComponents<PimlrControlsInfo>())
                 if (extra != info) Destroy(extra);
 
+            // #UI Slice 5 (Craig, Nov 27): the Pause screen's Controls sub-menu + the tutorial replace the HUD copy. A HUD copy
+            // that's switched off in the prefab (Slice 5 builder) stays off; switch it back on to bring the timed list back.
+            if (info.IsHud && !rt.gameObject.activeSelf) continue;
             if (info.IsHud && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "YannicksWorld")
                 info.ShowThenFade();
         }

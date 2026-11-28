@@ -234,6 +234,7 @@ public static class PimlrUIThemeSetup
                 CE(ColorToken.AccentMusic, "#9B5CF6"), CE(ColorToken.AccentInfo, "#22D3EE"), CE(ColorToken.AccentWarn, "#FF8A1F"),
                 CE(ColorToken.AccentGold, "#F5C542"), CE(ColorToken.StateDanger, "#E5484D"), CE(ColorToken.StateDisabled, "#55554F"),
                 CE(ColorToken.HealthGreen, "#00FF00"),
+                CE(ColorToken.StaminaYellow, "#FFD60A"), CE(ColorToken.StaminaColorblind, "#22D3EE"),
             };
         }
 

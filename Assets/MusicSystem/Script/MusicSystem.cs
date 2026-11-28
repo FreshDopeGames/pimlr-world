@@ -106,6 +106,12 @@ public class MusicSystem : MonoBehaviour
         // Keep the icon / disc honest if something else (Y button, track end) changed playback.
         if (musicSystem.isPlaying != music && startMusic && Time.frameCount % 10 == 0)
         {
+            // #UI (Slice 4b): a track's boost lasts as long as the track plays. When it ends on its own (no repeat),
+            // the boost ends with it, the same as pausing does.
+            bool endedOnItsOwn = music && !musicSystem.isPlaying && !musicSystem.loop &&
+                                 (musicSystem.time <= 0.05f || musicSystem.time >= musicSystem.clip.length - 0.1f);
+            if (endedOnItsOwn && AuthManager.Instance && SceneManager.GetActiveScene().name != "00_MainMenu")
+                AuthManager.Instance.PowerChange(AchievementReward.Nothing);
             music = musicSystem.isPlaying;
             ApplyPanelState();
         }
